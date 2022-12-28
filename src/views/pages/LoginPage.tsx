@@ -4,18 +4,13 @@ import {
 	SafeAreaView,
 	Button,
 	TextInput,
-	LayoutChangeEvent,
 } from "react-native";
 import { useState, useContext } from "react";
-import { LoginInfo } from "../interfaces";
-import { useLoginUser, useLogoutUser } from "../query-hooks/useLoginUser";
-import { UserDataContext } from "../contexts/UserData";
+import { LoginInfo } from "../../interfaces";
+import { useLoginUser, useLogoutUser } from "../../query-hooks/useLoginUser";
+import { UserDataContext } from "../../contexts/UserData";
 
-interface LoginProp {
-	onLayout: () => Promise<void>;
-}
-
-export default function LoginPage({ onLayout }: LoginProp) {
+export default function LoginPage() {
 	const { loggedInUser } = useContext(UserDataContext);
 	const [loginInfo, setLoginInfo] = useState<LoginInfo>({
 		email: "admin@nn.nn",
@@ -35,10 +30,7 @@ export default function LoginPage({ onLayout }: LoginProp) {
 	};
 
 	return (
-		<SafeAreaView
-			style={styles.container}
-			onLayout={onLayout}
-		>
+		<SafeAreaView style={styles.container}>
 			<Text>Felhasználónév</Text>
 			<TextInput
 				onChangeText={(text) => handleOnChange(text, "email")}
@@ -54,14 +46,16 @@ export default function LoginPage({ onLayout }: LoginProp) {
 			>
 				{loginInfo.password}
 			</TextInput>
+
 			<Button
 				title="Belépés"
-				onPress={() => loginUser.mutate(loginInfo)}
+				onPress={() => loginUser.mutate()}
 			/>
 			<Button
 				title="Kilépés"
 				onPress={() => logoutUser.mutate()}
 			/>
+
 			{loginUser.isLoading && <Text>Loading...</Text>}
 			{loginUser.isError && <Text>Helytelen bejelentkezési adatok</Text>}
 			{loggedInUser.userData ? (

@@ -1,4 +1,3 @@
-import { UserData } from './interfaces';
 export interface TextInputProps {
     name: string;
     handleOnChange: ((text: string, name: string) => void);

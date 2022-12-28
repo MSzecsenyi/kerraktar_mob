@@ -15,16 +15,13 @@ const userData = {
 };
 
 const reducer = (loggedInUser: AppState, action: Action) => {
-	console.log("arrived to reducer");
 	switch (action.type) {
 		case "SET_LOGGED_IN_USER":
-			console.log(`contextbe jött: ${action.payload}`);
 			return {
 				...loggedInUser,
 				userData: action.payload,
 			};
 		case "DELETE_LOGGED_IN_USER":
-			console.log("reducer delete ág");
 			return {
 				userData: null,
 			};
@@ -41,8 +38,6 @@ const UserDataContext = createContext<{
 
 function UserDataProvider({ children }: InputProviderProps) {
 	const [loggedInUser, dispatch] = useReducer(reducer, userData);
-
-	console.log("in provider");
 
 	return (
 		<UserDataContext.Provider value={{ loggedInUser, dispatch }}>

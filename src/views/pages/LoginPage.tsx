@@ -8,7 +8,7 @@ import {
 import { useState, useContext } from "react";
 import { LoginInfo } from "../../interfaces";
 import { useLoginUser, useLogoutUser } from "../../query-hooks/useLoginUser";
-import { UserDataContext } from "../../contexts/UserData";
+import { UserDataContext } from "../../contexts/UserDataContext";
 
 export default function LoginPage() {
 	const { loggedInUser } = useContext(UserDataContext);
@@ -16,8 +16,6 @@ export default function LoginPage() {
 		email: "admin@nn.nn",
 		password: "password",
 	});
-
-	// console.log(loggedInUser);
 
 	const loginUser = useLoginUser(loginInfo);
 	const logoutUser = useLogoutUser();
@@ -58,8 +56,8 @@ export default function LoginPage() {
 
 			{loginUser.isLoading && <Text>Loading...</Text>}
 			{loginUser.isError && <Text>Helytelen bejelentkezési adatok</Text>}
-			{loggedInUser.userData ? (
-				<Text>Belépve: {loggedInUser.userData?.user.email}</Text>
+			{loggedInUser.userData.user.id != -1 ? (
+				<Text>Belépve: {loggedInUser.userData.user.name}</Text>
 			) : (
 				<Text>Kilépve</Text>
 			)}

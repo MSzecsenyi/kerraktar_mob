@@ -4,7 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useContext, useEffect, useState } from "react";
 import axios from "axios";
 import { API_URL } from "../constants";
-import { UserDataContext } from "../contexts/UserData";
+import { UserDataContext } from "../contexts/UserDataContext";
 import SplashScreen from "./SplashScreen";
 import LoggedInDrawer from "./LoggedInDrawer";
 
@@ -28,7 +28,10 @@ export default function MainStack() {
 				};
 				await axios(config)
 					.then(function (response) {
-						dispatch({ type: "SET_LOGGED_IN_USER", payload: response.data });
+						dispatch({
+							type: "SET_LOGGED_IN_USER",
+							payload: response.data,
+						});
 						setIsLoadinig(false);
 					})
 					.catch(function (error) {
@@ -56,15 +59,15 @@ export default function MainStack() {
 
 	return (
 		<Stack.Navigator>
-			{loggedInUser == null ? (
-				<Stack.Screen
-					name="Login"
-					component={LoginPage}
-				/>
-			) : (
+			{loggedInUser.userData.user.id != -1 ? (
 				<Stack.Screen
 					name="LoggedIn"
 					component={LoggedInDrawer}
+				/>
+			) : (
+				<Stack.Screen
+					name="Login"
+					component={LoginPage}
 				/>
 			)}
 		</Stack.Navigator>

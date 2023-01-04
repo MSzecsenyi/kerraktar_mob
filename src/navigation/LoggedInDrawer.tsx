@@ -1,5 +1,5 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
-import LoginPage from "../views/pages/LoginPage";
+import TakeOutListMaker from "../views/pages/TakeOutListMaker";
 
 export default function LoggedInDrawer() {
 	const Drawer = createDrawerNavigator();
@@ -8,7 +8,7 @@ export default function LoggedInDrawer() {
 		<Drawer.Navigator>
 			<Drawer.Screen
 				name="elso ablak"
-				component={LoginPage}
+				component={TakeOutListMaker}
 			/>
 		</Drawer.Navigator>
 	);

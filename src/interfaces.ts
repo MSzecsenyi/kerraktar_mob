@@ -29,3 +29,20 @@ export interface User {
     updated_at: Date,
     deleted_at: Date
 }
+
+export interface Item {
+    id: number,
+    district: number,
+    category_id: number,
+    store_id: number,
+    owner: string,
+    item_name: string,
+    amount: number,
+    comment: string,
+    is_unique: boolean,
+    in_store_amount: number,
+}
+
+export interface Items {
+    items: Item[]
+}

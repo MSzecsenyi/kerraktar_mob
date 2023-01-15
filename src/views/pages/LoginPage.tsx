@@ -7,7 +7,7 @@ import {
 } from "react-native";
 import { useState, useContext } from "react";
 import { LoginInfo } from "../../interfaces";
-import { useLoginUser, useLogoutUser } from "../../query-hooks/useLoginUser";
+import { useLoginUser, useLogoutUser } from "../../query-hooks/UseLoginUser";
 import { UserDataContext } from "../../contexts/UserDataContext";
 
 export default function LoginPage() {

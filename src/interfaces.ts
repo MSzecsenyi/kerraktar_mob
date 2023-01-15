@@ -42,7 +42,3 @@ export interface Item {
     is_unique: boolean,
     in_store_amount: number,
 }
-
-export interface Items {
-    items: Item[]
-}

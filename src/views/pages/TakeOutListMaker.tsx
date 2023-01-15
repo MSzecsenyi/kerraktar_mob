@@ -1,13 +1,25 @@
-import { View, Button, StyleSheet } from "react-native";
-import { useLogoutUser } from "../../query-hooks/useLoginUser";
-
-type Props = {};
+import { View, Button, Text, ScrollView } from "react-native";
+import { useLogoutUser } from "../../query-hooks/UseLoginUser";
+import { useGetItems } from "../../query-hooks/UseItems";
+import ItemTile from "../organisms/ItemTile";
 
 const TakeOutListMaker = () => {
 	const logoutUser = useLogoutUser();
+	const getItems = useGetItems();
 
 	return (
 		<View>
+			{getItems.isLoading && <Text>Loading...</Text>}
+			{getItems.isSuccess && (
+				<ScrollView>
+					{getItems.data.map((item) => (
+						<ItemTile
+							item={item}
+							key={item.id}
+						/>
+					))}
+				</ScrollView>
+			)}
 			<Button
 				title="Kilépés"
 				onPress={() => logoutUser.mutate()}
@@ -15,14 +27,5 @@ const TakeOutListMaker = () => {
 		</View>
 	);
 };
-
-const styles = StyleSheet.create({
-	container: {
-		flex: 1,
-		backgroundColor: "#fff",
-		alignItems: "center",
-		justifyContent: "center",
-	},
-});
 
 export default TakeOutListMaker;

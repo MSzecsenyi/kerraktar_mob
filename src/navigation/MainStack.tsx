@@ -58,7 +58,11 @@ export default function MainStack() {
 	}
 
 	return (
-		<Stack.Navigator>
+		<Stack.Navigator
+			screenOptions={{
+				headerShown: false,
+			}}
+		>
 			{loggedInUser.userData.user.id != -1 ? (
 				<Stack.Screen
 					name="LoggedIn"

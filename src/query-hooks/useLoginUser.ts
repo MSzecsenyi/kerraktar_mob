@@ -1,7 +1,7 @@
 import { useMutation } from 'react-query';
 import axios from 'axios';
-import { API_URL } from './../constants';
-import { LoginInfo, UserData } from './../interfaces';
+import { API_URL } from '../constants';
+import { LoginInfo, UserData } from '../interfaces';
 import { useContext } from 'react';
 import { UserDataContext } from '../contexts/UserDataContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';

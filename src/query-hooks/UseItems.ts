@@ -3,24 +3,19 @@ import { useContext } from 'react';
 import { API_URL } from './../constants';
 import axios from "axios";
 import { UserDataContext } from '../contexts/UserDataContext';
-import { Items } from '../interfaces';
+import { Item } from '../interfaces';
 
-const {loggedInUser} = useContext(UserDataContext);
 
-const getItems = (district: number) => axios.get(API_URL + `items?district=${district}`, {
-    headers: {
-        'Authorization': `Bearer ${loggedInUser.userData?.token}`
+function getItems(district: number, token: string): Promise<Item[]> {
+    return axios.get(API_URL + `items?district=[${district}]`, {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }})
+        .then((response) => response.data.data)
+        .catch(error => {console.error(error)})
     }
-})
 
-export function useCheckUser(token: string | null){
-        console.log('kaki')
-        return useQuery(['user'], () => getItems(loggedInUser.userData?.user.district),{
-            // enabled: !!token,
-            onSuccess(data: Items) {
-                console.log('success');
-                console.log(data)
-                // dispatch({type: 'SET_LOGGED_IN_USER', payload: data })
-            },
-        })
+export function useGetItems() {
+    const {loggedInUser} = useContext(UserDataContext);
+    return useQuery(['user'], () => getItems(loggedInUser.userData?.user.district, loggedInUser.userData?.token))
     }

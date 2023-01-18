@@ -14,7 +14,7 @@ export default function TakeOutUniqueCheckbox({
 	return (
 		<TouchableHighlight
 			onPress={() => {
-				setCBIsActive((prevState) => !prevState);
+				setCBIsActive(true);
 			}}
 			style={styles.active_add_button}
 		>
@@ -28,7 +28,7 @@ const styles = StyleSheet.create({
 		width: 60,
 		height: 40,
 		backgroundColor: "red",
-		borderRadius: 40,
+		borderRadius: 10,
 		alignItems: "center",
 		justifyContent: "center",
 	},
@@ -36,7 +36,7 @@ const styles = StyleSheet.create({
 		width: 60,
 		height: 40,
 		backgroundColor: "gainsboro",
-		borderRadius: 40,
+		borderRadius: 10,
 		alignItems: "center",
 		justifyContent: "center",
 	},

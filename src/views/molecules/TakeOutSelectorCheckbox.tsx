@@ -11,6 +11,8 @@ interface TakeOutSelectorCheckboxProps {
 
 const TakeOutSelectorCheckbox = ({ item }: TakeOutSelectorCheckboxProps) => {
 	const [isActivated, setIsActivated] = useState(false);
+	const [selectedAmount, setSelectedAmount] = useState(0);
+	const [savedSelectedAmount, setSavedSelectedAmount] = useState(1);
 
 	return (
 		<View>
@@ -21,6 +23,7 @@ const TakeOutSelectorCheckbox = ({ item }: TakeOutSelectorCheckboxProps) => {
 						<TouchableHighlight
 							onPress={() => {
 								setIsActivated((prevState) => !prevState);
+								if (!item.is_unique) setSelectedAmount(savedSelectedAmount);
 							}}
 							style={styles.active_add_button}
 						>
@@ -37,6 +40,9 @@ const TakeOutSelectorCheckbox = ({ item }: TakeOutSelectorCheckboxProps) => {
 							) : (
 								<TakeOutCommonCheckbox
 									setCBIsActive={setIsActivated}
+									selectedAmount={selectedAmount}
+									setSelectedAmount={setSelectedAmount}
+									setSavedSelectedAmount={setSavedSelectedAmount}
 									item={item}
 								/>
 							)}
@@ -59,7 +65,7 @@ const styles = StyleSheet.create({
 		width: 60,
 		height: 40,
 		backgroundColor: "green",
-		borderRadius: 40,
+		borderRadius: 10,
 		alignItems: "center",
 		justifyContent: "center",
 	},
@@ -67,7 +73,7 @@ const styles = StyleSheet.create({
 		width: 60,
 		height: 40,
 		backgroundColor: "gainsboro",
-		borderRadius: 40,
+		borderRadius: 10,
 		alignItems: "center",
 		justifyContent: "center",
 	},

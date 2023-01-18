@@ -1,46 +1,63 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Item } from "../../interfaces";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import AmountSelector from "./AmountSelector";
 import { useState } from "react";
 
 interface TakeOutCommonCheckboxProps {
 	setCBIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+	selectedAmount: number;
+	setSelectedAmount: React.Dispatch<React.SetStateAction<number>>;
+	setSavedSelectedAmount: React.Dispatch<React.SetStateAction<number>>;
 	item: Item;
 }
 
 export default function TakeOutCommonCheckbox({
 	setCBIsActive,
 	item,
+	selectedAmount,
+	setSelectedAmount,
+	setSavedSelectedAmount,
 }: TakeOutCommonCheckboxProps) {
-	const [isFinalised, setIsFinalised] = useState(false);
-
 	return (
-		<TouchableHighlight
-			onPress={() => {
-				setCBIsActive(false);
-				setIsFinalised(false);
-			}}
-			style={styles.active_add_button}
-		>
-			<Text style={styles.light_text}>common</Text>
-		</TouchableHighlight>
+		<View style={styles.horizontal_flex}>
+			<Text> {selectedAmount} </Text>
+			<View>
+				{item.in_store_amount > 1 ? (
+					<AmountSelector
+						item={item}
+						setSelectedAmount={setSelectedAmount}
+						selectedAmount={selectedAmount}
+						setSavedSelectedAmount={setSavedSelectedAmount}
+					/>
+				) : (
+					<View style={{ width: 35 }} />
+				)}
+			</View>
+			<View>
+				<TouchableHighlight
+					onPress={() => {
+						setCBIsActive(false);
+					}}
+					style={styles.discard_button}
+				>
+					<Text style={styles.light_text}>X</Text>
+				</TouchableHighlight>
+			</View>
+		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	active_add_button: {
-		width: 60,
-		height: 40,
-		backgroundColor: "red",
-		borderRadius: 40,
+	horizontal_flex: {
+		flexDirection: "row",
 		alignItems: "center",
-		justifyContent: "center",
 	},
-	inactive_add_button: {
-		width: 60,
-		height: 40,
-		backgroundColor: "gainsboro",
-		borderRadius: 40,
+	discard_button: {
+		width: 30,
+		height: 30,
+		backgroundColor: "red",
+		borderRadius: 50,
 		alignItems: "center",
 		justifyContent: "center",
 	},

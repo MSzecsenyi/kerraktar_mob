@@ -2,6 +2,7 @@ import { View, Text, StyleSheet } from "react-native";
 import { Item } from "../../interfaces";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import TakeOutSelectorCheckbox from "../molecules/TakeOutSelectorCheckbox";
+import AmountSelector from "../atoms/AmountSelector";
 
 interface ItemProps {
 	item: Item;
@@ -21,9 +22,9 @@ const ItemTile = ({ item }: ItemProps) => {
 				</View>
 			</View>
 			<View style={styles.button_part}>
-				<TouchableHighlight>
+				<View>
 					<TakeOutSelectorCheckbox item={item} />
-				</TouchableHighlight>
+				</View>
 			</View>
 		</View>
 	);
@@ -45,7 +46,6 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 	},
 	info_row: {
-		flex: 1,
 		flexDirection: "row",
 		justifyContent: "space-between",
 	},

@@ -2,32 +2,32 @@ import { StyleSheet, Text, View } from "react-native";
 import { Item } from "../../interfaces";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import AmountSelector from "./AmountSelector";
-import { useState } from "react";
+import React, { useContext, useState } from "react";
+import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 
 interface TakeOutCommonCheckboxProps {
 	setCBIsActive: React.Dispatch<React.SetStateAction<boolean>>;
-	selectedAmount: number;
-	setSelectedAmount: React.Dispatch<React.SetStateAction<number>>;
 	setSavedSelectedAmount: React.Dispatch<React.SetStateAction<number>>;
 	item: Item;
 }
 
-export default function TakeOutCommonCheckbox({
+const TakeOutCommonCheckbox = ({
 	setCBIsActive,
 	item,
-	selectedAmount,
-	setSelectedAmount,
 	setSavedSelectedAmount,
-}: TakeOutCommonCheckboxProps) {
+}: TakeOutCommonCheckboxProps) => {
+	const takeOutList = useContext(TakeOutListContext);
+	let itemInList = takeOutList.state.items.find(
+		(listItem) => listItem.id === item.id
+	);
+
 	return (
 		<View style={styles.horizontal_flex}>
-			<Text> {selectedAmount} </Text>
+			<Text> {itemInList?.amount} </Text>
 			<View>
 				{item.in_store_amount > 1 ? (
 					<AmountSelector
 						item={item}
-						setSelectedAmount={setSelectedAmount}
-						selectedAmount={selectedAmount}
 						setSavedSelectedAmount={setSavedSelectedAmount}
 					/>
 				) : (
@@ -38,6 +38,7 @@ export default function TakeOutCommonCheckbox({
 				<TouchableHighlight
 					onPress={() => {
 						setCBIsActive(false);
+						takeOutList.dispatch({ type: "DELETE_ITEM", payload: item.id });
 					}}
 					style={styles.discard_button}
 				>
@@ -46,7 +47,9 @@ export default function TakeOutCommonCheckbox({
 			</View>
 		</View>
 	);
-}
+};
+
+export default TakeOutCommonCheckbox;
 
 const styles = StyleSheet.create({
 	horizontal_flex: {

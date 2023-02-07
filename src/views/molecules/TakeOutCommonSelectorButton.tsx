@@ -1,17 +1,27 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Item } from "../../interfaces";
 import { TouchableHighlight } from "react-native-gesture-handler";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import TakeOutCommonCheckbox from "../atoms/TakeOutCommonCheckBox";
 import TakeOutUniqueCheckbox from "../atoms/TakeOutUniqueCheckbox";
+import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 
-interface TakeOutSelectorCheckboxProps {
+interface TakeOutCommonSelectorButtonProps {
 	item: Item;
 }
 
-const TakeOutSelectorCheckbox = ({ item }: TakeOutSelectorCheckboxProps) => {
-	const [isActivated, setIsActivated] = useState(false);
-	const [selectedAmount, setSelectedAmount] = useState(0);
+const TakeOutCommonSelectorButton = ({
+	item,
+}: TakeOutCommonSelectorButtonProps) => {
+	const takeOutList = useContext(TakeOutListContext);
+	let itemInList = takeOutList.state.items.find(
+		(listItem) => listItem.id === item.id
+	);
+
+	// Activated by default if the item has already been added to the
+	const [isActivated, setIsActivated] = useState<boolean>(
+		itemInList ? true : false
+	);
 	const [savedSelectedAmount, setSavedSelectedAmount] = useState(1);
 
 	return (
@@ -22,8 +32,12 @@ const TakeOutSelectorCheckbox = ({ item }: TakeOutSelectorCheckboxProps) => {
 					{!isActivated ? (
 						<TouchableHighlight
 							onPress={() => {
-								setIsActivated((prevState) => !prevState);
-								if (!item.is_unique) setSelectedAmount(savedSelectedAmount);
+								setIsActivated(true);
+
+								takeOutList.dispatch({
+									type: "ADD_ITEM",
+									payload: { id: item.id, amount: savedSelectedAmount },
+								});
 							}}
 							style={styles.active_add_button}
 						>
@@ -34,14 +48,12 @@ const TakeOutSelectorCheckbox = ({ item }: TakeOutSelectorCheckboxProps) => {
 							{/* ON BUTTON PRESS THE BUTTON TRANSFORMS BASED ON THE UNIQUENESS OF THE ITEM */}
 							{item.is_unique ? (
 								<TakeOutUniqueCheckbox
-									setCBIsActive={setIsActivated}
+									setIsActive={setIsActivated}
 									item={item}
 								/>
 							) : (
 								<TakeOutCommonCheckbox
 									setCBIsActive={setIsActivated}
-									selectedAmount={selectedAmount}
-									setSelectedAmount={setSelectedAmount}
 									setSavedSelectedAmount={setSavedSelectedAmount}
 									item={item}
 								/>
@@ -58,7 +70,7 @@ const TakeOutSelectorCheckbox = ({ item }: TakeOutSelectorCheckboxProps) => {
 	);
 };
 
-export default TakeOutSelectorCheckbox;
+export default TakeOutCommonSelectorButton;
 
 const styles = StyleSheet.create({
 	active_add_button: {

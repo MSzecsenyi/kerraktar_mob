@@ -34,7 +34,6 @@ const initialState = {
 const reducer = (loggedInUser: AppState, action: Action) => {
 	switch (action.type) {
 		case "SET_LOGGED_IN_USER":
-			console.log(action.payload);
 			return {
 				...loggedInUser,
 				userData: action.payload,

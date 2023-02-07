@@ -1,25 +1,31 @@
 import { Picker } from "@react-native-picker/picker";
 import { StyleSheet } from "react-native";
 import { Item } from "../../interfaces";
+import { useContext } from "react";
+import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 
 interface AmountSelectorProps {
-	selectedAmount: number;
-	setSelectedAmount: React.Dispatch<React.SetStateAction<number>>;
 	setSavedSelectedAmount: React.Dispatch<React.SetStateAction<number>>;
 	item: Item;
 }
 
 export default function AmountSelector({
 	item,
-	selectedAmount,
-	setSelectedAmount,
 	setSavedSelectedAmount,
 }: AmountSelectorProps) {
+	const takeOutList = useContext(TakeOutListContext);
+	let itemInList = takeOutList.state.items.find(
+		(listItem) => listItem.id === item.id
+	);
+
 	return (
 		<Picker
-			selectedValue={selectedAmount}
+			selectedValue={itemInList?.amount}
 			onValueChange={(itemValue) => {
-				setSelectedAmount(itemValue);
+				takeOutList.dispatch({
+					type: "MODIFY_ITEM",
+					payload: { id: item.id, amount: itemValue },
+				});
 				setSavedSelectedAmount(itemValue);
 			}}
 			style={styles.picker}

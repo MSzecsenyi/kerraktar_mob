@@ -35,15 +35,15 @@ export default function MainStack() {
 						setIsLoadinig(false);
 					})
 					.catch(function (error) {
-						console.log(error.response.status);
+						console.error(error.response.status);
 						if (error.response.status == 401) {
 							AsyncStorage.removeItem("persToken");
 							setIsLoadinig(false);
-							console.log(
+							console.error(
 								"Unauthorized, you might have been logged out elsewhere"
 							);
 						} else {
-							console.log(error);
+							console.error(error);
 						}
 					});
 			} else {

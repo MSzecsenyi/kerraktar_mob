@@ -42,3 +42,22 @@ export interface Item {
     is_unique: boolean,
     in_store_amount: number,
 }
+
+export interface ShortItem {
+    id: number,
+    amount: number,
+}
+export interface shortUniqueItem {
+    unique_items: string[],
+    item_id: number,
+}
+export interface UniquePiece {
+    unique_item: string,
+    item_id: number
+}
+export interface TakeOutList {
+    take_out_name: string,
+    store_id: number,
+    items: ShortItem[],
+    uniqueItems: shortUniqueItem[],
+}

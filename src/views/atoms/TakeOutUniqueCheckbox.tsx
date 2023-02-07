@@ -1,42 +1,52 @@
 import { StyleSheet, Text, View } from "react-native";
 import { Item } from "../../interfaces";
 import { TouchableHighlight } from "react-native-gesture-handler";
+import { useContext } from "react";
+import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 
 interface TakeOutUniqueCheckboxProps {
-	setCBIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+	setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 	item: Item;
 }
 
 export default function TakeOutUniqueCheckbox({
-	setCBIsActive,
+	setIsActive,
 	item,
 }: TakeOutUniqueCheckboxProps) {
+	const takeOutList = useContext(TakeOutListContext);
+	let itemInList = takeOutList.state.uniqueItems.find(
+		(listItem) => listItem.item_id === item.id
+	);
+
 	return (
-		<TouchableHighlight
-			onPress={() => {
-				setCBIsActive(true);
-			}}
-			style={styles.active_add_button}
-		>
-			<Text style={styles.light_text}>unique</Text>
-		</TouchableHighlight>
+		<View style={styles.horizontal_flex}>
+			<Text>{itemInList?.unique_items.length}</Text>
+			<TouchableHighlight
+				onPress={() => {
+					setIsActive(false);
+					takeOutList.dispatch({
+						type: "DELETE_UNIQUE_ITEM",
+						payload: item.id,
+					});
+				}}
+				style={styles.discard_button}
+			>
+				<Text style={styles.light_text}>X</Text>
+			</TouchableHighlight>
+		</View>
 	);
 }
 
 const styles = StyleSheet.create({
-	active_add_button: {
-		width: 60,
-		height: 40,
-		backgroundColor: "red",
-		borderRadius: 10,
+	horizontal_flex: {
+		flexDirection: "row",
 		alignItems: "center",
-		justifyContent: "center",
 	},
-	inactive_add_button: {
-		width: 60,
-		height: 40,
-		backgroundColor: "gainsboro",
-		borderRadius: 10,
+	discard_button: {
+		width: 30,
+		height: 30,
+		backgroundColor: "red",
+		borderRadius: 50,
 		alignItems: "center",
 		justifyContent: "center",
 	},

@@ -1,8 +1,7 @@
 import { View, Text, StyleSheet } from "react-native";
 import { Item } from "../../interfaces";
-import { TouchableHighlight } from "react-native-gesture-handler";
-import TakeOutSelectorCheckbox from "../molecules/TakeOutSelectorCheckbox";
-import AmountSelector from "../atoms/AmountSelector";
+import TakeOutCommonSelectorButton from "../molecules/TakeOutCommonSelectorButton";
+import TakeOutUniqueSelectorButton from "../molecules/TakeOutUniqueSelectorButton";
 
 interface ItemProps {
 	item: Item;
@@ -23,7 +22,12 @@ const ItemTile = ({ item }: ItemProps) => {
 			</View>
 			<View style={styles.button_part}>
 				<View>
-					<TakeOutSelectorCheckbox item={item} />
+					{!item.is_unique ? (
+						<TakeOutCommonSelectorButton item={item} />
+					) : (
+						// <Text>unique</Text>
+						<TakeOutUniqueSelectorButton item={item} />
+					)}
 				</View>
 			</View>
 		</View>

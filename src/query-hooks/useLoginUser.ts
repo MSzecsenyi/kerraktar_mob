@@ -32,7 +32,7 @@ const {dispatch} = useContext(UserDataContext);
             ).then(() => {
                 dispatch({type: 'SET_LOGGED_IN_USER', payload: data});
             }).catch((e) => {
-                console.log(e + 'pers. login failed')
+                console.error(e + 'pers. login failed')
               })} 
         }
     );  

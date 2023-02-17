@@ -5,17 +5,17 @@ import AmountSelector from "./AmountSelector";
 import React, { useContext, useState } from "react";
 import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 
-interface TakeOutCommonCheckboxProps {
+interface TakeOutCommonSelectorProps {
 	setCBIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 	setSavedSelectedAmount: React.Dispatch<React.SetStateAction<number>>;
 	item: Item;
 }
 
-const TakeOutCommonCheckbox = ({
+const TakeOutCommonSelector = ({
 	setCBIsActive,
 	item,
 	setSavedSelectedAmount,
-}: TakeOutCommonCheckboxProps) => {
+}: TakeOutCommonSelectorProps) => {
 	const takeOutList = useContext(TakeOutListContext);
 	let itemInList = takeOutList.state.items.find(
 		(listItem) => listItem.id === item.id
@@ -49,7 +49,7 @@ const TakeOutCommonCheckbox = ({
 	);
 };
 
-export default TakeOutCommonCheckbox;
+export default TakeOutCommonSelector;
 
 const styles = StyleSheet.create({
 	horizontal_flex: {

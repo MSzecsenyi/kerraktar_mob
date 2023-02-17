@@ -1,41 +1,45 @@
-import {
-	View,
-	Button,
-	Text,
-	ScrollView,
-	StyleSheet,
-	TouchableHighlight,
-} from "react-native";
-import { useLogoutUser } from "../../query-hooks/UseLoginUser";
+import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
 import { useGetItems } from "../../query-hooks/UseItems";
 import ItemTile from "../organisms/ItemTile";
 import { TakeOutListProvider } from "../../contexts/TakeOutListContext";
 import { Ionicons } from "@expo/vector-icons";
+import { FlatList } from "react-native-gesture-handler";
+import SearchBar from "../atoms/SearchBar";
+import { useEffect, useState } from "react";
 
 const TakeOutListMaker = () => {
-	const logoutUser = useLogoutUser();
 	const getItems = useGetItems();
+	const [searchTerm, setSearchTerm] = useState("");
+	const [filteredData, setFilteredData] = useState(getItems.data);
+
+	useEffect(() => {
+		const filtered = getItems.data?.filter((item) => {
+			return item.item_name.toLowerCase().includes(searchTerm.toLowerCase());
+		});
+		setFilteredData(filtered);
+	}, [searchTerm, getItems.data]);
 
 	return (
-		<View>
+		<View style={{ flex: 1 }}>
 			<TakeOutListProvider>
+				<SearchBar
+					searchTerm={searchTerm}
+					setSearchTerm={setSearchTerm}
+				/>
 				{getItems.isLoading && <Text>Loading...</Text>}
 				{getItems.isSuccess && (
-					<ScrollView>
-						<View>
-							{getItems.data.map((item) => (
-								<ItemTile
-									item={item}
-									key={item.id}
-								/>
-							))}
-						</View>
-					</ScrollView>
+					<FlatList
+						data={filteredData}
+						style={{ flex: 1 }}
+						keyExtractor={(item) => item.id.toString()}
+						getItemLayout={(data, index) => ({
+							length: 80,
+							offset: 80 * (index + 1),
+							index,
+						})}
+						renderItem={ItemTile}
+					/>
 				)}
-				<Button
-					title="Kilépés"
-					onPress={() => logoutUser.mutate()}
-				/>
 				<View style={styles.bottomContainer}>
 					<TouchableHighlight style={styles.leftButton}>
 						<Ionicons
@@ -60,9 +64,6 @@ const TakeOutListMaker = () => {
 export default TakeOutListMaker;
 
 const styles = StyleSheet.create({
-	bottom_menu: {
-		flexDirection: "row",
-	},
 	bottomContainer: {
 		position: "absolute",
 		bottom: 20,

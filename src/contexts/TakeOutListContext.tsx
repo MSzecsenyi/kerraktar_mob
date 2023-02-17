@@ -10,7 +10,8 @@ type Action =
 	| { type: "DELETE_UNIQUE_ITEM"; payload: number }
 	| { type: "ADD_UNIQUE_PIECE"; payload: UniquePiece }
 	| { type: "DELETE_UNIQUE_PIECE"; payload: UniquePiece }
-	| { type: "SET_NAME"; payload: string };
+	| { type: "SET_NAME"; payload: string }
+	| { type: "SET_USER"; payload: number };
 
 interface InputProviderProps {
 	children: React.ReactNode;
@@ -18,12 +19,14 @@ interface InputProviderProps {
 
 const initialState: TakeOutList = {
 	take_out_name: "",
+	user: -1,
 	store_id: -1,
 	items: [],
 	uniqueItems: [],
 };
 
 const reducer = (state: AppState, action: Action) => {
+	console.log(state);
 	switch (action.type) {
 		case "ADD_ITEM":
 			return {
@@ -93,6 +96,11 @@ const reducer = (state: AppState, action: Action) => {
 			return {
 				...state,
 				takeOutListName: action.payload,
+			};
+		case "SET_USER":
+			return {
+				...state,
+				user: action.payload,
 			};
 		default:
 			return state;

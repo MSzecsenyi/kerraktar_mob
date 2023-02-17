@@ -1,10 +1,4 @@
-import {
-	StyleSheet,
-	Text,
-	SafeAreaView,
-	Button,
-	TextInput,
-} from "react-native";
+import { StyleSheet, Text, Button, TextInput, View } from "react-native";
 import { useState, useContext } from "react";
 import { LoginInfo } from "../../interfaces";
 import { useLoginUser, useLogoutUser } from "../../query-hooks/UseLoginUser";
@@ -28,7 +22,7 @@ export default function LoginPage() {
 	};
 
 	return (
-		<SafeAreaView style={styles.container}>
+		<View style={styles.container}>
 			<Text>Felhasználónév</Text>
 			<TextInput
 				onChangeText={(text) => handleOnChange(text, "email")}
@@ -61,7 +55,7 @@ export default function LoginPage() {
 			) : (
 				<Text>Kilépve</Text>
 			)}
-		</SafeAreaView>
+		</View>
 	);
 }
 

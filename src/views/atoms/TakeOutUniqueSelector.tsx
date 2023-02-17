@@ -4,15 +4,15 @@ import { TouchableHighlight } from "react-native-gesture-handler";
 import { useContext } from "react";
 import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 
-interface TakeOutUniqueCheckboxProps {
+interface TakeOutUniqueSelectorProps {
 	setIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 	item: Item;
 }
 
-export default function TakeOutUniqueCheckbox({
+export default function TakeOutUniqueSelector({
 	setIsActive,
 	item,
-}: TakeOutUniqueCheckboxProps) {
+}: TakeOutUniqueSelectorProps) {
 	const takeOutList = useContext(TakeOutListContext);
 	let itemInList = takeOutList.state.uniqueItems.find(
 		(listItem) => listItem.item_id === item.id

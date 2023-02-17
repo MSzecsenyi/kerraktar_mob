@@ -2,8 +2,8 @@ import { StyleSheet, Text, View } from "react-native";
 import { Item } from "../../interfaces";
 import { TouchableHighlight } from "react-native-gesture-handler";
 import { useContext, useState } from "react";
-import TakeOutCommonCheckbox from "../atoms/TakeOutCommonCheckBox";
-import TakeOutUniqueCheckbox from "../atoms/TakeOutUniqueCheckbox";
+import TakeOutCommonCheckbox from "../atoms/TakeOutCommonSelector";
+import TakeOutUniqueCheckbox from "../atoms/TakeOutUniqueSelector";
 import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 
 interface TakeOutCommonSelectorButtonProps {

@@ -57,6 +57,7 @@ export interface UniquePiece {
 }
 export interface TakeOutList {
     take_out_name: string,
+    user: number,
     store_id: number,
     items: ShortItem[],
     uniqueItems: shortUniqueItem[],

@@ -5,9 +5,10 @@ import TakeOutUniqueSelectorButton from "../molecules/TakeOutUniqueSelectorButto
 
 interface ItemProps {
 	item: Item;
+	setIsCameraActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ItemTile = ({ item }: ItemProps) => {
+const ItemTile = ({ item, setIsCameraActive }: ItemProps) => {
 	return (
 		<View style={styles.card_template}>
 			<View style={styles.info_part}>
@@ -18,6 +19,7 @@ const ItemTile = ({ item }: ItemProps) => {
 				<View style={styles.info_row}>
 					<Text> In store: {item.in_store_amount} </Text>
 					<Text> Unique: {item.is_unique ? "True" : "False"} </Text>
+					<Text> U.pcs: {item.unique_items.length} </Text>
 				</View>
 			</View>
 			<View style={styles.button_part}>
@@ -26,7 +28,10 @@ const ItemTile = ({ item }: ItemProps) => {
 						<TakeOutCommonSelectorButton item={item} />
 					) : (
 						// <Text>unique</Text>
-						<TakeOutUniqueSelectorButton item={item} />
+						<TakeOutUniqueSelectorButton
+							item={item}
+							setCameraIsActive={setIsCameraActive}
+						/>
 					)}
 				</View>
 			</View>

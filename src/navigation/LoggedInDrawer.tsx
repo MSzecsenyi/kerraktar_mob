@@ -1,27 +1,20 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import TakeOutListMaker from "../views/pages/TakeOutListMaker";
-import { useLogoutUser } from "../query-hooks/UseLoginUser";
-import { Button } from "react-native";
+import { DrawerStackParamList } from "./ParamStacks";
+import DrawerContent from "./DrawerContent";
 
 export default function LoggedInDrawer() {
-	const Drawer = createDrawerNavigator();
-
-	const logoutUser = useLogoutUser();
+	const Drawer = createDrawerNavigator<DrawerStackParamList>();
 
 	return (
 		<Drawer.Navigator
 			screenOptions={{
 				headerShown: false,
 			}}
-			drawerContent={() => (
-				<Button
-					title="Kilépés"
-					onPress={() => logoutUser.mutate()}
-				/>
-			)}
+			drawerContent={() => <DrawerContent />}
 		>
 			<Drawer.Screen
-				name="elso ablak"
+				name="TakeOutListMaker"
 				component={TakeOutListMaker}
 			/>
 		</Drawer.Navigator>

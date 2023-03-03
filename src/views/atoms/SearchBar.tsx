@@ -1,14 +1,21 @@
 import React, { useState } from "react";
-import { View, TextInput, StyleSheet } from "react-native";
+import {
+	View,
+	TextInput,
+	StyleSheet,
+	StyleProp,
+	ViewStyle,
+} from "react-native";
 
 interface Props {
 	searchTerm: string;
 	setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
+	style: StyleProp<ViewStyle>;
 }
 
-const SearchBar: React.FC<Props> = ({ searchTerm, setSearchTerm }) => {
+const SearchBar: React.FC<Props> = ({ searchTerm, setSearchTerm, style }) => {
 	return (
-		<View style={styles.container}>
+		<View style={style}>
 			<TextInput
 				style={styles.input}
 				placeholder="Keresés..."
@@ -20,10 +27,6 @@ const SearchBar: React.FC<Props> = ({ searchTerm, setSearchTerm }) => {
 };
 
 const styles = StyleSheet.create({
-	container: {
-		padding: 10,
-		backgroundColor: "#f2f2f2",
-	},
 	input: {
 		height: 40,
 		backgroundColor: "white",

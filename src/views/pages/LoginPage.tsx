@@ -1,18 +1,17 @@
-import { StyleSheet, Text, Button, TextInput, View } from "react-native";
-import { useState, useContext } from "react";
+import { StyleSheet, Text, TextInput, View } from "react-native";
+import { useState } from "react";
 import { LoginInfo } from "../../interfaces";
-import { useLoginUser, useLogoutUser } from "../../query-hooks/UseLoginUser";
-import { UserDataContext } from "../../contexts/UserDataContext";
+import { useLoginUser } from "../../query-hooks/UseLoginUser";
+import LoadingSpinner from "../atoms/LoadingSpinner";
+import { TouchableOpacity } from "react-native";
 
 export default function LoginPage() {
-	const { loggedInUser } = useContext(UserDataContext);
 	const [loginInfo, setLoginInfo] = useState<LoginInfo>({
 		email: "admin@nn.nn",
 		password: "password",
 	});
 
 	const loginUser = useLoginUser(loginInfo);
-	const logoutUser = useLogoutUser();
 
 	const handleOnChange = (text: string, name: string) => {
 		setLoginInfo((prev) => ({
@@ -38,23 +37,19 @@ export default function LoginPage() {
 			>
 				{loginInfo.password}
 			</TextInput>
-
-			<Button
-				title="Belépés"
-				onPress={() => loginUser.mutate()}
-			/>
-			<Button
-				title="Kilépés"
-				onPress={() => logoutUser.mutate()}
-			/>
-
-			{loginUser.isLoading && <Text>Loading...</Text>}
+			<View style={styles.loginContainer}>
+				{loginUser.isLoading || loginUser.isSuccess ? (
+					<LoadingSpinner />
+				) : (
+					<TouchableOpacity
+						style={styles.loginButton}
+						onPress={() => loginUser.mutate()}
+					>
+						<Text style={styles.loginButtonText}>Bejelentkezés</Text>
+					</TouchableOpacity>
+				)}
+			</View>
 			{loginUser.isError && <Text>Helytelen bejelentkezési adatok</Text>}
-			{loggedInUser.userData.user.id != -1 ? (
-				<Text>Belépve: {loggedInUser.userData.user.name}</Text>
-			) : (
-				<Text>Kilépve</Text>
-			)}
 		</View>
 	);
 }
@@ -72,5 +67,21 @@ const styles = StyleSheet.create({
 		width: 200,
 		borderWidth: 1,
 		padding: 10,
+		borderRadius: 15,
+	},
+	loginContainer: {
+		height: 50,
+	},
+	loginButton: {
+		width: 120,
+		height: 40,
+		backgroundColor: "green",
+		borderRadius: 10,
+		justifyContent: "center",
+	},
+	loginButtonText: {
+		fontSize: 16,
+		color: "#fff",
+		textAlign: "center",
 	},
 });

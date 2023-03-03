@@ -7,10 +7,12 @@ import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 
 interface TakeOutUniqueSelectorButtonProps {
 	item: Item;
+	setCameraIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const TakeOutUniqueSelectorButton = ({
 	item,
+	setCameraIsActive,
 }: TakeOutUniqueSelectorButtonProps) => {
 	const takeOutList = useContext(TakeOutListContext);
 	// Activated by default if the item has already been added to the list
@@ -42,6 +44,7 @@ const TakeOutUniqueSelectorButton = ({
 						<View>
 							<TakeOutUniqueCheckbox
 								setIsActive={setIsActivated}
+								setCameraIsActive={setCameraIsActive}
 								item={item}
 							/>
 						</View>

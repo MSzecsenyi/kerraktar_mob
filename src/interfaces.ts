@@ -41,6 +41,7 @@ export interface Item {
     comment: string,
     is_unique: boolean,
     in_store_amount: number,
+    unique_items: UniquePiece[]
 }
 
 export interface ShortItem {

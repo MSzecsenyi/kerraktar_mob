@@ -7,13 +7,14 @@ import {
 	BackHandler,
 	TouchableOpacity,
 } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
 import { TakeOutListContext } from "../../contexts/TakeOutListContext";
-import { Item } from "../../interfaces";
+import Toast from "react-native-toast-message";
+import { Item, UniqueItem } from "../../interfaces";
 import CameraModal from "../molecules/CameraModal";
-import { TouchableHighlight } from "react-native-gesture-handler";
 
 interface BarcodeScannerResultType {
 	type: string;
@@ -31,7 +32,12 @@ export default function QRScanner({
 }: QRScannerProps) {
 	const [hasPermission, setHasPermission] = useState(false);
 	const [scanned, setScanned] = useState(false);
-	const [scannedData, setScannedData] = useState("");
+	const [visible, setVisible] = useState(false);
+	const [guidInTakeOutList, setGuidInTakeOutList] = useState(false);
+	const [scannedItem, setScannedItem] = useState<Item | null>(null);
+	const [scannedUniqueItem, setScannedUniqueItem] = useState<UniqueItem | null>(
+		null
+	);
 	const navigation = useNavigation();
 
 	const takeOutList = useContext(TakeOutListContext);
@@ -55,10 +61,76 @@ export default function QRScanner({
 	}, [navigation]);
 
 	const handleBarCodeScanned = ({ data }: BarcodeScannerResultType) => {
-		setScanned(true);
-		setScannedData(data);
+		const isGuidPresent = items.some((item) => {
+			if (
+				item.unique_items.some((uniqueItem) => {
+					if (uniqueItem.unique_id === data) {
+						setScannedItem(item);
+						setScannedUniqueItem(uniqueItem);
+						return true;
+					}
+				})
+			) {
+				return true;
+			} else {
+				return false;
+			}
+		});
 
-		// alert(`Bar code with type ${type} and data ${data} has been scanned!`);
+		if (isGuidPresent) {
+			setScanned(true);
+			setVisible(true);
+
+			setGuidInTakeOutList(
+				takeOutList.state.uniqueItems.some((item) =>
+					item.unique_items.includes(data)
+				)
+			);
+		} else {
+			// Unknown QR code scanned
+			setScanned(true);
+			Toast.show({
+				type: "info",
+				text1: "Ismeretlen QR kód",
+				text2: "Ez a kód nem tartozik egy itt tárolt eszközhöz sem",
+				topOffset: 60,
+			});
+			setTimeout(() => {
+				setScanned(false);
+			}, 3000);
+		}
+	};
+
+	const acceptModal = () => {
+		if (!guidInTakeOutList && scannedItem && scannedUniqueItem) {
+			takeOutList.dispatch({
+				type: "ADD_UNIQUE_PIECE",
+				payload: {
+					item_id: scannedItem?.id,
+					unique_item: scannedUniqueItem?.unique_id,
+				},
+			});
+		} else if (scannedItem && scannedUniqueItem) {
+			takeOutList.dispatch({
+				type: "DELETE_UNIQUE_PIECE",
+				payload: {
+					item_id: scannedItem?.id,
+					unique_item: scannedUniqueItem?.unique_id,
+				},
+			});
+		} else {
+			throw new Error(
+				"There was no acceptable qr code read before calling the function, scannedItem and scannedUniqueItem must not be null!"
+			);
+		}
+		closeModal();
+	};
+
+	const closeModal = () => {
+		setTimeout(() => {
+			setScanned(false);
+		}, 1400);
+		setVisible(false);
 	};
 
 	if (hasPermission === null) {
@@ -71,22 +143,37 @@ export default function QRScanner({
 	return (
 		<View style={styles.container}>
 			<StatusBar hidden={true} />
-			<CameraModal scanned={scanned}>
+			<CameraModal visible={visible}>
 				<View>
-					<Text>QR code with data {scannedData} has been scanned!</Text>
+					<Text style={styles.modalInfoText}>
+						{scannedUniqueItem?.alt_name && (
+							<>
+								<Text style={styles.modalInfoTextVariable}>
+									{scannedUniqueItem?.alt_name}
+								</Text>
+								<Text>{`\nleltári számú\n`}</Text>
+							</>
+						)}
+						<Text style={styles.modalInfoTextVariable}>
+							{scannedItem?.item_name}
+						</Text>
+						{`\n be lett szkennelve`}
+					</Text>
 					<View style={styles.modalButtonContainer}>
 						<TouchableOpacity
 							style={styles.modalButtonReject}
-							onPress={() => setScanned(false)}
+							onPress={() => closeModal()}
 						>
 							<Text style={styles.modalButtonRejectText}>Mégse</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
 							style={styles.modalButtonAccept}
-							onPress={() => setScanned(false)}
+							onPress={() => acceptModal()}
 						>
 							<Text style={styles.modalButtonAcceptText}>
-								Hozzáadás a listához
+								{guidInTakeOutList
+									? "Törlés a listából"
+									: "Hozzáadás a listához"}
 							</Text>
 						</TouchableOpacity>
 					</View>
@@ -95,7 +182,19 @@ export default function QRScanner({
 			<BarCodeScanner
 				onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
 				style={styles.cameraViewStyle}
-			/>
+			>
+				<Toast />
+				<TouchableOpacity
+					onPress={() => setCameraIsActive(false)}
+					style={styles.backButtonContainer}
+				>
+					<Ionicons
+						name="chevron-back"
+						size={24}
+						color="white"
+					/>
+				</TouchableOpacity>
+			</BarCodeScanner>
 		</View>
 	);
 }
@@ -110,6 +209,15 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "column",
 		justifyContent: "center",
+	},
+	modalInfoText: {
+		fontSize: 16,
+		textAlign: "center",
+	},
+	modalInfoTextVariable: {
+		fontWeight: "bold",
+		fontSize: 20,
+		lineHeight: 40,
 	},
 	modalButtonContainer: {
 		marginTop: 20,
@@ -137,5 +245,13 @@ const styles = StyleSheet.create({
 	modalButtonAcceptText: {
 		textAlign: "center",
 		color: "white",
+	},
+	backButtonContainer: {
+		position: "absolute",
+		top: 16,
+		left: 16,
+		backgroundColor: "#000",
+		borderRadius: 24,
+		padding: 8,
 	},
 });

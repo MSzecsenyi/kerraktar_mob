@@ -4,13 +4,15 @@ import MainStack from "./src/navigation/MainStack";
 import { UserDataProvider } from "./src/contexts/UserDataContext";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet } from "react-native";
+import { Platform } from "react-native";
 
 const queryClient = new QueryClient();
 
 export default function App() {
 	return (
 		<>
-			<SafeAreaView style={{ flex: 1 }}>
+			<SafeAreaView style={styles.safeAreaView}>
 				<QueryClientProvider client={queryClient}>
 					<NavigationContainer>
 						<UserDataProvider>
@@ -22,3 +24,10 @@ export default function App() {
 		</>
 	);
 }
+
+const styles = StyleSheet.create({
+	safeAreaView: {
+		flex: 1,
+		paddingTop: Platform.OS === "ios" ? 25 : 0, // Add padding for iOS
+	},
+});

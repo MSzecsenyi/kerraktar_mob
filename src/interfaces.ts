@@ -41,7 +41,7 @@ export interface Item {
     comment: string,
     is_unique: boolean,
     in_store_amount: number,
-    unique_items: UniquePiece[]
+    unique_items: UniqueItem[]
 }
 
 export interface ShortItem {
@@ -55,6 +55,11 @@ export interface shortUniqueItem {
 export interface UniquePiece {
     unique_item: string,
     item_id: number
+}
+
+export interface UniqueItem {
+    unique_id: string,
+    alt_name: string
 }
 export interface TakeOutList {
     take_out_name: string,

@@ -30,70 +30,72 @@ const TakeOutListMaker = ({ navigation }: TakeOutListMakerProps) => {
 	}, [searchTerm, getItems.data]);
 
 	return (
-		<View style={{ flex: 1 }}>
-			{cameraIsActive && getItems.isSuccess ? (
-				<QRScanner
-					setCameraIsActive={setCameraIsActive}
-					items={getItems.data}
-				/>
-			) : (
-				<TakeOutListProvider>
-					<View style={styles.headerContainer}>
-						<TouchableOpacity
-							style={styles.menuIconStyle}
-							onPress={navigation.openDrawer}
-						>
-							<Ionicons
-								name="menu"
-								size={40}
-								color="#333"
-							/>
-						</TouchableOpacity>
-						<SearchBar
-							style={styles.searchBarContainer}
-							searchTerm={searchTerm}
-							setSearchTerm={setSearchTerm}
-						/>
-					</View>
-					{getItems.isLoading && <LoadingSpinner />}
-					{getItems.isSuccess && (
-						<FlatList
-							data={filteredData}
-							style={{ flex: 1 }}
-							keyExtractor={(item) => item.id.toString()}
-							getItemLayout={(data, index) => ({
-								length: 80,
-								offset: 80 * (index + 1),
-								index,
-							})}
-							renderItem={({ item }) => (
-								<ItemTile
-									item={item}
-									setIsCameraActive={setCameraIsActive}
+		<TakeOutListProvider>
+			<View style={{ flex: 1 }}>
+				{cameraIsActive && getItems.isSuccess ? (
+					<QRScanner
+						setCameraIsActive={setCameraIsActive}
+						items={getItems.data}
+					/>
+				) : (
+					<>
+						<View style={styles.headerContainer}>
+							<TouchableOpacity
+								style={styles.menuIconStyle}
+								onPress={navigation.openDrawer}
+							>
+								<Ionicons
+									name="menu"
+									size={40}
+									color="#333"
 								/>
-							)}
-							extraData={setCameraIsActive}
-						/>
-					)}
-					<View style={styles.bottomContainer}>
-						<TouchableHighlight style={styles.leftButton}>
-							<Ionicons
-								name="camera"
-								size={24}
-								color="#fff"
+							</TouchableOpacity>
+							<SearchBar
+								style={styles.searchBarContainer}
+								searchTerm={searchTerm}
+								setSearchTerm={setSearchTerm}
 							/>
-						</TouchableHighlight>
-						<TouchableHighlight style={styles.rightButton}>
-							<Ionicons
-								name="checkmark"
-								size={35}
-								color="#fff"
+						</View>
+						{getItems.isLoading && <LoadingSpinner />}
+						{getItems.isSuccess && (
+							<FlatList
+								data={filteredData}
+								style={{ flex: 1 }}
+								keyExtractor={(item) => item.id.toString()}
+								getItemLayout={(data, index) => ({
+									length: 80,
+									offset: 80 * (index + 1),
+									index,
+								})}
+								renderItem={({ item }) => (
+									<ItemTile
+										item={item}
+										setIsCameraActive={setCameraIsActive}
+									/>
+								)}
+								extraData={setCameraIsActive}
 							/>
-						</TouchableHighlight>
-					</View>
-				</TakeOutListProvider>
-			)}
-		</View>
+						)}
+						<View style={styles.bottomContainer}>
+							<TouchableHighlight style={styles.leftButton}>
+								<Ionicons
+									name="camera"
+									size={24}
+									color="#fff"
+								/>
+							</TouchableHighlight>
+							<TouchableHighlight style={styles.rightButton}>
+								<Ionicons
+									name="checkmark"
+									size={35}
+									color="#fff"
+								/>
+							</TouchableHighlight>
+						</View>
+					</>
+				)}
+			</View>
+		</TakeOutListProvider>
 	);
 };
 

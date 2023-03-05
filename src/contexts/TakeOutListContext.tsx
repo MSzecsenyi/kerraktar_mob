@@ -26,7 +26,7 @@ const initialState: TakeOutList = {
 };
 
 const reducer = (state: AppState, action: Action) => {
-	console.log(state);
+	console.log(state.uniqueItems);
 	switch (action.type) {
 		case "ADD_ITEM":
 			return {
@@ -67,26 +67,33 @@ const reducer = (state: AppState, action: Action) => {
 				),
 			};
 		case "ADD_UNIQUE_PIECE":
+			console.log("berakva");
 			return {
 				...state,
 				uniqueItems: state.uniqueItems.map((uniqueItem) => {
 					if (uniqueItem.item_id === action.payload.item_id) {
 						return {
 							...uniqueItem,
-							uniqueItems: [...state.uniqueItems, action.payload],
+							unique_items: [
+								...uniqueItem.unique_items,
+								action.payload.unique_item,
+							],
 						};
 					}
 					return uniqueItem;
 				}),
 			};
 		case "DELETE_UNIQUE_PIECE":
+			console.log("kiveve");
 			return {
 				...state,
 				uniqueItems: state.uniqueItems.map((uniqueItem) => {
 					if (uniqueItem.item_id === action.payload.item_id) {
 						return {
 							...uniqueItem,
-							uniqueItems: [...state.uniqueItems, action.payload],
+							unique_items: uniqueItem.unique_items.filter(
+								(guid) => guid !== action.payload.unique_item
+							),
 						};
 					}
 					return uniqueItem;

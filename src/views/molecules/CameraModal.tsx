@@ -1,20 +1,37 @@
-import { useEffect, useState } from "react";
-import { Dimensions, StyleSheet, Modal, View } from "react-native";
+import { useEffect, useRef, useState } from "react";
+import { Dimensions, StyleSheet, Modal, View, Animated } from "react-native";
 
 interface CameraModalProps {
-	scanned: boolean;
+	visible: boolean;
 	children: JSX.Element;
 }
 
-const CameraModal = ({ scanned, children }: CameraModalProps) => {
-	const [showModal, setShowModal] = useState(scanned);
+const CameraModal = ({ visible, children }: CameraModalProps) => {
+	const [showModal, setShowModal] = useState(visible);
+	const scaleValue = useRef(new Animated.Value(0)).current;
 
 	useEffect(() => {
 		toggleModal();
-	}, [scanned]);
+	}, [visible]);
 
 	const toggleModal = () => {
-		scanned ? setShowModal(true) : setShowModal(false);
+		if (visible) {
+			setShowModal(true);
+			Animated.spring(scaleValue, {
+				toValue: 1,
+				bounciness: 10,
+				useNativeDriver: true,
+			}).start();
+		} else {
+			setTimeout(() => {
+				setShowModal(false);
+			}, 150);
+			Animated.timing(scaleValue, {
+				toValue: 0,
+				duration: 300,
+				useNativeDriver: true,
+			}).start();
+		}
 	};
 
 	return (
@@ -25,7 +42,14 @@ const CameraModal = ({ scanned, children }: CameraModalProps) => {
 			onRequestClose={() => setShowModal(false)}
 		>
 			<View style={styles.modalBackGround}>
-				<View style={styles.modalContainter}>{children}</View>
+				<Animated.View
+					style={[
+						styles.modalContainter,
+						{ transform: [{ scale: scaleValue }] },
+					]}
+				>
+					{children}
+				</Animated.View>
 			</View>
 		</Modal>
 	);

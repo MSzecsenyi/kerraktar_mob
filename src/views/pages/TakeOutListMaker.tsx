@@ -10,6 +10,8 @@ import { DrawerScreenProps } from "@react-navigation/drawer";
 import { DrawerStackParamList } from "../../navigation/ParamStacks";
 import QRScanner from "../organisms/QRScanner";
 import LoadingSpinner from "../atoms/LoadingSpinner";
+import ItemFilterBar from "../organisms/ItemFilterBar";
+import { Item } from "../../interfaces";
 
 type TakeOutListMakerProps = DrawerScreenProps<
 	DrawerStackParamList,
@@ -19,14 +21,14 @@ type TakeOutListMakerProps = DrawerScreenProps<
 const TakeOutListMaker = ({ navigation }: TakeOutListMakerProps) => {
 	const getItems = useGetItems();
 	const [searchTerm, setSearchTerm] = useState("");
-	const [filteredData, setFilteredData] = useState(getItems.data);
+	const [filteredData, setFilteredData] = useState<Item[]>([]);
 	const [cameraIsActive, setCameraIsActive] = useState(false);
 
 	useEffect(() => {
 		const filtered = getItems.data?.filter((item) => {
 			return item.item_name.toLowerCase().includes(searchTerm.toLowerCase());
 		});
-		setFilteredData(filtered);
+		if (filtered) setFilteredData(filtered);
 	}, [searchTerm, getItems.data]);
 
 	return (
@@ -58,26 +60,35 @@ const TakeOutListMaker = ({ navigation }: TakeOutListMakerProps) => {
 						</View>
 						{getItems.isLoading && <LoadingSpinner />}
 						{getItems.isSuccess && (
-							<FlatList
-								data={filteredData}
-								style={{ flex: 1 }}
-								keyExtractor={(item) => item.id.toString()}
-								getItemLayout={(data, index) => ({
-									length: 80,
-									offset: 80 * (index + 1),
-									index,
-								})}
-								renderItem={({ item }) => (
-									<ItemTile
-										item={item}
-										setIsCameraActive={setCameraIsActive}
-									/>
-								)}
-								extraData={setCameraIsActive}
-							/>
+							<>
+								{/* <ItemFilterBar
+									filteredData={filteredData}
+									setFilteredData={setFilteredData}
+								/> */}
+								<FlatList
+									data={filteredData}
+									style={{ flex: 1 }}
+									keyExtractor={(item) => item.id.toString()}
+									getItemLayout={(data, index) => ({
+										length: 80,
+										offset: 80 * (index + 1),
+										index,
+									})}
+									renderItem={({ item }) => (
+										<ItemTile
+											item={item}
+											setIsCameraActive={setCameraIsActive}
+										/>
+									)}
+									extraData={setCameraIsActive}
+								/>
+							</>
 						)}
 						<View style={styles.bottomContainer}>
-							<TouchableHighlight style={styles.leftButton}>
+							<TouchableHighlight
+								style={styles.leftButton}
+								onPress={() => setCameraIsActive(true)}
+							>
 								<Ionicons
 									name="camera"
 									size={24}

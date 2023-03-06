@@ -33,7 +33,7 @@ export interface User {
 export interface Item {
     id: number,
     district: number,
-    category_id: number,
+    category: string,
     store_id: number,
     owner: string,
     item_name: string,
@@ -67,4 +67,8 @@ export interface TakeOutList {
     store_id: number,
     items: ShortItem[],
     uniqueItems: shortUniqueItem[],
+}
+export interface ItemFilterBarProps {
+	setFilteredData: React.Dispatch<React.SetStateAction<Item[]>>;
+	filteredData: Item[];
 }

@@ -1,15 +1,20 @@
 import { StyleSheet, View, Text } from "react-native";
 import { useContext } from "react";
 import { useLogoutUser } from "../query-hooks/UseLoginUser";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { UserDataContext } from "../contexts/UserDataContext";
-import { useNavigation } from "@react-navigation/native";
+import { DrawerNavigationProp } from "@react-navigation/drawer";
 import LoadingSpinner from "../views/atoms/LoadingSpinner";
+import { DrawerStackParamList } from "./ParamStacks";
+import { useNavigation } from "@react-navigation/native";
 
 const DrawerContent = () => {
 	const logoutUser = useLogoutUser();
 	const { loggedInUser } = useContext(UserDataContext);
-	const navigation = useNavigation();
+	const navigation =
+		useNavigation<
+			DrawerNavigationProp<DrawerStackParamList, "TakeOutDrawer">
+		>();
 
 	return (
 		<View style={styles.mainContainer}>
@@ -23,12 +28,26 @@ const DrawerContent = () => {
 					</Text>
 				</View>
 
-				<TouchableOpacity
-					style={styles.drawerButton}
-					onPress={() => navigation.navigate("TakeOutListMaker")}
-				>
-					<Text style={styles.buttonText}>Eszköz kivétel</Text>
-				</TouchableOpacity>
+				<ScrollView>
+					<Text style={styles.buttonGroupText}>Eszköz kivétel</Text>
+					<TouchableOpacity
+						style={styles.drawerButton}
+						onPress={() =>
+							navigation.navigate("TakeOutDrawer", { page: "CreateTakeOut" })
+						}
+					>
+						<Text style={styles.buttonText}> - Új lista</Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={styles.drawerButton}
+						onPress={() => {
+							navigation.navigate("TakeOutDrawer", { page: "SelectTakeOut" });
+							console.log("eddigiek");
+						}}
+					>
+						<Text style={styles.buttonText}> - Eddigi listák</Text>
+					</TouchableOpacity>
+				</ScrollView>
 			</View>
 			<View style={styles.container}>
 				{logoutUser.isLoading || logoutUser.isSuccess ? (
@@ -67,15 +86,23 @@ const styles = StyleSheet.create({
 		color: "#fff",
 	},
 	drawerButton: {
-		height: 70, // set the height of the button
+		height: 70,
 		backgroundColor: "#eee",
 		paddingHorizontal: 15,
+		borderBottomColor: "#fff",
+		borderBottomWidth: 4,
+	},
+	buttonGroupText: {
+		color: "#333",
+		fontSize: 18,
+		fontWeight: "bold",
+		lineHeight: 50,
+		marginLeft: 5,
 	},
 	buttonText: {
 		color: "#333",
 		fontSize: 18,
-		fontWeight: "bold",
-		lineHeight: 70,
+		lineHeight: 66,
 	},
 	container: {
 		alignItems: "center",

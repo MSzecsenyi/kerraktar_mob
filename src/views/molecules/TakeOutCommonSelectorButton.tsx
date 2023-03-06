@@ -45,19 +45,11 @@ const TakeOutCommonSelectorButton = ({
 						</TouchableHighlight>
 					) : (
 						<View>
-							{/* ON BUTTON PRESS THE BUTTON TRANSFORMS BASED ON THE UNIQUENESS OF THE ITEM */}
-							{item.is_unique ? (
-								<TakeOutUniqueCheckbox
-									setIsActive={setIsActivated}
-									item={item}
-								/>
-							) : (
-								<TakeOutCommonCheckbox
-									setCBIsActive={setIsActivated}
-									setSavedSelectedAmount={setSavedSelectedAmount}
-									item={item}
-								/>
-							)}
+							<TakeOutCommonCheckbox
+								setCBIsActive={setIsActivated}
+								setSavedSelectedAmount={setSavedSelectedAmount}
+								item={item}
+							/>
 						</View>
 					)}
 				</View>

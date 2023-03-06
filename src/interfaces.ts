@@ -1,3 +1,6 @@
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { DrawerStackParamList } from "./navigation/ParamStacks";
+
 export interface TextInputProps {
     name: string;
     handleOnChange: ((text: string, name: string) => void);
@@ -72,3 +75,10 @@ export interface ItemFilterBarProps {
 	setFilteredData: React.Dispatch<React.SetStateAction<Item[]>>;
 	filteredData: Item[];
 }
+
+export type TakeOutDrawerStates = "CreateTakeOut" | "SelectTakeOut" 
+
+export type TakeOutDrawerProps = DrawerScreenProps<
+	DrawerStackParamList,
+	"TakeOutDrawer"
+>;

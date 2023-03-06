@@ -1,3 +1,6 @@
+import { TakeOutDrawerStates } from './../interfaces';
 export type DrawerStackParamList = {
-    TakeOutListMaker: undefined;
+    TakeOutDrawer: {
+      page: TakeOutDrawerStates
+    };
   };

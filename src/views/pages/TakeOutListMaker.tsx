@@ -6,19 +6,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import SearchBar from "../atoms/SearchBar";
 import { useEffect, useState } from "react";
-import { DrawerScreenProps } from "@react-navigation/drawer";
-import { DrawerStackParamList } from "../../navigation/ParamStacks";
 import QRScanner from "../organisms/QRScanner";
 import LoadingSpinner from "../atoms/LoadingSpinner";
-import ItemFilterBar from "../organisms/ItemFilterBar";
-import { Item } from "../../interfaces";
+// import ItemFilterBar from "../organisms/ItemFilterBar";
+import { Item, TakeOutDrawerProps } from "../../interfaces";
 
-type TakeOutListMakerProps = DrawerScreenProps<
-	DrawerStackParamList,
-	"TakeOutListMaker"
->;
-
-const TakeOutListMaker = ({ navigation }: TakeOutListMakerProps) => {
+const TakeOutListMaker = ({ navigation }: TakeOutDrawerProps) => {
 	const getItems = useGetItems();
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filteredData, setFilteredData] = useState<Item[]>([]);

@@ -46,7 +46,21 @@ export interface Item {
     in_store_amount: number,
     unique_items: UniqueItem[]
 }
-
+export interface UniqueItem {
+    unique_id: string,
+    alt_name: string
+}
+export interface TakeOutListContextType {
+    takeOutList: TakeOutList,
+    selectedItems: SelectedItem[],
+}
+export interface TakeOutList {
+    take_out_name: string,
+    user: number,
+    store_id: number,
+    items: ShortItem[],
+    uniqueItems: shortUniqueItem[],
+}
 export interface ShortItem {
     id: number,
     amount: number,
@@ -59,17 +73,9 @@ export interface UniquePiece {
     unique_item: string,
     item_id: number
 }
-
-export interface UniqueItem {
-    unique_id: string,
-    alt_name: string
-}
-export interface TakeOutList {
-    take_out_name: string,
-    user: number,
-    store_id: number,
-    items: ShortItem[],
-    uniqueItems: shortUniqueItem[],
+export interface SelectedItem {
+    item_id: number,
+    amount: number,
 }
 export interface ItemFilterBarProps {
 	setFilteredData: React.Dispatch<React.SetStateAction<Item[]>>;

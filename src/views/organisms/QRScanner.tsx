@@ -14,7 +14,7 @@ import { useNavigation } from "@react-navigation/native";
 import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 import Toast from "react-native-toast-message";
 import { Item, UniqueItem } from "../../interfaces";
-import CameraModal from "../molecules/CameraModal";
+import DefaultModal from "../molecules/DefaultModal";
 
 interface BarcodeScannerResultType {
 	type: string;
@@ -143,7 +143,7 @@ export default function QRScanner({
 	return (
 		<View style={styles.container}>
 			<StatusBar hidden={true} />
-			<CameraModal visible={visible}>
+			<DefaultModal visible={visible}>
 				<View>
 					<Text style={styles.modalInfoText}>
 						{scannedUniqueItem?.alt_name && (
@@ -178,7 +178,7 @@ export default function QRScanner({
 						</TouchableOpacity>
 					</View>
 				</View>
-			</CameraModal>
+			</DefaultModal>
 			<BarCodeScanner
 				onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
 				style={styles.cameraViewStyle}

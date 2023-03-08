@@ -1,12 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import { Dimensions, StyleSheet, Modal, View, Animated } from "react-native";
 
-interface CameraModalProps {
+interface DefaultModalProps {
 	visible: boolean;
 	children: JSX.Element;
 }
 
-const CameraModal = ({ visible, children }: CameraModalProps) => {
+const DefaultModal = ({ visible, children }: DefaultModalProps) => {
 	const [showModal, setShowModal] = useState(visible);
 	const scaleValue = useRef(new Animated.Value(0)).current;
 
@@ -19,7 +19,7 @@ const CameraModal = ({ visible, children }: CameraModalProps) => {
 			setShowModal(true);
 			Animated.spring(scaleValue, {
 				toValue: 1,
-				bounciness: 10,
+				bounciness: 7,
 				useNativeDriver: true,
 			}).start();
 		} else {
@@ -55,7 +55,7 @@ const CameraModal = ({ visible, children }: CameraModalProps) => {
 	);
 };
 
-export default CameraModal;
+export default DefaultModal;
 
 const styles = StyleSheet.create({
 	modalBackGround: {

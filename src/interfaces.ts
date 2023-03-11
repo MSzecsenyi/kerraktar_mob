@@ -1,5 +1,6 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { DrawerStackParamList } from "./navigation/ParamStacks";
+import { Action } from "./contexts/ItemReducer";
 
 export interface TextInputProps {
     name: string;
@@ -44,38 +45,19 @@ export interface Item {
     comment: string,
     is_unique: boolean,
     in_store_amount: number,
-    unique_items: UniqueItem[]
+    unique_items: UniqueItem[],
+    is_selected: boolean,
+    selected_amount: number,
+    selected_unique_items: string[],
 }
 export interface UniqueItem {
     unique_id: string,
     alt_name: string
 }
-export interface TakeOutListContextType {
-    takeOutList: TakeOutList,
-    selectedItems: SelectedItem[],
-}
-export interface TakeOutList {
-    take_out_name: string,
-    user: number,
-    store_id: number,
-    items: ShortItem[],
-    uniqueItems: shortUniqueItem[],
-}
-export interface ShortItem {
-    id: number,
-    amount: number,
-}
-export interface shortUniqueItem {
-    unique_items: string[],
-    item_id: number,
-}
-export interface UniquePiece {
-    unique_item: string,
-    item_id: number
-}
-export interface SelectedItem {
-    item_id: number,
-    amount: number,
+export interface TakeOutButtonProps {
+	item: Item;
+	dispatchItems: React.Dispatch<Action>;
+	setCameraIsActive?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export interface ItemFilterBarProps {
 	setFilteredData: React.Dispatch<React.SetStateAction<Item[]>>;

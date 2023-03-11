@@ -1,4 +1,4 @@
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import {
 	Dimensions,
 	Text,
@@ -11,10 +11,11 @@ import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { StatusBar } from "expo-status-bar";
 import { useNavigation } from "@react-navigation/native";
-import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 import Toast from "react-native-toast-message";
 import { Item, UniqueItem } from "../../interfaces";
 import DefaultModal from "../molecules/DefaultModal";
+import { Action } from "../../contexts/ItemReducer";
+import { modalStyles } from "../../styles";
 
 interface BarcodeScannerResultType {
 	type: string;
@@ -22,25 +23,26 @@ interface BarcodeScannerResultType {
 }
 
 interface QRScannerProps {
-	setCameraIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 	items: Item[];
+	dispatchItems: React.Dispatch<Action>;
+	setCameraIsActive: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export default function QRScanner({
-	setCameraIsActive,
 	items,
+	dispatchItems,
+	setCameraIsActive,
 }: QRScannerProps) {
 	const [hasPermission, setHasPermission] = useState(false);
 	const [scanned, setScanned] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const [guidInTakeOutList, setGuidInTakeOutList] = useState(false);
+	const [guidExistsInItems, setGuidExistsInItems] = useState(false);
 	const [scannedItem, setScannedItem] = useState<Item | null>(null);
 	const [scannedUniqueItem, setScannedUniqueItem] = useState<UniqueItem | null>(
 		null
 	);
 	const navigation = useNavigation();
-
-	const takeOutList = useContext(TakeOutListContext);
 
 	useEffect(() => {
 		const getBarCodeScannerPermissions = async () => {
@@ -61,32 +63,26 @@ export default function QRScanner({
 	}, [navigation]);
 
 	const handleBarCodeScanned = ({ data }: BarcodeScannerResultType) => {
-		const isGuidPresent = items.some((item) => {
-			if (
-				item.unique_items.some((uniqueItem) => {
-					if (uniqueItem.unique_id === data) {
-						setScannedItem(item);
-						setScannedUniqueItem(uniqueItem);
-						return true;
-					}
-				})
-			) {
-				return true;
-			} else {
-				return false;
-			}
+		const guidExistsInItems = items.some((item) => {
+			return item.unique_items.some((uniqueItem) => {
+				if (uniqueItem.unique_id === data) {
+					setScannedItem(item);
+					setScannedUniqueItem(uniqueItem);
+					setGuidInTakeOutList(
+						item.selected_unique_items.some(
+							(selectedUniqueItem) => selectedUniqueItem === data
+						)
+					);
+					setScanned(true);
+					setVisible(true);
+					return true;
+				} else {
+					return false;
+				}
+			});
 		});
 
-		if (isGuidPresent) {
-			setScanned(true);
-			setVisible(true);
-
-			setGuidInTakeOutList(
-				takeOutList.state.uniqueItems.some((item) =>
-					item.unique_items.includes(data)
-				)
-			);
-		} else {
+		if (!guidExistsInItems) {
 			// Unknown QR code scanned
 			setScanned(true);
 			Toast.show({
@@ -94,6 +90,7 @@ export default function QRScanner({
 				text1: "Ismeretlen QR kód",
 				text2: "Ez a kód nem tartozik egy itt tárolt eszközhöz sem",
 				topOffset: 60,
+				visibilityTime: 2500,
 			});
 			setTimeout(() => {
 				setScanned(false);
@@ -103,20 +100,16 @@ export default function QRScanner({
 
 	const acceptModal = () => {
 		if (!guidInTakeOutList && scannedItem && scannedUniqueItem) {
-			takeOutList.dispatch({
+			//unique item is not selected yet
+			dispatchItems({
 				type: "ADD_UNIQUE_PIECE",
-				payload: {
-					item_id: scannedItem?.id,
-					unique_item: scannedUniqueItem?.unique_id,
-				},
+				payload: { id: scannedItem.id, uniqueId: scannedUniqueItem.unique_id },
 			});
 		} else if (scannedItem && scannedUniqueItem) {
-			takeOutList.dispatch({
+			//unique item is already in the list
+			dispatchItems({
 				type: "DELETE_UNIQUE_PIECE",
-				payload: {
-					item_id: scannedItem?.id,
-					unique_item: scannedUniqueItem?.unique_id,
-				},
+				payload: { id: scannedItem.id, uniqueId: scannedUniqueItem.unique_id },
 			});
 		} else {
 			throw new Error(
@@ -145,32 +138,38 @@ export default function QRScanner({
 			<StatusBar hidden={true} />
 			<DefaultModal visible={visible}>
 				<View>
-					<Text style={styles.modalInfoText}>
+					<Text style={modalStyles.infoText}>
 						{scannedUniqueItem?.alt_name && (
 							<>
-								<Text style={styles.modalInfoTextVariable}>
+								<Text style={modalStyles.boldText}>
 									{scannedUniqueItem?.alt_name}
 								</Text>
 								<Text>{`\nleltári számú\n`}</Text>
 							</>
 						)}
-						<Text style={styles.modalInfoTextVariable}>
-							{scannedItem?.item_name}
-						</Text>
+						<Text style={modalStyles.boldText}>{scannedItem?.item_name}</Text>
 						{`\n be lett szkennelve`}
 					</Text>
-					<View style={styles.modalButtonContainer}>
+					<View style={modalStyles.buttonContainer}>
 						<TouchableOpacity
-							style={styles.modalButtonReject}
+							style={
+								guidInTakeOutList
+									? modalStyles.buttonRejectDelete
+									: modalStyles.buttonReject
+							}
 							onPress={() => closeModal()}
 						>
-							<Text style={styles.modalButtonRejectText}>Mégse</Text>
+							<Text style={modalStyles.buttonRejectText}>Mégse</Text>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={styles.modalButtonAccept}
+							style={
+								guidInTakeOutList
+									? modalStyles.buttonDelete
+									: modalStyles.buttonAccept
+							}
 							onPress={() => acceptModal()}
 						>
-							<Text style={styles.modalButtonAcceptText}>
+							<Text style={modalStyles.buttonAcceptText}>
 								{guidInTakeOutList
 									? "Törlés a listából"
 									: "Hozzáadás a listához"}
@@ -209,42 +208,6 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "column",
 		justifyContent: "center",
-	},
-	modalInfoText: {
-		fontSize: 16,
-		textAlign: "center",
-	},
-	modalInfoTextVariable: {
-		fontWeight: "bold",
-		fontSize: 20,
-		lineHeight: 40,
-	},
-	modalButtonContainer: {
-		marginTop: 20,
-		flexDirection: "row",
-		justifyContent: "space-between",
-	},
-	modalButtonReject: {
-		width: 110,
-		height: 50,
-		borderColor: "green",
-		borderWidth: 2,
-		borderRadius: 15,
-		justifyContent: "center",
-	},
-	modalButtonAccept: {
-		width: 110,
-		height: 50,
-		backgroundColor: "green",
-		borderRadius: 15,
-		justifyContent: "center",
-	},
-	modalButtonRejectText: {
-		textAlign: "center",
-	},
-	modalButtonAcceptText: {
-		textAlign: "center",
-		color: "white",
 	},
 	backButtonContainer: {
 		position: "absolute",

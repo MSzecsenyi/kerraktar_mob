@@ -1,72 +1,76 @@
-import { View, StyleSheet, TouchableHighlight, Text } from "react-native";
+import {
+	View,
+	StyleSheet,
+	TouchableOpacity,
+	Text,
+	ListRenderItemInfo,
+} from "react-native";
 import { useGetItems } from "../../query-hooks/UseItems";
 import ItemTile from "../organisms/ItemTile";
-import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 import { Ionicons } from "@expo/vector-icons";
-import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
+import { FlatList } from "react-native-gesture-handler";
 import SearchBar from "../atoms/SearchBar";
-import { useContext, useEffect, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import QRScanner from "../organisms/QRScanner";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
 import { Item, TakeOutDrawerProps } from "../../interfaces";
 import DefaultModal from "../molecules/DefaultModal";
 import TakeOutAcceptListItem from "../atoms/TakeOutAcceptListItem";
+import { itemReducer } from "../../contexts/ItemReducer";
 
 const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 	const getItems = useGetItems();
 	const [searchTerm, setSearchTerm] = useState("");
-	const [filteredData, setFilteredData] = useState<Item[]>([]);
-	const [selectedItems, setSelectedItems] = useState<Item[]>([]);
+	const [filteredItems, setFilteredItems] = useState<Item[]>([]);
 	const [cameraIsActive, setCameraIsActive] = useState(false);
 	const [modalIsVisible, setModalIsVisible] = useState(false);
-	const takeOutList = useContext(TakeOutListContext);
+	const [items, dispatchItems] = useReducer(itemReducer, []);
 
 	useEffect(() => {
-		const filtered = getItems.data?.filter((item) => {
+		const filtered = items.filter((item) => {
 			return item.item_name.toLowerCase().includes(searchTerm.toLowerCase());
 		});
-		if (filtered) setFilteredData(filtered);
-	}, [searchTerm, getItems.data]);
+		if (filtered) setFilteredItems(filtered);
+	}, [searchTerm, items]);
 
 	useEffect(() => {
-		getSelectedItems;
-	}, [takeOutList.state, getItems.data]);
-
-	const getSelectedItems = () => {
-		if (getItems.isSuccess) {
-			const selectedUniqueItems = takeOutList.state.uniqueItems.map((item) => {
-				return {
-					id: item.item_id,
-					amount: item.unique_items.length,
-				};
+		if (getItems.isSuccess)
+			dispatchItems({
+				type: "CREATE_ITEMS",
+				payload: { items: getItems.data },
 			});
-			const selectedItemIds =
-				takeOutList.state.items.concat(selectedUniqueItems);
+	}, [getItems.data]);
 
-			const selectedItems = getItems.data.filter((item) => {
-				selectedItemIds.some((selectedItem) => selectedItem.id === item.id);
-			});
-			setSelectedItems(selectedItems);
-		}
-	};
+	const renderRow = useCallback(({ item }: ListRenderItemInfo<Item>) => {
+		return (
+			<ItemTile
+				item={item}
+				dispatchItems={dispatchItems}
+				setCameraIsActive={setCameraIsActive}
+			/>
+		);
+	}, []);
+
+	const keyExtractor = (item: Item) => item.id.toString();
 
 	return (
 		<View style={{ flex: 1 }}>
 			{cameraIsActive && getItems.isSuccess ? (
 				<QRScanner
 					setCameraIsActive={setCameraIsActive}
-					items={getItems.data}
+					dispatchItems={dispatchItems}
+					items={items}
 				/>
 			) : (
 				<>
 					<DefaultModal visible={modalIsVisible}>
 						<>
-							<TouchableHighlight onPress={() => setModalIsVisible(false)}>
+							<TouchableOpacity onPress={() => setModalIsVisible(false)}>
 								<Text>Kiválasztott eszközök:</Text>
-							</TouchableHighlight>
+							</TouchableOpacity>
 							<FlatList
-								data={selectedItems}
+								data={items}
 								renderItem={TakeOutAcceptListItem}
 							/>
 						</>
@@ -92,30 +96,24 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 					{getItems.isSuccess && (
 						<>
 							{/* <ItemFilterBar
-									filteredData={filteredData}
-									setFilteredData={setFilteredData}
+									filteredItems={filteredItems}
+									setFilteredItems={setFilteredItems}
 								/> */}
 							<FlatList
-								data={filteredData}
+								data={filteredItems}
 								style={{ flex: 1 }}
-								keyExtractor={(item) => item.id.toString()}
+								keyExtractor={keyExtractor}
 								getItemLayout={(data, index) => ({
 									length: 80,
 									offset: 80 * (index + 1),
 									index,
 								})}
-								renderItem={({ item }) => (
-									<ItemTile
-										item={item}
-										setIsCameraActive={setCameraIsActive}
-									/>
-								)}
-								extraData={setCameraIsActive}
+								renderItem={renderRow}
 							/>
 						</>
 					)}
 					<View style={styles.bottomContainer}>
-						<TouchableHighlight
+						<TouchableOpacity
 							style={styles.leftButton}
 							onPress={() => setCameraIsActive(true)}
 						>
@@ -124,8 +122,8 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 								size={24}
 								color="#fff"
 							/>
-						</TouchableHighlight>
-						<TouchableHighlight
+						</TouchableOpacity>
+						<TouchableOpacity
 							style={styles.rightButton}
 							onPress={() => setModalIsVisible(true)}
 						>
@@ -134,7 +132,7 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 								size={35}
 								color="#fff"
 							/>
-						</TouchableHighlight>
+						</TouchableOpacity>
 					</View>
 				</>
 			)}

@@ -1,14 +1,13 @@
 import { View, Text, StyleSheet } from "react-native";
-import { Item } from "../../interfaces";
-import TakeOutCommonSelectorButton from "../molecules/TakeOutCommonSelectorButton";
-import TakeOutUniqueSelectorButton from "../molecules/TakeOutUniqueSelectorButton";
+import { TakeOutButtonProps } from "../../interfaces";
+import TakeOutSelectItemButton from "../molecules/TakeOutSelectItemButton";
+import { memo } from "react";
 
-interface ItemProps {
-	item: Item;
-	setIsCameraActive: React.Dispatch<React.SetStateAction<boolean>>;
-}
-
-const ItemTile = ({ item, setIsCameraActive }: ItemProps) => {
+const ItemTile = ({
+	item,
+	dispatchItems,
+	setCameraIsActive,
+}: TakeOutButtonProps) => {
 	return (
 		<View style={styles.card_template}>
 			<View style={styles.info_part}>
@@ -18,22 +17,16 @@ const ItemTile = ({ item, setIsCameraActive }: ItemProps) => {
 				</View>
 				<View style={styles.info_row}>
 					<Text> In store: {item.in_store_amount} </Text>
-					<Text> Unique: {item.is_unique ? "True" : "False"} </Text>
+					<Text> Id: {item.id} </Text>
 					<Text> U.pcs: {item.unique_items.length} </Text>
 				</View>
 			</View>
 			<View style={styles.button_part}>
-				<View>
-					{!item.is_unique ? (
-						<TakeOutCommonSelectorButton item={item} />
-					) : (
-						// <Text>unique</Text>
-						<TakeOutUniqueSelectorButton
-							item={item}
-							setCameraIsActive={setIsCameraActive}
-						/>
-					)}
-				</View>
+				<TakeOutSelectItemButton
+					item={item}
+					dispatchItems={dispatchItems}
+					setCameraIsActive={setCameraIsActive}
+				/>
 			</View>
 		</View>
 	);
@@ -69,4 +62,4 @@ const styles = StyleSheet.create({
 	},
 });
 
-export default ItemTile;
+export default memo(ItemTile);

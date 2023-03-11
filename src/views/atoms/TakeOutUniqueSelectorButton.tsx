@@ -57,7 +57,7 @@ const TakeOutUniqueSelectorButton = ({
 							onPress={() => {
 								setDeletModalVisible(false);
 								dispatchItems({
-									type: "DELETE_ITEM",
+									type: "DELETE_UNIQUE_ITEM",
 									payload: { id: item.id },
 								});
 							}}

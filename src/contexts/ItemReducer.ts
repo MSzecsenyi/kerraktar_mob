@@ -42,8 +42,6 @@ export const itemReducer = (items: Item[], action: Action ) => {
                     return {
                         ...item,
                         is_selected: false,
-                        selected_unique_items: [],
-                        selected_amount: 0
                     }
                 }
                 return item;
@@ -61,11 +59,14 @@ export const itemReducer = (items: Item[], action: Action ) => {
             })
             return newItems;
         case "DELETE_UNIQUE_ITEM":
+            console.log("hali")
             var newItems = items.map((item) => {
                 if(item.id === action.payload.id) {
                     return {
                         ...item,
                         is_selected: false,
+                        selected_unique_items: [],
+                        selected_amount: 0
                     }
                 }
                 return item;

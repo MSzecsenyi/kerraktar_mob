@@ -4,9 +4,10 @@ import { Dimensions, StyleSheet, Modal, View, Animated } from "react-native";
 interface DefaultModalProps {
 	visible: boolean;
 	children: JSX.Element;
+	closeFn: () => void;
 }
 
-const DefaultModal = ({ visible, children }: DefaultModalProps) => {
+const DefaultModal = ({ visible, children, closeFn }: DefaultModalProps) => {
 	const [showModal, setShowModal] = useState(visible);
 	const scaleValue = useRef(new Animated.Value(0)).current;
 
@@ -39,7 +40,9 @@ const DefaultModal = ({ visible, children }: DefaultModalProps) => {
 			transparent
 			statusBarTranslucent={true}
 			visible={showModal}
-			onRequestClose={() => setShowModal(false)}
+			onRequestClose={() => {
+				closeFn();
+			}}
 		>
 			<View style={styles.modalBackGround}>
 				<Animated.View
@@ -68,6 +71,7 @@ const styles = StyleSheet.create({
 	},
 	modalContainter: {
 		width: "80%",
+		maxHeight: "80%",
 		backgroundColor: "white",
 		paddingHorizontal: 20,
 		paddingTop: 30,

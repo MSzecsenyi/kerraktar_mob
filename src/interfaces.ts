@@ -1,14 +1,6 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { DrawerStackParamList } from "./navigation/ParamStacks";
 import { Action } from "./contexts/ItemReducer";
-
-export interface TextInputProps {
-    name: string;
-    handleOnChange: ((text: string, name: string) => void);
-    placeHolder?: string;
-    label?: string;
-    isPassword?: boolean;
-}
 export interface LoginInfo {
     email: string;
     password: string;
@@ -33,7 +25,6 @@ export interface User {
     updated_at: Date,
     deleted_at: Date
 }
-
 export interface Item {
     id: number,
     district: number,
@@ -69,4 +60,15 @@ export type TakeOutDrawerStates = "CreateTakeOut" | "SelectTakeOut"
 export type TakeOutDrawerProps = DrawerScreenProps<
 	DrawerStackParamList,
 	"TakeOutDrawer"
->;
+>
+export interface TakeOutList {
+    items: TakeOutListCommonItem[]
+    uniqueItems: string[],
+    store_id: number,
+    take_out_name: string,
+}
+
+export interface TakeOutListCommonItem {
+    id: number
+    amount: number
+}

@@ -6,8 +6,8 @@ import { UserDataContext } from '../contexts/UserDataContext';
 import { Item } from '../interfaces';
 
 
-function getItems(district: number, token: string): Promise<Item[]> {
-    return axios.get(API_URL + `items?district=[${district}]`, {
+function getItems(store_id: number, token: string): Promise<Item[]> {
+    return axios.get(API_URL + `items?store_id=[${store_id}]`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }})
@@ -15,7 +15,7 @@ function getItems(district: number, token: string): Promise<Item[]> {
         .catch(error => {console.error(error)})
     }
 
-export function useGetItems() {
+export function useGetItems(store_id: number) {
     const {loggedInUser} = useContext(UserDataContext);
-    return useQuery(['user'], () => getItems(loggedInUser.userData?.user.district, loggedInUser.userData?.token))
+    return useQuery(['user'], () => getItems(store_id, loggedInUser.userData?.token))
     }

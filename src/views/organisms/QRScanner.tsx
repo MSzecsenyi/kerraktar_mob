@@ -37,7 +37,6 @@ export default function QRScanner({
 	const [scanned, setScanned] = useState(false);
 	const [visible, setVisible] = useState(false);
 	const [guidInTakeOutList, setGuidInTakeOutList] = useState(false);
-	const [guidExistsInItems, setGuidExistsInItems] = useState(false);
 	const [scannedItem, setScannedItem] = useState<Item | null>(null);
 	const [scannedUniqueItem, setScannedUniqueItem] = useState<UniqueItem | null>(
 		null
@@ -136,7 +135,10 @@ export default function QRScanner({
 	return (
 		<View style={styles.container}>
 			<StatusBar hidden={true} />
-			<DefaultModal visible={visible}>
+			<DefaultModal
+				visible={visible}
+				closeFn={closeModal}
+			>
 				<View>
 					<Text style={modalStyles.infoText}>
 						{scannedUniqueItem?.alt_name && (

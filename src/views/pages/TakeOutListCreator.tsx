@@ -4,30 +4,45 @@ import {
 	TouchableOpacity,
 	Text,
 	ListRenderItemInfo,
+	TouchableHighlight,
+	Keyboard,
 } from "react-native";
 import { useGetItems } from "../../query-hooks/UseItems";
 import ItemTile from "../organisms/ItemTile";
 import { Ionicons } from "@expo/vector-icons";
-import { FlatList } from "react-native-gesture-handler";
+import { FlatList, TextInput } from "react-native-gesture-handler";
 import SearchBar from "../atoms/SearchBar";
 import { useCallback, useEffect, useReducer, useState } from "react";
 import QRScanner from "../organisms/QRScanner";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
-import { Item, TakeOutDrawerProps } from "../../interfaces";
+import { Item, TakeOutDrawerProps, TakeOutList } from "../../interfaces";
 import DefaultModal from "../molecules/DefaultModal";
 import TakeOutAcceptListItem from "../atoms/TakeOutAcceptListItem";
 import { itemReducer } from "../../contexts/ItemReducer";
+import { modalStyles } from "../../styles";
+import { usePostTakeOut } from "../../query-hooks/UseTakeOuts";
 
 const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
-	const getItems = useGetItems();
+	const getItems = useGetItems(5);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filteredItems, setFilteredItems] = useState<Item[]>([]);
 	const [cameraIsActive, setCameraIsActive] = useState(false);
 	const [modalIsVisible, setModalIsVisible] = useState(false);
+	const [selectedItemAmount, setSelectedItemAmount] = useState(0);
+	const [takeOutList, setTakeOutList] = useState<TakeOutList>({
+		items: [],
+		uniqueItems: [],
+		store_id: 5,
+		take_out_name: "",
+	});
+
 	const [items, dispatchItems] = useReducer(itemReducer, []);
 
+	const postTakeOut = usePostTakeOut(takeOutList);
+
 	useEffect(() => {
+		setSelectedItemAmount(items.filter((item) => item.is_selected).length);
 		const filtered = items.filter((item) => {
 			return item.item_name.toLowerCase().includes(searchTerm.toLowerCase());
 		});
@@ -41,6 +56,16 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 				payload: { items: getItems.data },
 			});
 	}, [getItems.data]);
+
+	useEffect(() => {
+		const kListener = Keyboard.addListener("keyboardDidHide", () => {
+			Keyboard.dismiss();
+		});
+
+		return () => {
+			kListener.remove();
+		};
+	}, []);
 
 	const renderRow = useCallback(({ item }: ListRenderItemInfo<Item>) => {
 		return (
@@ -64,15 +89,53 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 				/>
 			) : (
 				<>
-					<DefaultModal visible={modalIsVisible}>
+					<DefaultModal
+						visible={modalIsVisible}
+						closeFn={() => setModalIsVisible(false)}
+					>
 						<>
 							<TouchableOpacity onPress={() => setModalIsVisible(false)}>
-								<Text>Kiválasztott eszközök:</Text>
+								<Text style={modalStyles.mainText}>Kiválasztott eszközök:</Text>
 							</TouchableOpacity>
 							<FlatList
-								data={items}
-								renderItem={TakeOutAcceptListItem}
+								data={items
+									.filter((item) => item.is_selected)
+									.sort((a, b) => a.item_name.localeCompare(b.item_name))}
+								keyExtractor={(item) => item.id}
+								renderItem={(item) => (
+									<TakeOutAcceptListItem ListItemData={item} />
+								)}
 							/>
+							<TextInput
+								style={modalStyles.textInput}
+								onChangeText={(text) =>
+									setTakeOutList((prev) => {
+										return { ...prev, take_out_name: text };
+									})
+								}
+								placeholder="Hol használod az eszközöket?"
+							/>
+							<View style={modalStyles.buttonContainer}>
+								<TouchableHighlight
+									style={modalStyles.buttonReject}
+									onPress={() => setModalIsVisible(false)}
+								>
+									<Text style={modalStyles.buttonRejectText}>Mégse</Text>
+								</TouchableHighlight>
+								<TouchableHighlight
+									style={
+										takeOutList.take_out_name.length != 0
+											? modalStyles.buttonAccept
+											: modalStyles.buttonDisabled
+									}
+									onPress={() => {
+										postTakeOut.mutate();
+										setModalIsVisible(false);
+									}}
+								>
+									<Text style={modalStyles.buttonAcceptText}>Kivétel</Text>
+								</TouchableHighlight>
+							</View>
 						</>
 					</DefaultModal>
 					<View style={styles.headerContainer}>
@@ -114,7 +177,7 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 					)}
 					<View style={styles.bottomContainer}>
 						<TouchableOpacity
-							style={styles.leftButton}
+							style={styles.footerButton}
 							onPress={() => setCameraIsActive(true)}
 						>
 							<Ionicons
@@ -124,8 +187,14 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 							/>
 						</TouchableOpacity>
 						<TouchableOpacity
-							style={styles.rightButton}
-							onPress={() => setModalIsVisible(true)}
+							style={
+								selectedItemAmount > 0
+									? styles.footerButton
+									: styles.inactiveFooterButton
+							}
+							onPress={() =>
+								setModalIsVisible(selectedItemAmount > 0 ? true : false)
+							}
 						>
 							<Ionicons
 								name="checkmark"
@@ -163,22 +232,22 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "center",
 	},
-	leftButton: {
+	footerButton: {
 		backgroundColor: "#007aff",
 		width: 60,
 		height: 60,
 		borderRadius: 30,
 		justifyContent: "center",
 		alignItems: "center",
-		marginRight: 20,
+		marginHorizontal: 20,
 	},
-	rightButton: {
-		backgroundColor: "#007aff",
+	inactiveFooterButton: {
+		backgroundColor: "lightgray",
 		width: 60,
 		height: 60,
 		borderRadius: 30,
 		justifyContent: "center",
 		alignItems: "center",
-		marginLeft: 20,
+		marginHorizontal: 20,
 	},
 });

@@ -1,18 +1,15 @@
-import { TakeOutListProvider } from "../../contexts/TakeOutListContext";
 import { TakeOutDrawerProps } from "../../interfaces";
-import TakeOutListCreator from "./TakeOutListCreator";
+import TakeOutListCreatorManager from "./TakeOutListCreatorManager";
 import TakeOutListSelector from "./TakeOutListSelector";
 
 const TakeOutScreenManager = ({ navigation, route }: TakeOutDrawerProps) => {
 	switch (route.params.page) {
 		case "CreateTakeOut":
 			return (
-				<TakeOutListProvider>
-					<TakeOutListCreator
-						navigation={navigation}
-						route={route}
-					/>
-				</TakeOutListProvider>
+				<TakeOutListCreatorManager
+					navigation={navigation}
+					route={route}
+				/>
 			);
 		case "SelectTakeOut":
 			return (

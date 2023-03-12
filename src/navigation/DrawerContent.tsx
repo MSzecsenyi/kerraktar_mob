@@ -21,11 +21,9 @@ const DrawerContent = () => {
 			<View>
 				<View style={styles.headerContainer}>
 					<Text style={styles.headerInfoNumberText}>
-						{loggedInUser.userData.user.group_number}
+						{loggedInUser.user.group_number}
 					</Text>
-					<Text style={styles.headerInfoText}>
-						{loggedInUser.userData.user.name}
-					</Text>
+					<Text style={styles.headerInfoText}>{loggedInUser.user.name}</Text>
 				</View>
 
 				<ScrollView>

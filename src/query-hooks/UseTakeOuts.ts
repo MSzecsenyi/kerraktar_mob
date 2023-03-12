@@ -14,7 +14,7 @@ const postTakeOut = (token: string, takeOutList: TakeOutList) => axios.post(API_
 export function usePostTakeOut(takeOutList: TakeOutList){
     const {loggedInUser} = useContext(UserDataContext);
     
-    return useMutation(() => postTakeOut(loggedInUser.userData.token, takeOutList), {
+    return useMutation(() => postTakeOut(loggedInUser.token, takeOutList), {
         onSuccess: (response) => {
             console.log(response)
         },

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet } from "react-native";
 import { TakeOutButtonProps } from "../../interfaces";
-import TakeOutSelectItemButton from "../molecules/TakeOutSelectItemButton";
+import TakeOutSelectItemButton from "./TakeOutSelectItemButton";
 import { memo } from "react";
 
 const ItemTile = ({
@@ -13,6 +13,7 @@ const ItemTile = ({
 			<View style={styles.info_part}>
 				<View style={styles.info_row}>
 					<Text style={styles.card_title}> {item.item_name} </Text>
+					<Text> Store: {item.store} </Text>
 					<Text> District: {item.district} </Text>
 				</View>
 				<View style={styles.info_row}>

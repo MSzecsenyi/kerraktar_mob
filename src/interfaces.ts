@@ -8,8 +8,12 @@ export interface LoginInfo {
 export interface UserData {
     user: User
     token: string
+    stores: Store[]
 }
-
+export interface Store {
+    address: string
+    store_id: number
+}
 export interface User {
     id: number,
     name: string,
@@ -23,13 +27,13 @@ export interface User {
     is_admin: boolean,
     created_at: Date,
     updated_at: Date,
-    deleted_at: Date
+    deleted_at: Date,
 }
 export interface Item {
     id: number,
     district: number,
     category: string,
-    store_id: number,
+    store: number,
     owner: string,
     item_name: string,
     amount: number,
@@ -54,8 +58,6 @@ export interface ItemFilterBarProps {
 	setFilteredData: React.Dispatch<React.SetStateAction<Item[]>>;
 	filteredData: Item[];
 }
-
-export type TakeOutDrawerStates = "CreateTakeOut" | "SelectTakeOut" 
 
 export type TakeOutDrawerProps = DrawerScreenProps<
 	DrawerStackParamList,

@@ -1,45 +1,57 @@
 import {
-	View,
-	StyleSheet,
-	TouchableOpacity,
-	Text,
-	ListRenderItemInfo,
-	TouchableHighlight,
 	Keyboard,
+	ListRenderItemInfo,
+	StyleSheet,
+	Text,
+	TouchableHighlight,
+	TouchableOpacity,
+	View,
 } from "react-native";
-import { useGetItems } from "../../query-hooks/UseItems";
-import ItemTile from "../organisms/ItemTile";
+import { useCallback, useEffect, useState } from "react";
+import DefaultModal from "../molecules/DefaultModal";
+import { modalStyles } from "../../styles";
+import { Item, TakeOutDrawerProps, TakeOutList } from "../../interfaces";
 import { Ionicons } from "@expo/vector-icons";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import SearchBar from "../atoms/SearchBar";
-import { useCallback, useEffect, useReducer, useState } from "react";
-import QRScanner from "../organisms/QRScanner";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
-import { Item, TakeOutDrawerProps, TakeOutList } from "../../interfaces";
-import DefaultModal from "../molecules/DefaultModal";
 import TakeOutAcceptListItem from "../atoms/TakeOutAcceptListItem";
-import { itemReducer } from "../../contexts/ItemReducer";
-import { modalStyles } from "../../styles";
+import ItemTile from "../molecules/ItemTile";
+import { Action } from "../../contexts/ItemReducer";
 import { usePostTakeOut } from "../../query-hooks/UseTakeOuts";
+import { UseQueryResult } from "react-query";
+import QRScanner from "./QRScanner";
 
-const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
-	const getItems = useGetItems(5);
-	const [searchTerm, setSearchTerm] = useState("");
-	const [filteredItems, setFilteredItems] = useState<Item[]>([]);
-	const [cameraIsActive, setCameraIsActive] = useState(false);
-	const [modalIsVisible, setModalIsVisible] = useState(false);
-	const [selectedItemAmount, setSelectedItemAmount] = useState(0);
+interface TakeOutListCreatorMainProps {
+	items: Item[];
+	storeId: number;
+	drawerProps: TakeOutDrawerProps;
+	dispatchItems: React.Dispatch<Action>;
+	getItems: UseQueryResult<Item[], unknown>;
+}
+
+const TakeOutListCreatorMain = ({
+	items,
+	storeId,
+	drawerProps,
+	dispatchItems,
+	getItems,
+}: TakeOutListCreatorMainProps) => {
+	const [modalIsVisible, setModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
+	const [searchTerm, setSearchTerm] = useState(""); // The text typed in the header search bar. SHown items are filtered by name based on this
+	const [filteredItems, setFilteredItems] = useState<Item[]>([]); // Displayed data
+	const [selectedItemAmount, setSelectedItemAmount] = useState(0); // Counts selected items
+	const [cameraIsActive, setCameraIsActive] = useState(false); // Sets the qr scanner screen active/inactive
 	const [takeOutList, setTakeOutList] = useState<TakeOutList>({
+		// Final accept data
 		items: [],
 		uniqueItems: [],
-		store_id: 5,
+		store_id: storeId,
 		take_out_name: "",
 	});
 
-	const [items, dispatchItems] = useReducer(itemReducer, []);
-
-	const postTakeOut = usePostTakeOut(takeOutList);
+	const postTakeOut = usePostTakeOut(takeOutList); // Sends finalized data to the server
 
 	useEffect(() => {
 		setSelectedItemAmount(items.filter((item) => item.is_selected).length);
@@ -48,14 +60,6 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 		});
 		if (filtered) setFilteredItems(filtered);
 	}, [searchTerm, items]);
-
-	useEffect(() => {
-		if (getItems.isSuccess)
-			dispatchItems({
-				type: "CREATE_ITEMS",
-				payload: { items: getItems.data },
-			});
-	}, [getItems.data]);
 
 	useEffect(() => {
 		const kListener = Keyboard.addListener("keyboardDidHide", () => {
@@ -78,9 +82,8 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 	}, []);
 
 	const keyExtractor = (item: Item) => item.id.toString();
-
 	return (
-		<View style={{ flex: 1 }}>
+		<>
 			{cameraIsActive && getItems.isSuccess ? (
 				<QRScanner
 					setCameraIsActive={setCameraIsActive}
@@ -101,13 +104,14 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 								data={items
 									.filter((item) => item.is_selected)
 									.sort((a, b) => a.item_name.localeCompare(b.item_name))}
-								keyExtractor={(item) => item.id}
+								keyExtractor={(item) => item.id.toString()}
 								renderItem={(item) => (
 									<TakeOutAcceptListItem ListItemData={item} />
 								)}
 							/>
 							<TextInput
 								style={modalStyles.textInput}
+								defaultValue={takeOutList.take_out_name}
 								onChangeText={(text) =>
 									setTakeOutList((prev) => {
 										return { ...prev, take_out_name: text };
@@ -141,7 +145,7 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 					<View style={styles.headerContainer}>
 						<TouchableOpacity
 							style={styles.menuIconStyle}
-							onPress={navigation.openDrawer}
+							onPress={drawerProps.navigation.openDrawer}
 						>
 							<Ionicons
 								name="menu"
@@ -155,7 +159,7 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 							setSearchTerm={setSearchTerm}
 						/>
 					</View>
-					{getItems.isLoading && <LoadingSpinner />}
+					{(getItems.isLoading || getItems.isIdle) && <LoadingSpinner />}
 					{getItems.isSuccess && (
 						<>
 							{/* <ItemFilterBar
@@ -205,11 +209,11 @@ const TakeOutListCreator = ({ navigation }: TakeOutDrawerProps) => {
 					</View>
 				</>
 			)}
-		</View>
+		</>
 	);
 };
 
-export default TakeOutListCreator;
+export default TakeOutListCreatorMain;
 
 const styles = StyleSheet.create({
 	headerContainer: {

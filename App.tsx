@@ -1,4 +1,3 @@
-import "react-native-gesture-handler";
 import { QueryClient, QueryClientProvider } from "react-query";
 import MainStack from "./src/navigation/MainStack";
 import { UserDataProvider } from "./src/contexts/UserDataContext";

@@ -34,7 +34,10 @@ const TakeOutUniqueSelectorButton = ({
 			>
 				<Text style={styles.light_text}>X</Text>
 			</TouchableHighlight>
-			<DefaultModal visible={deleteModalVisible}>
+			<DefaultModal
+				visible={deleteModalVisible}
+				closeFn={() => setDeletModalVisible(false)}
+			>
 				<>
 					<Text style={modalStyles.mainText}>
 						Biztosan törölni szeretnéd a listából az összes eddig hozzáadott

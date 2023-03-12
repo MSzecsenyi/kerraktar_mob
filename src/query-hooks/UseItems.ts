@@ -17,5 +17,7 @@ function getItems(store_id: number, token: string): Promise<Item[]> {
 
 export function useGetItems(store_id: number) {
     const {loggedInUser} = useContext(UserDataContext);
-    return useQuery(['user'], () => getItems(store_id, loggedInUser.userData?.token))
+    return useQuery(['user'], () => getItems(store_id, loggedInUser.token), {
+        enabled: store_id != -1
+    })
     }

@@ -1,7 +1,7 @@
 import { useMutation } from 'react-query';
 import axios from 'axios';
 import { API_URL } from '../constants';
-import { LoginInfo, UserData } from '../interfaces';
+import { LoginInfo } from '../interfaces';
 import { useContext } from 'react';
 import { UserDataContext } from '../contexts/UserDataContext';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -15,7 +15,7 @@ const logoutUser = (token: string | undefined) => axios.post(API_URL + 'logout',
 
 export function useLogoutUser(){
     const {dispatch,loggedInUser} = useContext(UserDataContext);
-    return useMutation(() => logoutUser(loggedInUser.userData.token), {
+    return useMutation(() => logoutUser(loggedInUser.token), {
         onSuccess: () => {
             dispatch({type: 'DELETE_LOGGED_IN_USER'});
             AsyncStorage.removeItem('persToken');

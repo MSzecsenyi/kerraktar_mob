@@ -28,6 +28,7 @@ export default function MainStack() {
 				};
 				await axios(config)
 					.then(function (response) {
+						console.log(response.data);
 						dispatch({
 							type: "SET_LOGGED_IN_USER",
 							payload: response.data,
@@ -63,7 +64,7 @@ export default function MainStack() {
 				headerShown: false,
 			}}
 		>
-			{loggedInUser.userData.user.id != -1 ? (
+			{loggedInUser.user.id != -1 ? (
 				<Stack.Screen
 					name="LoggedIn"
 					component={LoggedInDrawer}

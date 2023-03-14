@@ -59,7 +59,6 @@ export const itemReducer = (items: Item[], action: Action ) => {
             })
             return newItems;
         case "DELETE_UNIQUE_ITEM":
-            console.log("hali")
             var newItems = items.map((item) => {
                 if(item.id === action.payload.id) {
                     return {

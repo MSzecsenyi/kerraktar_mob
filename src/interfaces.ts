@@ -74,3 +74,12 @@ export interface TakeOutListCommonItem {
     id: number
     amount: number
 }
+
+export interface TakeOut {
+    id: number
+    start_date: Date
+    end_date: Date | null
+    user: string
+    store_id: number
+    take_out_name: string
+}

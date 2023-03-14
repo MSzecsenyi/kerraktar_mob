@@ -50,7 +50,6 @@ const UserDataContext = createContext<{
 
 function UserDataProvider({ children }: InputProviderProps) {
 	const [loggedInUser, dispatch] = useReducer(reducer, initialState);
-	console.log(loggedInUser.stores);
 
 	return (
 		<UserDataContext.Provider value={{ loggedInUser, dispatch }}>

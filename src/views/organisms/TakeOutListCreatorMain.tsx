@@ -1,4 +1,5 @@
 import {
+	BackHandler,
 	Keyboard,
 	ListRenderItemInfo,
 	StyleSheet,
@@ -29,6 +30,7 @@ interface TakeOutListCreatorMainProps {
 	drawerProps: TakeOutDrawerProps;
 	dispatchItems: React.Dispatch<Action>;
 	getItems: UseQueryResult<Item[], unknown>;
+	setStoreId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const TakeOutListCreatorMain = ({
@@ -37,12 +39,14 @@ const TakeOutListCreatorMain = ({
 	drawerProps,
 	dispatchItems,
 	getItems,
+	setStoreId,
 }: TakeOutListCreatorMainProps) => {
 	const [modalIsVisible, setModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
 	const [searchTerm, setSearchTerm] = useState(""); // The text typed in the header search bar. SHown items are filtered by name based on this
 	const [filteredItems, setFilteredItems] = useState<Item[]>([]); // Displayed data
 	const [selectedItemAmount, setSelectedItemAmount] = useState(0); // Counts selected items
 	const [cameraIsActive, setCameraIsActive] = useState(false); // Sets the qr scanner screen active/inactive
+	const [listSendLoading, setListSentLoading] = useState(false);
 	const [takeOutList, setTakeOutList] = useState<TakeOutList>({
 		// Final accept data
 		items: [],
@@ -51,7 +55,7 @@ const TakeOutListCreatorMain = ({
 		take_out_name: "",
 	});
 
-	const postTakeOut = usePostTakeOut(takeOutList); // Sends finalized data to the server
+	const postTakeOut = usePostTakeOut({ takeOutList, drawerProps, setStoreId }); // Sends finalized data to the server
 
 	useEffect(() => {
 		setSelectedItemAmount(items.filter((item) => item.is_selected).length);
@@ -65,9 +69,18 @@ const TakeOutListCreatorMain = ({
 		const kListener = Keyboard.addListener("keyboardDidHide", () => {
 			Keyboard.dismiss();
 		});
+		const backAction = () => {
+			setStoreId(-1);
+			return true;
+		};
+		const backHandler = BackHandler.addEventListener(
+			"hardwareBackPress",
+			backAction
+		);
 
 		return () => {
 			kListener.remove();
+			backHandler.remove();
 		};
 	}, []);
 
@@ -120,25 +133,31 @@ const TakeOutListCreatorMain = ({
 								placeholder="Hol használod az eszközöket?"
 							/>
 							<View style={modalStyles.buttonContainer}>
-								<TouchableHighlight
-									style={modalStyles.buttonReject}
-									onPress={() => setModalIsVisible(false)}
-								>
-									<Text style={modalStyles.buttonRejectText}>Mégse</Text>
-								</TouchableHighlight>
-								<TouchableHighlight
-									style={
-										takeOutList.take_out_name.length != 0
-											? modalStyles.buttonAccept
-											: modalStyles.buttonDisabled
-									}
-									onPress={() => {
-										postTakeOut.mutate();
-										setModalIsVisible(false);
-									}}
-								>
-									<Text style={modalStyles.buttonAcceptText}>Kivétel</Text>
-								</TouchableHighlight>
+								{listSendLoading ? (
+									<LoadingSpinner />
+								) : (
+									<>
+										<TouchableHighlight
+											style={modalStyles.buttonReject}
+											onPress={() => setModalIsVisible(false)}
+										>
+											<Text style={modalStyles.buttonRejectText}>Mégse</Text>
+										</TouchableHighlight>
+										<TouchableHighlight
+											style={
+												takeOutList.take_out_name.length != 0
+													? modalStyles.buttonAccept
+													: modalStyles.buttonDisabled
+											}
+											onPress={() => {
+												postTakeOut.mutate();
+												setListSentLoading(true);
+											}}
+										>
+											<Text style={modalStyles.buttonAcceptText}>Kivétel</Text>
+										</TouchableHighlight>
+									</>
+								)}
 							</View>
 						</>
 					</DefaultModal>

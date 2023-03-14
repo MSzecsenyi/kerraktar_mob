@@ -28,7 +28,6 @@ export default function MainStack() {
 				};
 				await axios(config)
 					.then(function (response) {
-						console.log(response.data);
 						dispatch({
 							type: "SET_LOGGED_IN_USER",
 							payload: response.data,

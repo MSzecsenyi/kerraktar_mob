@@ -40,7 +40,6 @@ const DrawerContent = () => {
 						style={styles.drawerButton}
 						onPress={() => {
 							navigation.navigate("TakeOutDrawer", { page: "SelectTakeOut" });
-							console.log("eddigiek");
 						}}
 					>
 						<Text style={styles.buttonText}> - Eddigi listák</Text>
@@ -69,7 +68,7 @@ const styles = StyleSheet.create({
 	},
 	headerContainer: {
 		height: "40%",
-		backgroundColor: "#333",
+		backgroundColor: "#004d00",
 		paddingHorizontal: 15,
 		paddingTop: "10%",
 		justifyContent: "space-evenly",
@@ -84,7 +83,7 @@ const styles = StyleSheet.create({
 		color: "#fff",
 	},
 	drawerButton: {
-		height: 70,
+		height: 50,
 		backgroundColor: "#eee",
 		paddingHorizontal: 15,
 		borderBottomColor: "#fff",
@@ -100,7 +99,7 @@ const styles = StyleSheet.create({
 	buttonText: {
 		color: "#333",
 		fontSize: 18,
-		lineHeight: 66,
+		lineHeight: 46,
 	},
 	container: {
 		alignItems: "center",

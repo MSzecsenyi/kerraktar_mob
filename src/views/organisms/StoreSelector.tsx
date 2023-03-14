@@ -27,7 +27,6 @@ const StoreSelector = ({
 				style={styles.button}
 				onPress={() => {
 					setStoreId(store.store_id);
-					console.log(store.store_id);
 				}}
 			>
 				<Text style={styles.buttonText}>{store.address}</Text>
@@ -38,7 +37,7 @@ const StoreSelector = ({
 	return (
 		<View style={styles.mainContainer}>
 			<TouchableOpacity
-				style={{ paddingLeft: 12 }}
+				style={{ paddingLeft: 12, paddingTop: 9 }}
 				onPress={drawerProps.navigation.openDrawer}
 			>
 				<Ionicons

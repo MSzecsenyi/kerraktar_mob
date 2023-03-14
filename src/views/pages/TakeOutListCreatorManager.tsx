@@ -40,6 +40,7 @@ const TakeOutListCreatorManager = (drawerProps: TakeOutDrawerProps) => {
 					drawerProps={drawerProps}
 					dispatchItems={dispatchItems}
 					getItems={getItems}
+					setStoreId={setStoreId}
 				/>
 			)}
 		</View>

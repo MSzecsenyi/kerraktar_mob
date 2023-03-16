@@ -1,7 +1,8 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { DrawerStackParamList } from "./ParamStacks";
 import DrawerContent from "./DrawerContent";
-import TakeOutScreenManager from "../views/pages/TakeOutScreenManager";
+import TakeOutListSelector from "../views/pages/TakeOutListSelector";
+import TakeOutListCreatorManager from "../views/pages/TakeOutListCreatorManager";
 
 export default function LoggedInDrawer() {
 	const Drawer = createDrawerNavigator<DrawerStackParamList>();
@@ -14,9 +15,12 @@ export default function LoggedInDrawer() {
 			drawerContent={() => <DrawerContent />}
 		>
 			<Drawer.Screen
-				name="TakeOutDrawer"
-				component={TakeOutScreenManager}
-				initialParams={{ page: "CreateTakeOut" }}
+				name="TakeOutCreatorDrawer"
+				component={TakeOutListCreatorManager}
+			/>
+			<Drawer.Screen
+				name="TakeOutSelectorDrawer"
+				component={TakeOutListSelector}
 			/>
 		</Drawer.Navigator>
 	);

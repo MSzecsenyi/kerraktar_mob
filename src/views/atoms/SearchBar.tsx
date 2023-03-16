@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
 	View,
 	TextInput,
@@ -10,12 +9,11 @@ import {
 interface Props {
 	searchTerm: string;
 	setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
-	style: StyleProp<ViewStyle>;
 }
 
-const SearchBar: React.FC<Props> = ({ searchTerm, setSearchTerm, style }) => {
+const SearchBar: React.FC<Props> = ({ searchTerm, setSearchTerm }) => {
 	return (
-		<View style={style}>
+		<View style={styles.searchBarContainer}>
 			<TextInput
 				style={styles.input}
 				placeholder="Keresés..."
@@ -32,6 +30,11 @@ const styles = StyleSheet.create({
 		backgroundColor: "white",
 		paddingHorizontal: 5,
 		borderRadius: 5,
+	},
+	searchBarContainer: {
+		padding: 10,
+		flex: 1,
+		backgroundColor: "#f2f2f2",
 	},
 });
 

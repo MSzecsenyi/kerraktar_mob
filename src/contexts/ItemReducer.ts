@@ -1,6 +1,6 @@
 import { Item } from "../interfaces";
 
-export type Action =
+export type ItemAction =
 	| { type: "CREATE_ITEMS";           payload: {items: Item[]} }
 	| { type: "ADD_ITEM";               payload: {id: number} }
 	| { type: "MODIFY_ITEM";            payload: {id: number, amount: number} }
@@ -10,11 +10,12 @@ export type Action =
 	| { type: "ADD_UNIQUE_PIECE";       payload: {id: number, uniqueId: string} }
 	| { type: "DELETE_UNIQUE_PIECE";    payload: {id: number, uniqueId: string} };
 
-export const itemReducer = (items: Item[], action: Action ) => {
+export const itemReducer = (items: Item[], action: ItemAction ) => {
     switch (action.type) {
         case "CREATE_ITEMS":
             return action.payload.items;
         case "ADD_ITEM":
+            console.log(action.payload)
             var newItems = items.map((item) => {
                 if(item.id === action.payload.id) {
                     return {

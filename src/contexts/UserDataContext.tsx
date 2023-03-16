@@ -1,7 +1,7 @@
 import React, { createContext, useReducer } from "react";
 import { UserData } from "../interfaces";
 
-type Action =
+type UserAction =
 	| { type: "SET_LOGGED_IN_USER"; payload: UserData }
 	| { type: "DELETE_LOGGED_IN_USER" };
 
@@ -29,7 +29,7 @@ const initialState: UserData = {
 	stores: [],
 };
 
-const reducer = (loggedInUser: UserData, action: Action) => {
+const reducer = (loggedInUser: UserData, action: UserAction) => {
 	switch (action.type) {
 		case "SET_LOGGED_IN_USER":
 			return {
@@ -45,7 +45,7 @@ const reducer = (loggedInUser: UserData, action: Action) => {
 
 const UserDataContext = createContext<{
 	loggedInUser: UserData;
-	dispatch: React.Dispatch<Action>;
+	dispatch: React.Dispatch<UserAction>;
 }>({ loggedInUser: initialState, dispatch: () => {} });
 
 function UserDataProvider({ children }: InputProviderProps) {

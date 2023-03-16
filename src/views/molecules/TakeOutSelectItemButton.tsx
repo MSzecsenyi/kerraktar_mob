@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
-import { Item, TakeOutButtonProps } from "../../interfaces";
+import { Item, ItemButtonProps } from "../../interfaces";
 import TakeOutUniqueSelectorButton from "../atoms/TakeOutUniqueSelectorButton";
 import TakeOutCommonSelectorButton from "../atoms/TakeOutCommonSelectorButton";
 
@@ -7,7 +7,7 @@ const TakeOutSelectItemButton = ({
 	item,
 	dispatchItems,
 	setCameraIsActive,
-}: TakeOutButtonProps) => {
+}: ItemButtonProps) => {
 	return (
 		<View>
 			{item.in_store_amount !== 0 ? (

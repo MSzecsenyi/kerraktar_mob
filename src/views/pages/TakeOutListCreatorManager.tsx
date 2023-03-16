@@ -1,14 +1,13 @@
 import { View } from "react-native";
 import { useGetItems } from "../../query-hooks/UseItems";
 import { useContext, useEffect, useReducer, useState } from "react";
-import QRScanner from "../organisms/QRScanner";
-import { TakeOutDrawerProps } from "../../interfaces";
+import { LoginDrawerProps } from "../../interfaces";
 import { itemReducer } from "../../contexts/ItemReducer";
 import { UserDataContext } from "../../contexts/UserDataContext";
 import TakeOutListCreatorMain from "../organisms/TakeOutListCreatorMain";
 import StoreSelector from "../organisms/StoreSelector";
 
-const TakeOutListCreatorManager = (drawerProps: TakeOutDrawerProps) => {
+const TakeOutListCreatorManager = (drawerProps: LoginDrawerProps) => {
 	const stores = useContext(UserDataContext).loggedInUser.stores; // Necessary to get available stores
 	const [storeId, setStoreId] = useState(
 		stores.length == 1 ? stores[0].store_id : -1

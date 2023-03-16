@@ -1,13 +1,13 @@
 import { Picker } from "@react-native-picker/picker";
 import { StyleSheet } from "react-native";
-import { Item, TakeOutButtonProps } from "../../interfaces";
+import { Item, ItemButtonProps } from "../../interfaces";
 import { useContext } from "react";
 import { TakeOutListContext } from "../../contexts/TakeOutListContext";
 
 export default function AmountSelector({
 	item,
 	dispatchItems,
-}: TakeOutButtonProps) {
+}: ItemButtonProps) {
 	return (
 		<Picker
 			selectedValue={item.selected_amount}

@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
-import { TakeOutButtonProps } from "../../interfaces";
+import { ItemButtonProps } from "../../interfaces";
 import { Ionicons } from "@expo/vector-icons";
 import DefaultModal from "../molecules/DefaultModal";
 import { useState } from "react";
@@ -9,7 +9,7 @@ const TakeOutUniqueSelectorButton = ({
 	item,
 	dispatchItems,
 	setCameraIsActive,
-}: TakeOutButtonProps) => {
+}: ItemButtonProps) => {
 	const [deleteModalVisible, setDeletModalVisible] = useState(false);
 	return (
 		<View style={styles.horizontal_flex}>

@@ -11,24 +11,24 @@ import {
 import { useCallback, useEffect, useState } from "react";
 import DefaultModal from "../molecules/DefaultModal";
 import { modalStyles } from "../../styles";
-import { Item, TakeOutDrawerProps, TakeOutList } from "../../interfaces";
+import { Item, LoginDrawerProps, TakeOutList } from "../../interfaces";
 import { Ionicons } from "@expo/vector-icons";
 import { FlatList, TextInput } from "react-native-gesture-handler";
-import SearchBar from "../atoms/SearchBar";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
 import TakeOutAcceptListItem from "../atoms/TakeOutAcceptListItem";
-import ItemTile from "../molecules/ItemTile";
-import { Action } from "../../contexts/ItemReducer";
+import ItemTile from "./Tiles/ItemTile";
+import { ItemAction } from "../../contexts/ItemReducer";
 import { usePostTakeOut } from "../../query-hooks/UseTakeOuts";
 import { UseQueryResult } from "react-query";
 import QRScanner from "./QRScanner";
+import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
 
 interface TakeOutListCreatorMainProps {
 	items: Item[];
 	storeId: number;
-	drawerProps: TakeOutDrawerProps;
-	dispatchItems: React.Dispatch<Action>;
+	drawerProps: LoginDrawerProps;
+	dispatchItems: React.Dispatch<ItemAction>;
 	getItems: UseQueryResult<Item[], unknown>;
 	setStoreId: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -55,7 +55,12 @@ const TakeOutListCreatorMain = ({
 		take_out_name: "",
 	});
 
-	const postTakeOut = usePostTakeOut({ takeOutList, drawerProps, setStoreId }); // Sends finalized data to the server
+	const postTakeOut = usePostTakeOut({
+		takeOutList,
+		drawerProps,
+		setStoreId,
+		storeId,
+	}); // Sends finalized data to the server
 
 	useEffect(() => {
 		setSelectedItemAmount(items.filter((item) => item.is_selected).length);
@@ -161,23 +166,11 @@ const TakeOutListCreatorMain = ({
 							</View>
 						</>
 					</DefaultModal>
-					<View style={styles.headerContainer}>
-						<TouchableOpacity
-							style={styles.menuIconStyle}
-							onPress={drawerProps.navigation.openDrawer}
-						>
-							<Ionicons
-								name="menu"
-								size={40}
-								color="#333"
-							/>
-						</TouchableOpacity>
-						<SearchBar
-							style={styles.searchBarContainer}
-							searchTerm={searchTerm}
-							setSearchTerm={setSearchTerm}
-						/>
-					</View>
+					<HeaderWithSearchBar
+						drawerProps={drawerProps}
+						setSearchTerm={setSearchTerm}
+						searchTerm={searchTerm}
+					/>
 					{(getItems.isLoading || getItems.isIdle) && <LoadingSpinner />}
 					{getItems.isSuccess && (
 						<>
@@ -215,9 +208,31 @@ const TakeOutListCreatorMain = ({
 									? styles.footerButton
 									: styles.inactiveFooterButton
 							}
-							onPress={() =>
-								setModalIsVisible(selectedItemAmount > 0 ? true : false)
-							}
+							onPress={() => {
+								const selectedItems = items
+									.filter((item) => item.is_selected && !item.is_unique)
+									.map((item) => ({
+										id: item.id,
+										amount: item.selected_amount,
+									}));
+
+								const selectedUniqueItems = items
+									.filter((item) => item.is_selected && item.is_unique)
+									.flatMap((item) => item.selected_unique_items);
+
+								console.log(selectedItems);
+								console.log(selectedUniqueItems);
+
+								setTakeOutList((prev) => {
+									return {
+										...prev,
+										uniqueItems: selectedUniqueItems,
+										items: selectedItems,
+									};
+								});
+
+								setModalIsVisible(selectedItemAmount > 0 ? true : false);
+							}}
 						>
 							<Ionicons
 								name="checkmark"
@@ -235,18 +250,6 @@ const TakeOutListCreatorMain = ({
 export default TakeOutListCreatorMain;
 
 const styles = StyleSheet.create({
-	headerContainer: {
-		flexDirection: "row",
-		alignItems: "center",
-	},
-	menuIconStyle: {
-		paddingLeft: 12,
-	},
-	searchBarContainer: {
-		padding: 10,
-		flex: 1,
-		backgroundColor: "#f2f2f2",
-	},
 	bottomContainer: {
 		position: "absolute",
 		bottom: 20,

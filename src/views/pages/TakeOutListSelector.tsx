@@ -1,14 +1,72 @@
-import { StyleSheet, Text, View } from "react-native";
+import { ListRenderItemInfo, StyleSheet, Text, View } from "react-native";
 import { useGetTakeOuts } from "../../query-hooks/UseTakeOuts";
+import { useCallback, useEffect, useReducer, useState } from "react";
+import { LoginDrawerProps, TakeOut } from "../../interfaces";
+import HeaderWithSearchBar from "./HeaderWithSearchBar";
+import { FlatList } from "react-native-gesture-handler";
+import TakeOutTile from "../organisms/Tiles/TakeOutTile";
+import LoadingSpinner from "../atoms/LoadingSpinner";
+import { useFocusEffect } from "@react-navigation/native";
 
-const TakeOutListSelector = () => {
+const TakeOutListSelector = (drawerProps: LoginDrawerProps) => {
+	const [searchTerm, setSearchTerm] = useState("");
 	const getTakeOuts = useGetTakeOuts();
+	const [filteredTakeOuts, setFilteredTakeOuts] = useState<TakeOut[]>([]);
+
+	useFocusEffect(
+		useCallback(() => {
+			getTakeOuts.refetch();
+		}, [])
+	);
+
+	useEffect(() => {
+		if (getTakeOuts.isSuccess) {
+			const filtered = getTakeOuts.data
+				.filter((takeOut) => {
+					return takeOut.take_out_name
+						.toLowerCase()
+						.includes(searchTerm.toLowerCase());
+				})
+				.sort((a, b) => b.id - a.id);
+			setFilteredTakeOuts(filtered);
+		}
+	}, [searchTerm, getTakeOuts.data]);
+
+	const renderRow = useCallback(({ item }: ListRenderItemInfo<TakeOut>) => {
+		return (
+			<TakeOutTile
+				takeOut={item}
+				drawerProps={drawerProps}
+			/>
+		);
+	}, []);
+
+	const keyExtractor = (takeOut: TakeOut) => takeOut.id.toString();
+
 	return (
-		<View>
-			<Text>Hali</Text>
-			{getTakeOuts.isSuccess &&
-				getTakeOuts.data &&
-				getTakeOuts.data.map((takeOut) => <Text>{takeOut.take_out_name}</Text>)}
+		<View style={{ flex: 1 }}>
+			<HeaderWithSearchBar
+				drawerProps={drawerProps}
+				searchTerm={searchTerm}
+				setSearchTerm={setSearchTerm}
+			/>
+			{getTakeOuts.isSuccess ? (
+				<>
+					<FlatList
+						data={filteredTakeOuts}
+						style={{ flex: 1 }}
+						keyExtractor={keyExtractor}
+						getItemLayout={(data, index) => ({
+							length: 80,
+							offset: 80 * (index + 1),
+							index,
+						})}
+						renderItem={renderRow}
+					/>
+				</>
+			) : (
+				<LoadingSpinner />
+			)}
 		</View>
 	);
 };

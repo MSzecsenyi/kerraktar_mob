@@ -1,6 +1,7 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { DrawerStackParamList } from "./navigation/ParamStacks";
-import { Action } from "./contexts/ItemReducer";
+import { ItemAction } from "./contexts/ItemReducer";
+import { TakeOutAction } from "./contexts/TakeOutReducer";
 export interface LoginInfo {
     email: string;
     password: string;
@@ -49,9 +50,9 @@ export interface UniqueItem {
     unique_id: string,
     alt_name: string
 }
-export interface TakeOutButtonProps {
+export interface ItemButtonProps {
 	item: Item;
-	dispatchItems: React.Dispatch<Action>;
+	dispatchItems: React.Dispatch<ItemAction>;
 	setCameraIsActive?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export interface ItemFilterBarProps {
@@ -59,9 +60,8 @@ export interface ItemFilterBarProps {
 	filteredData: Item[];
 }
 
-export type TakeOutDrawerProps = DrawerScreenProps<
-	DrawerStackParamList,
-	"TakeOutDrawer"
+export type LoginDrawerProps = DrawerScreenProps<
+	DrawerStackParamList
 >
 export interface TakeOutList {
     items: TakeOutListCommonItem[]
@@ -74,12 +74,23 @@ export interface TakeOutListCommonItem {
     id: number
     amount: number
 }
-
 export interface TakeOut {
     id: number
     start_date: Date
     end_date: Date | null
     user: string
-    store_id: number
+    store: number
     take_out_name: string
+}
+export interface TakeOutButtonProps {
+    drawerProps?: LoginDrawerProps
+    takeOut: TakeOut
+}
+
+export interface TakenOutItem {
+    id: number
+    name: string
+    amount: number
+    unique_items: UniqueItem[]
+    is_checked: boolean
 }

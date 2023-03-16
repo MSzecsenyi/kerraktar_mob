@@ -1,11 +1,11 @@
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
-import { TakeOutButtonProps } from "../../interfaces";
+import { ItemButtonProps } from "../../interfaces";
 import AmountSelector from "./AmountSelector";
 
 const TakeOutCommonSelectorButton = ({
 	item,
 	dispatchItems,
-}: TakeOutButtonProps) => {
+}: ItemButtonProps) => {
 	return (
 		<View style={styles.horizontal_flex}>
 			<Text> {item.selected_amount} </Text>

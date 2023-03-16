@@ -5,14 +5,14 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { Store, TakeOutDrawerProps } from "../../interfaces";
+import { Store, LoginDrawerProps } from "../../interfaces";
 import { FlatList, TouchableHighlight } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
 
 interface StoreSelectorProps {
 	setStoreId: React.Dispatch<React.SetStateAction<number>>;
 	stores: Store[];
-	drawerProps: TakeOutDrawerProps;
+	drawerProps: LoginDrawerProps;
 }
 
 const StoreSelector = ({

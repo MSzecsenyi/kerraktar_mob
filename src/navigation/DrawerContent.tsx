@@ -13,7 +13,7 @@ const DrawerContent = () => {
 	const { loggedInUser } = useContext(UserDataContext);
 	const navigation =
 		useNavigation<
-			DrawerNavigationProp<DrawerStackParamList, "TakeOutDrawer">
+			DrawerNavigationProp<DrawerStackParamList, "TakeOutCreatorDrawer">
 		>();
 
 	return (
@@ -30,16 +30,14 @@ const DrawerContent = () => {
 					<Text style={styles.buttonGroupText}>Eszköz kivétel</Text>
 					<TouchableOpacity
 						style={styles.drawerButton}
-						onPress={() =>
-							navigation.navigate("TakeOutDrawer", { page: "CreateTakeOut" })
-						}
+						onPress={() => navigation.navigate("TakeOutCreatorDrawer", {})}
 					>
 						<Text style={styles.buttonText}> - Új lista</Text>
 					</TouchableOpacity>
 					<TouchableOpacity
 						style={styles.drawerButton}
 						onPress={() => {
-							navigation.navigate("TakeOutDrawer", { page: "SelectTakeOut" });
+							navigation.navigate("TakeOutSelectorDrawer", {});
 						}}
 					>
 						<Text style={styles.buttonText}> - Eddigi listák</Text>

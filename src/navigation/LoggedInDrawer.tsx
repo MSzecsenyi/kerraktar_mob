@@ -3,6 +3,7 @@ import { DrawerStackParamList } from "./ParamStacks";
 import DrawerContent from "./DrawerContent";
 import TakeOutListSelector from "../views/pages/TakeOutListSelector";
 import TakeOutListCreatorManager from "../views/pages/TakeOutListCreatorManager";
+import RequestSelector from "../views/pages/RequestSelector";
 
 export default function LoggedInDrawer() {
 	const Drawer = createDrawerNavigator<DrawerStackParamList>();
@@ -21,6 +22,10 @@ export default function LoggedInDrawer() {
 			<Drawer.Screen
 				name="TakeOutSelectorDrawer"
 				component={TakeOutListSelector}
+			/>
+			<Drawer.Screen
+				name="RequestSelectorDrawer"
+				component={RequestSelector}
 			/>
 		</Drawer.Navigator>
 	);

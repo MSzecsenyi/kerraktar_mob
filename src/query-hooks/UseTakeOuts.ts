@@ -1,11 +1,10 @@
 import { TakenOutItem } from './../interfaces';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { API_URL } from '../constants';
 import { TakeOut, LoginDrawerProps, TakeOutList } from '../interfaces';
 import { useContext } from 'react';
 import { UserDataContext } from '../contexts/UserDataContext';
-
 interface usePostTakeOutProps {
     takeOutList: TakeOutList
 	drawerProps: LoginDrawerProps
@@ -53,7 +52,7 @@ export function useGetTakeOuts() {
     return useQuery(['takeOuts'], () => getTakeOuts(loggedInUser.token))}
 
 
-//Return a specific takeout based on id
+//Get a specific takeout based on id
 async function getDetailedTakeOut(token: string, takeOutId: number): Promise<TakenOutItem[]>{
     try {
         const response = await axios.get(API_URL + `takeouts/${takeOutId}`, {
@@ -61,7 +60,6 @@ async function getDetailedTakeOut(token: string, takeOutId: number): Promise<Tak
                 'Authorization': `Bearer ${token}`
             }
         });
-        // console.log(response.data)
         return response.data;
     } catch (error) {
         console.error(error); throw error;
@@ -71,3 +69,36 @@ async function getDetailedTakeOut(token: string, takeOutId: number): Promise<Tak
 export function useGetDetailedTakeOut(takeOutId: number) {
     const {loggedInUser} = useContext(UserDataContext);
     return useQuery(['takeOut', takeOutId], () => getDetailedTakeOut(loggedInUser.token, takeOutId))}
+
+
+//Return a specific takeout to the store
+const putTakeOut = (takeOutId: number, token: string) => axios.put(API_URL + `takeouts/${takeOutId}`,null,{
+    headers: {
+        'Authorization': `Bearer ${token}`    
+    }
+})
+
+interface usePutTakeOutProps {
+    takeOutId: number
+	setChosenTakeOut: React.Dispatch<React.SetStateAction<number>>
+}
+
+export function usePutTakeOut({takeOutId, setChosenTakeOut}: usePutTakeOutProps) {
+    const {loggedInUser} = useContext(UserDataContext);
+  const queryClient = useQueryClient();
+
+    console.log(takeOutId)
+    return useMutation(() => putTakeOut(takeOutId, loggedInUser.token), {
+        onSuccess: (response) => {
+            const oldData = queryClient.getQueryData<TakeOut[]>('takeOuts');
+            const updatedTakeOut = response.data;
+            if (oldData) {
+              const newData = oldData.map((takeOut) => {
+                return takeOut.id === updatedTakeOut.id ? updatedTakeOut : takeOut;
+              });
+              queryClient.setQueryData('takeOuts', newData);
+            }
+          setChosenTakeOut(-1)
+          }
+    })
+}

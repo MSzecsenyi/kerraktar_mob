@@ -3,12 +3,9 @@ import { TakeOutButtonProps } from "../../../interfaces";
 import { Ionicons } from "@expo/vector-icons";
 import { memo, useContext, useState } from "react";
 import { UserDataContext } from "../../../contexts/UserDataContext";
-import TakeOutDetails from "../TakeOutDetails";
-import FullScreenModal from "../../molecules/FullScreenModal";
 
-const TakeOutTile = ({ takeOut }: TakeOutButtonProps) => {
+const TakeOutTile = ({ takeOut, setChosenTakeOut }: TakeOutButtonProps) => {
 	const loggedInUser = useContext(UserDataContext);
-	const [openModal, setOpenModal] = useState(false);
 	const getTextColor = (color: string) =>
 		takeOut.end_date ? {} : { color: color };
 	return (
@@ -16,7 +13,7 @@ const TakeOutTile = ({ takeOut }: TakeOutButtonProps) => {
 			style={
 				takeOut.end_date ? styles.card_container_done : styles.card_container_ip
 			}
-			onPress={() => setOpenModal(true)}
+			onPress={() => setChosenTakeOut(takeOut.id)}
 		>
 			<>
 				<View style={styles.info_part}>
@@ -24,8 +21,6 @@ const TakeOutTile = ({ takeOut }: TakeOutButtonProps) => {
 						<Text style={[styles.card_title, getTextColor("white")]}>
 							{takeOut.take_out_name}
 						</Text>
-						<Text>{takeOut.id}</Text>
-						{/* <Text style={getTextColor("white")}>{takeOut.store}</Text> */}
 					</View>
 					<View style={styles.info_row}>
 						<Text style={getTextColor("white")}>
@@ -51,12 +46,6 @@ const TakeOutTile = ({ takeOut }: TakeOutButtonProps) => {
 						color={takeOut.end_date ? "black" : "white"}
 					/>
 				</View>
-				<FullScreenModal
-					visible={openModal}
-					closeFn={() => setOpenModal(false)}
-				>
-					<TakeOutDetails takeOut={takeOut} />
-				</FullScreenModal>
 			</>
 		</TouchableHighlight>
 	);

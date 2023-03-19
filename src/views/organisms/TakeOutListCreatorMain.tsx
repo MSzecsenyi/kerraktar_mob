@@ -9,10 +9,10 @@ import {
 	View,
 } from "react-native";
 import { useCallback, useEffect, useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
 import DefaultModal from "../molecules/DefaultModal";
 import { modalStyles } from "../../styles";
 import { Item, LoginDrawerProps, TakeOutList } from "../../interfaces";
-import { Ionicons } from "@expo/vector-icons";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
@@ -23,6 +23,8 @@ import { usePostTakeOut } from "../../query-hooks/UseTakeOuts";
 import { UseQueryResult } from "react-query";
 import QRScanner from "./QRScanner";
 import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
+import BottomControlButtons from "./BottomControlButtons";
+import BottomCheckButton from "../atoms/BottomCheckButton";
 
 interface TakeOutListCreatorMainProps {
 	items: Item[];
@@ -82,7 +84,6 @@ const TakeOutListCreatorMain = ({
 			"hardwareBackPress",
 			backAction
 		);
-
 		return () => {
 			kListener.remove();
 			backHandler.remove();
@@ -100,6 +101,33 @@ const TakeOutListCreatorMain = ({
 	}, []);
 
 	const keyExtractor = (item: Item) => item.id.toString();
+
+	const acceptButtonOnPress = () => {
+		const selectedItems = items
+			.filter((item) => item.is_selected && !item.is_unique)
+			.map((item) => ({
+				id: item.id,
+				amount: item.selected_amount,
+			}));
+
+		const selectedUniqueItems = items
+			.filter((item) => item.is_selected && item.is_unique)
+			.flatMap((item) => item.selected_unique_items);
+
+		console.log(selectedItems);
+		console.log(selectedUniqueItems);
+
+		setTakeOutList((prev) => {
+			return {
+				...prev,
+				uniqueItems: selectedUniqueItems,
+				items: selectedItems,
+			};
+		});
+
+		setModalIsVisible(selectedItemAmount > 0 ? true : false);
+	};
+
 	return (
 		<>
 			{cameraIsActive && getItems.isSuccess ? (
@@ -191,56 +219,24 @@ const TakeOutListCreatorMain = ({
 							/>
 						</>
 					)}
-					<View style={styles.bottomContainer}>
-						<TouchableOpacity
-							style={styles.footerButton}
-							onPress={() => setCameraIsActive(true)}
-						>
-							<Ionicons
-								name="camera"
-								size={24}
-								color="#fff"
+					<BottomControlButtons setCameraIsActive={setCameraIsActive}>
+						<>
+							<TouchableOpacity
+								style={styles.footerButton}
+								onPress={() => setCameraIsActive(true)}
+							>
+								<Ionicons
+									name="camera"
+									size={24}
+									color="#fff"
+								/>
+							</TouchableOpacity>
+							<BottomCheckButton
+								acceptButtonIsActive={selectedItemAmount > 0}
+								acceptButtonOnPress={acceptButtonOnPress}
 							/>
-						</TouchableOpacity>
-						<TouchableOpacity
-							style={
-								selectedItemAmount > 0
-									? styles.footerButton
-									: styles.inactiveFooterButton
-							}
-							onPress={() => {
-								const selectedItems = items
-									.filter((item) => item.is_selected && !item.is_unique)
-									.map((item) => ({
-										id: item.id,
-										amount: item.selected_amount,
-									}));
-
-								const selectedUniqueItems = items
-									.filter((item) => item.is_selected && item.is_unique)
-									.flatMap((item) => item.selected_unique_items);
-
-								console.log(selectedItems);
-								console.log(selectedUniqueItems);
-
-								setTakeOutList((prev) => {
-									return {
-										...prev,
-										uniqueItems: selectedUniqueItems,
-										items: selectedItems,
-									};
-								});
-
-								setModalIsVisible(selectedItemAmount > 0 ? true : false);
-							}}
-						>
-							<Ionicons
-								name="checkmark"
-								size={35}
-								color="#fff"
-							/>
-						</TouchableOpacity>
-					</View>
+						</>
+					</BottomControlButtons>
 				</>
 			)}
 		</>
@@ -250,25 +246,8 @@ const TakeOutListCreatorMain = ({
 export default TakeOutListCreatorMain;
 
 const styles = StyleSheet.create({
-	bottomContainer: {
-		position: "absolute",
-		bottom: 20,
-		left: 0,
-		right: 0,
-		flexDirection: "row",
-		justifyContent: "center",
-	},
 	footerButton: {
 		backgroundColor: "#007aff",
-		width: 60,
-		height: 60,
-		borderRadius: 30,
-		justifyContent: "center",
-		alignItems: "center",
-		marginHorizontal: 20,
-	},
-	inactiveFooterButton: {
-		backgroundColor: "lightgray",
 		width: 60,
 		height: 60,
 		borderRadius: 30,

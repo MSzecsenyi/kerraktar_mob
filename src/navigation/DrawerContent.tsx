@@ -27,20 +27,21 @@ const DrawerContent = () => {
 				</View>
 
 				<ScrollView>
-					<Text style={styles.buttonGroupText}>Eszköz kivétel</Text>
-					<TouchableOpacity
-						style={styles.drawerButton}
-						onPress={() => navigation.navigate("TakeOutCreatorDrawer", {})}
-					>
-						<Text style={styles.buttonText}> - Új lista</Text>
-					</TouchableOpacity>
 					<TouchableOpacity
 						style={styles.drawerButton}
 						onPress={() => {
 							navigation.navigate("TakeOutSelectorDrawer", {});
 						}}
 					>
-						<Text style={styles.buttonText}> - Eddigi listák</Text>
+						<Text style={styles.buttonText}> Eszközkivétel </Text>
+					</TouchableOpacity>
+					<TouchableOpacity
+						style={styles.drawerButton}
+						onPress={() => {
+							navigation.navigate("RequestSelectorDrawer", {});
+						}}
+					>
+						<Text style={styles.buttonText}> Eszközfoglalás</Text>
 					</TouchableOpacity>
 				</ScrollView>
 			</View>
@@ -86,13 +87,6 @@ const styles = StyleSheet.create({
 		paddingHorizontal: 15,
 		borderBottomColor: "#fff",
 		borderBottomWidth: 4,
-	},
-	buttonGroupText: {
-		color: "#333",
-		fontSize: 18,
-		fontWeight: "bold",
-		lineHeight: 50,
-		marginLeft: 5,
 	},
 	buttonText: {
 		color: "#333",

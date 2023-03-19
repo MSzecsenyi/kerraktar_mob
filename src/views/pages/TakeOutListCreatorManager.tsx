@@ -1,4 +1,4 @@
-import { View } from "react-native";
+import { BackHandler, View } from "react-native";
 import { useGetItems } from "../../query-hooks/UseItems";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { LoginDrawerProps } from "../../interfaces";
@@ -15,6 +15,20 @@ const TakeOutListCreatorManager = (drawerProps: LoginDrawerProps) => {
 	const [items, dispatchItems] = useReducer(itemReducer, []); // Mutates selected items
 
 	const getItems = useGetItems(storeId);
+
+	useEffect(() => {
+		const backAction = () => {
+			drawerProps.navigation.navigate("TakeOutSelectorDrawer", {});
+			return true;
+		};
+		const backHandler = BackHandler.addEventListener(
+			"hardwareBackPress",
+			backAction
+		);
+		return () => {
+			backHandler.remove();
+		};
+	}, []);
 
 	useEffect(() => {
 		if (getItems.isSuccess)

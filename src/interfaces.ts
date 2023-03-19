@@ -83,8 +83,9 @@ export interface TakeOut {
     take_out_name: string
 }
 export interface TakeOutButtonProps {
-    drawerProps?: LoginDrawerProps
     takeOut: TakeOut
+    setChosenTakeOut: React.Dispatch<React.SetStateAction<number>>
+    drawerProps: LoginDrawerProps
 }
 
 export interface TakenOutItem {
@@ -93,4 +94,12 @@ export interface TakenOutItem {
     amount: number
     unique_items: UniqueItem[]
     is_checked: boolean
+}
+
+export interface Request {
+    id: number
+    start_date: Date
+    end_date: Date
+    request_name: string
+    is_conflicted: boolean 
 }

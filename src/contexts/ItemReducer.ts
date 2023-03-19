@@ -15,7 +15,6 @@ export const itemReducer = (items: Item[], action: ItemAction ) => {
         case "CREATE_ITEMS":
             return action.payload.items;
         case "ADD_ITEM":
-            console.log(action.payload)
             var newItems = items.map((item) => {
                 if(item.id === action.payload.id) {
                     return {

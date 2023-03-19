@@ -74,7 +74,9 @@ const TakeOutListSelector = (drawerProps: LoginDrawerProps) => {
 								<BottomCreateNewButton
 									text="Új kivétel"
 									onPress={() =>
-										drawerProps.navigation.navigate("TakeOutCreatorDrawer", {})
+										drawerProps.navigation.navigate("TakeOutStack", {
+											screen: "TakeOutCreatorScreen",
+										})
 									}
 								/>
 							</BottomControlButtons>

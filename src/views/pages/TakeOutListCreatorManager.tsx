@@ -18,7 +18,9 @@ const TakeOutListCreatorManager = (drawerProps: LoginDrawerProps) => {
 
 	useEffect(() => {
 		const backAction = () => {
-			drawerProps.navigation.navigate("TakeOutSelectorDrawer", {});
+			drawerProps.navigation.navigate("TakeOutStack", {
+				screen: "TakeOutSelectorScreen",
+			});
 			return true;
 		};
 		const backHandler = BackHandler.addEventListener(

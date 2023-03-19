@@ -13,7 +13,6 @@ const TakeOutDeatilsItemTile = ({
 	toggleItemChecked,
 	editable,
 }: TakeOutDeatilsItemTileProps) => {
-	console.log(editable);
 	return (
 		<View
 			key={item.id}

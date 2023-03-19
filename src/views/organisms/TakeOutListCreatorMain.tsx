@@ -114,9 +114,6 @@ const TakeOutListCreatorMain = ({
 			.filter((item) => item.is_selected && item.is_unique)
 			.flatMap((item) => item.selected_unique_items);
 
-		console.log(selectedItems);
-		console.log(selectedUniqueItems);
-
 		setTakeOutList((prev) => {
 			return {
 				...prev,

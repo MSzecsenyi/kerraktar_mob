@@ -1,5 +1,4 @@
 export type DrawerStackParamList = {
-    TakeOutCreatorDrawer: {}
-    TakeOutSelectorDrawer: {}
+    TakeOutStack: {screen: "TakeOutCreatorScreen" | "TakeOutSelectorScreen"}
     RequestSelectorDrawer: {}
   };

@@ -23,7 +23,7 @@ export function usePostTakeOut({takeOutList, drawerProps, setStoreId, storeId}: 
     const {loggedInUser} = useContext(UserDataContext);
     return useMutation(() => postTakeOut(loggedInUser.token, takeOutList), {
         onSuccess: () => {
-            drawerProps.navigation.navigate("TakeOutSelectorDrawer", {})
+            drawerProps.navigation.navigate("TakeOutStack", {})
             setStoreId(-1)
         },
         onError: ((error) => console.log(error))
@@ -87,7 +87,6 @@ export function usePutTakeOut({takeOutId, setChosenTakeOut}: usePutTakeOutProps)
     const {loggedInUser} = useContext(UserDataContext);
   const queryClient = useQueryClient();
 
-    console.log(takeOutId)
     return useMutation(() => putTakeOut(takeOutId, loggedInUser.token), {
         onSuccess: (response) => {
             const oldData = queryClient.getQueryData<TakeOut[]>('takeOuts');

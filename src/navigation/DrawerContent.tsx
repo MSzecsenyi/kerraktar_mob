@@ -12,9 +12,7 @@ const DrawerContent = () => {
 	const logoutUser = useLogoutUser();
 	const { loggedInUser } = useContext(UserDataContext);
 	const navigation =
-		useNavigation<
-			DrawerNavigationProp<DrawerStackParamList, "TakeOutCreatorDrawer">
-		>();
+		useNavigation<DrawerNavigationProp<DrawerStackParamList, "TakeOutStack">>();
 
 	return (
 		<View style={styles.mainContainer}>
@@ -30,7 +28,7 @@ const DrawerContent = () => {
 					<TouchableOpacity
 						style={styles.drawerButton}
 						onPress={() => {
-							navigation.navigate("TakeOutSelectorDrawer", {});
+							navigation.navigate("TakeOutStack", {});
 						}}
 					>
 						<Text style={styles.buttonText}> Eszközkivétel </Text>

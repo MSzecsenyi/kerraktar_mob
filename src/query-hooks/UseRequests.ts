@@ -2,28 +2,28 @@ import { TakenOutItem } from './../interfaces';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { API_URL } from '../constants';
-import { TakeOut, LoginDrawerProps, TakeOutList } from '../interfaces';
+import { Request, LoginDrawerProps, RequestList } from '../interfaces';
 import { useContext } from 'react';
 import { UserDataContext } from '../contexts/UserDataContext';
-interface usePostTakeOutProps {
-    takeOutList: TakeOutList
+interface usePostRequestProps {
+    requestList: RequestList
 	drawerProps: LoginDrawerProps
 	setStoreId: React.Dispatch<React.SetStateAction<number>>
     storeId: number
 }
 
-//Create a new takeout
-const postTakeOut = (token: string, takeOutList: TakeOutList) => axios.post(API_URL + 'takeouts',takeOutList,{
+//Create a new request
+const postRequest = (token: string, requestList: RequestList) => axios.post(API_URL + 'requests',requestList,{
     headers: {
         'Authorization': `Bearer ${token}`    
     }
 })
 
-export function usePostTakeOut({takeOutList, drawerProps, setStoreId, storeId}: usePostTakeOutProps){
+export function usePostRequest({requestList, drawerProps, setStoreId, storeId}: usePostRequestProps){
     const {loggedInUser} = useContext(UserDataContext);
-    return useMutation(() => postTakeOut(loggedInUser.token, takeOutList), {
+    return useMutation(() => postRequest(loggedInUser.token, requestList), {
         onSuccess: () => {
-            drawerProps.navigation.navigate("TakeOutStack", {})
+            drawerProps.navigation.navigate("RequestSelectorDrawer", {})
             setStoreId(-1)
         },
         onError: ((error) => console.log(error))
@@ -31,12 +31,12 @@ export function usePostTakeOut({takeOutList, drawerProps, setStoreId, storeId}: 
     }); 
 }
 
-//Get all previous takeouts. 
-//If user is group:         returns all takeouts made by him
-//If user is storekeeper:   returns all takeouts made from their stores
-async function getTakeOuts(token: string): Promise<TakeOut[]> {
+//Get all previous requests. 
+//If user is group:         returns all requests made by him
+//If user is storekeeper:   returns all requests made from their stores
+async function getRequests(token: string): Promise<Request[]> {
     try {
-        const response = await axios.get(API_URL + `takeouts`, {
+        const response = await axios.get(API_URL + `requests`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -47,15 +47,15 @@ async function getTakeOuts(token: string): Promise<TakeOut[]> {
     }
     }
 
-export function useGetTakeOuts() {
+export function useGetRequests() {
     const {loggedInUser} = useContext(UserDataContext);
-    return useQuery(['takeOuts'], () => getTakeOuts(loggedInUser.token))}
+    return useQuery(['requests'], () => getRequests(loggedInUser.token))}
 
 
-//Get a specific takeout based on id
-async function getDetailedTakeOut(token: string, takeOutId: number): Promise<TakenOutItem[]>{
+//Get a specific request based on id
+async function getDetailedRequest(token: string, requestId: number): Promise<TakenOutItem[]>{
     try {
-        const response = await axios.get(API_URL + `takeouts/${takeOutId}`, {
+        const response = await axios.get(API_URL + `requests/${requestId}`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
@@ -66,38 +66,38 @@ async function getDetailedTakeOut(token: string, takeOutId: number): Promise<Tak
     }
 }
 
-export function useGetDetailedTakeOut(takeOutId: number) {
+export function useGetDetailedRequest(requestId: number) {
     const {loggedInUser} = useContext(UserDataContext);
-    return useQuery(['takeOut', takeOutId], () => getDetailedTakeOut(loggedInUser.token, takeOutId))}
+    return useQuery(['request', requestId], () => getDetailedRequest(loggedInUser.token, requestId))}
 
 
-//Return a specific takeout to the store
-const putTakeOut = (takeOutId: number, token: string) => axios.put(API_URL + `takeouts/${takeOutId}`,null,{
+//Return a specific request to the store
+const putRequest = (requestId: number, token: string) => axios.put(API_URL + `requests/${requestId}`,null,{
     headers: {
         'Authorization': `Bearer ${token}`    
     }
 })
 
-interface usePutTakeOutProps {
-    takeOutId: number
-	setChosenTakeOut: React.Dispatch<React.SetStateAction<number>>
+interface usePutRequestProps {
+    requestId: number
+	setChosenRequest: React.Dispatch<React.SetStateAction<number>>
 }
 
-export function usePutTakeOut({takeOutId, setChosenTakeOut}: usePutTakeOutProps) {
+export function usePutRequest({requestId, setChosenRequest}: usePutRequestProps) {
     const {loggedInUser} = useContext(UserDataContext);
   const queryClient = useQueryClient();
 
-    return useMutation(() => putTakeOut(takeOutId, loggedInUser.token), {
+    return useMutation(() => putRequest(requestId, loggedInUser.token), {
         onSuccess: (response) => {
-            const oldData = queryClient.getQueryData<TakeOut[]>('takeOuts');
-            const updatedTakeOut = response.data;
+            const oldData = queryClient.getQueryData<Request[]>('requests');
+            const updatedRequest = response.data;
             if (oldData) {
-              const newData = oldData.map((takeOut) => {
-                return takeOut.id === updatedTakeOut.id ? updatedTakeOut : takeOut;
+              const newData = oldData.map((request) => {
+                return request.id === updatedRequest.id ? updatedRequest : request;
               });
-              queryClient.setQueryData('takeOuts', newData);
+              queryClient.setQueryData('requests', newData);
             }
-          setChosenTakeOut(-1)
+          setChosenRequest(-1)
           }
     })
 }

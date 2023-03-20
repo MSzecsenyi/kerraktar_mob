@@ -1,8 +1,8 @@
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { DrawerStackParamList } from "./ParamStacks";
 import DrawerContent from "./DrawerContent";
-import RequestSelector from "../views/pages/RequestSelector";
 import TakeOutStack from "./TakeOutStack";
+import RequestStack from "./RequestStack";
 
 export default function LoggedInDrawer() {
 	const Drawer = createDrawerNavigator<DrawerStackParamList>();
@@ -13,6 +13,7 @@ export default function LoggedInDrawer() {
 				headerShown: false,
 			}}
 			drawerContent={() => <DrawerContent />}
+			initialRouteName="RequestSelectorDrawer"
 		>
 			<Drawer.Screen
 				name="TakeOutStack"
@@ -20,7 +21,7 @@ export default function LoggedInDrawer() {
 			/>
 			<Drawer.Screen
 				name="RequestSelectorDrawer"
-				component={RequestSelector}
+				component={RequestStack}
 			/>
 		</Drawer.Navigator>
 	);

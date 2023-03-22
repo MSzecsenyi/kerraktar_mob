@@ -1,6 +1,6 @@
 import { StyleSheet, View, Text } from "react-native";
 import { useContext } from "react";
-import { useLogoutUser } from "../query-hooks/UseLoginUser";
+import { useLogoutUser } from "../query-hooks/useLoginUser";
 import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { UserDataContext } from "../contexts/UserDataContext";
 import { DrawerNavigationProp } from "@react-navigation/drawer";

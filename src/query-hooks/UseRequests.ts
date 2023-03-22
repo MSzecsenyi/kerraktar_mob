@@ -2,7 +2,7 @@ import { TakenOutItem } from './../interfaces';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { API_URL } from '../constants';
-import { Request, LoginDrawerProps, RequestList } from '../interfaces';
+import { ItemRequest, LoginDrawerProps, RequestList } from '../interfaces';
 import { useContext } from 'react';
 import { UserDataContext } from '../contexts/UserDataContext';
 interface usePostRequestProps {
@@ -34,13 +34,14 @@ export function usePostRequest({requestList, drawerProps, setStoreId, storeId}: 
 //Get all previous requests. 
 //If user is group:         returns all requests made by him
 //If user is storekeeper:   returns all requests made from their stores
-async function getRequests(token: string): Promise<Request[]> {
+async function getRequests(token: string): Promise<ItemRequest[]> {
     try {
         const response = await axios.get(API_URL + `requests`, {
             headers: {
                 'Authorization': `Bearer ${token}`
             }
         });
+        console.log(response.data)
         return response.data.data;
     } catch (error) {
         console.error(error); throw error;
@@ -89,7 +90,7 @@ export function usePutRequest({requestId, setChosenRequest}: usePutRequestProps)
 
     return useMutation(() => putRequest(requestId, loggedInUser.token), {
         onSuccess: (response) => {
-            const oldData = queryClient.getQueryData<Request[]>('requests');
+            const oldData = queryClient.getQueryData<ItemRequest[]>('requests');
             const updatedRequest = response.data;
             if (oldData) {
               const newData = oldData.map((request) => {

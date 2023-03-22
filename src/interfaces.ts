@@ -96,10 +96,12 @@ export interface TakenOutItem {
     is_checked: boolean
 }
 
-export interface Request {
+export interface ItemRequest {
     id: number
     start_date: Date
     end_date: Date
     request_name: string
     is_conflicted: boolean 
+    store: string
+    user: number
 }

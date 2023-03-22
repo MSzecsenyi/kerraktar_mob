@@ -1,7 +1,7 @@
 import { StyleSheet, Text, TextInput, View } from "react-native";
 import { useState } from "react";
 import { LoginInfo } from "../../interfaces";
-import { useLoginUser } from "../../query-hooks/UseLoginUser";
+import { useLoginUser } from "../../query-hooks/useLoginUser";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 import { TouchableOpacity } from "react-native";
 

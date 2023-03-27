@@ -5,6 +5,8 @@ import LoadingSpinner from "../atoms/LoadingSpinner";
 import { ItemRequest, LoginDrawerProps } from "../../interfaces";
 import { useCallback, useEffect, useState } from "react";
 import RequestTile from "../organisms/Tiles/RequestTile";
+import BottomCreateNewButton from "../atoms/BottomCreateNewButton";
+import BottomControlButtons from "../organisms/BottomControlButtons";
 
 const RequestSelector = (drawerProps: LoginDrawerProps) => {
 	const [searchTerm, setSearchTerm] = useState("");
@@ -44,7 +46,6 @@ const RequestSelector = (drawerProps: LoginDrawerProps) => {
 				<>
 					<HeaderWithSearchBar drawerProps={drawerProps} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 					<View style={{flex: 1}}>
-						<Text>RequestSelector</Text>
 						<FlatList
 								data={filteredRequests}
 								style={{ flex: 1 }}
@@ -56,6 +57,16 @@ const RequestSelector = (drawerProps: LoginDrawerProps) => {
 								})}
 								renderItem={renderRow}
 							/>
+							<BottomControlButtons>
+								<BottomCreateNewButton
+									text="Új kivétel"
+									onPress={() =>
+										drawerProps.navigation.navigate("RequestStack", {
+											screen: "RequestCreatorScreen",
+										})
+									}
+								/>
+							</BottomControlButtons>
 					</View>
 				</>
 			) : (

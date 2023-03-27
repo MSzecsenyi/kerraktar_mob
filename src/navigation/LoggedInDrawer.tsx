@@ -13,14 +13,14 @@ export default function LoggedInDrawer() {
 				headerShown: false,
 			}}
 			drawerContent={() => <DrawerContent />}
-			initialRouteName="RequestSelectorDrawer"
+			initialRouteName="RequestStack"
 		>
 			<Drawer.Screen
 				name="TakeOutStack"
 				component={TakeOutStack}
 			/>
 			<Drawer.Screen
-				name="RequestSelectorDrawer"
+				name="RequestStack"
 				component={RequestStack}
 			/>
 		</Drawer.Navigator>

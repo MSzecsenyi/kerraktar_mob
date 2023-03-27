@@ -1,4 +1,5 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import RequestListCreatorManager from "../views/pages/RequestCreatorManager";
 import RequestSelector from "../views/pages/RequestSelector";
 
 export default function TakeOutStack() {
@@ -18,6 +19,10 @@ export default function TakeOutStack() {
 			<RequestStack.Screen
 				name="RequestSelectorScreen"
 				component={RequestSelector}
+			/>
+			<RequestStack.Screen
+				name="RequestCreatorScreen"
+				component={RequestListCreatorManager}
 			/>
 		</RequestStack.Navigator>
 	);

@@ -58,17 +58,19 @@ export interface ItemFilterBarProps {
 }
 
 export type LoginDrawerProps = DrawerScreenProps<DrawerStackParamList>;
+
 export interface TakeOutList {
-    items: TakeOutListCommonItem[];
+    items: AcceptListCommonItem[];
     uniqueItems: string[];
     store_id: number;
     take_out_name: string;
 }
 
-export interface TakeOutListCommonItem {
+export interface AcceptListCommonItem {
     id: number;
     amount: number;
 }
+
 export interface TakeOut {
     id: number;
     start_date: Date;
@@ -106,13 +108,11 @@ export interface DateRange {
 }
 
 export interface RequestList {
-    id: number
     start_date: Date
     end_date: Date
-    user: string
-    store: string
+    store_id: number
     request_name: string
-    items: RequestItem[]
+    items: AcceptListCommonItem[]
 }
 
 export interface RequestItem {

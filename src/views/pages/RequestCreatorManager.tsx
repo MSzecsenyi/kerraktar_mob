@@ -68,12 +68,7 @@ const RequestListCreatorManager = (drawerProps: LoginDrawerProps) => {
                             drawerProps={drawerProps}
                             dispatchRequestItems={dispatchRequestItems} 
                             getRequestItems={getRequestItems}
-                            setStoreId={function (value: SetStateAction<number>): void {
-                                throw new Error("Function not implemented.");
-                            } }                // drawerProps={drawerProps}
-                // dispatchItems={dispatchItems}
-                // getRequestItems={getRequestItems}
-                // setStoreId={setStoreId}
+                            dateRange={dateRange}
                 />
             )}
         </View>

@@ -3,23 +3,21 @@ import {
 	Keyboard,
 	ListRenderItemInfo,
 	StyleSheet,
-	Text,
-	TouchableOpacity,
 } from "react-native";
 import { useCallback, useEffect, useState } from "react";
 import DefaultModal from "../molecules/DefaultModal";
-import { modalStyles } from "../../styles";
-import { LoginDrawerProps, RequestItem } from "../../interfaces";
+import { DateRange, LoginDrawerProps, RequestItem, RequestList } from "../../interfaces";
 import { FlatList } from "react-native-gesture-handler";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
-// import { usePostRequest } from "../../query-hooks/UseRequests";
 import { UseQueryResult } from "react-query";
 import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
 import BottomControlButtons from "./BottomControlButtons";
 import BottomCheckButton from "../atoms/BottomCheckButton";
 import { RequestItemAction } from "../../contexts/RequestItemReducer";
 import RequestItemTile from "./Tiles/RequestItemTile";
+import RequestAcceptList from "./RequestAcceptList";
+import { usePostRequest } from "../../query-hooks/UseRequests";
 
 interface RequestListCreatorMainProps {
 	requestItems: RequestItem[];
@@ -27,7 +25,7 @@ interface RequestListCreatorMainProps {
 	drawerProps: LoginDrawerProps;
 	dispatchRequestItems: React.Dispatch<RequestItemAction>;
 	getRequestItems: UseQueryResult<RequestItem[], unknown>;
-	setStoreId: React.Dispatch<React.SetStateAction<number>>;
+	dateRange: DateRange
 }
 
 const RequestListCreatorMain = ({
@@ -36,27 +34,25 @@ const RequestListCreatorMain = ({
 	drawerProps,
 	dispatchRequestItems,
 	getRequestItems,
-	setStoreId,
+	dateRange
 }: RequestListCreatorMainProps) => {
 	const [modalIsVisible, setModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
 	const [searchTerm, setSearchTerm] = useState(""); // The text typed in the header search bar. SHown items are filtered by name based on this
 	const [filteredItems, setFilteredItems] = useState<RequestItem[]>([]); // Displayed data
 	const [selectedItemAmount, setSelectedItemAmount] = useState(0); // Counts selected items
-	const [listSendLoading, setListSentLoading] = useState(false);
-	// const [requestList, setRequestList] = useState<RequestList>({
-	// 	// Final accept data
-	// 	items: [],
-	// 	uniqueItems: [],
-	// 	store_id: storeId,
-	// 	take_out_name: "",
-	// });
+	const [requestList, setRequestList] = useState<RequestList>({
+		// Final accept data
+		items: [],
+		store_id: storeId,
+		request_name: "",
+		start_date: dateRange.startDate,
+		end_date: dateRange.endDate,
+	});
 
-	// const postRequest = usePostRequest({
-	// 	requestList,
-	// 	drawerProps,
-	// 	setStoreId,
-	// 	storeId,
-	// }); // Sends finalized data to the server
+	const postRequest = usePostRequest({
+		requestList,
+		drawerProps,
+	}); // Sends finalized data to the server
 
 	useEffect(() => {
 		setSelectedItemAmount(requestItems.filter((item) => item.is_selected).length);
@@ -93,15 +89,19 @@ const RequestListCreatorMain = ({
 	const keyExtractor = (item: RequestItem) => item.id.toString();
 
 	const acceptButtonOnPress = () => {
-		console.log("Accept button pressed")
+		const selectedItems = requestItems
+			.filter((item) => item.is_selected)
+			.map((item) => ({
+				id: item.id,
+				amount: item.selected_amount,
+			}));
 
-		// setRequestList((prev) => {
-		// 	return {
-		// 		...prev,
-		// 		uniqueItems: selectedUniqueItems,
-		// 		items: selectedItems,
-		// 	};
-		// });
+		setRequestList((prev) => {
+			return {
+				...prev,
+				items: selectedItems,
+			};
+		});
 
 		setModalIsVisible(selectedItemAmount > 0 ? true : false);
 	};
@@ -112,11 +112,17 @@ const RequestListCreatorMain = ({
 						visible={modalIsVisible}
 						closeFn={() => setModalIsVisible(false)}
 					>
-						<>
-							<TouchableOpacity onPress={() => setModalIsVisible(false)}>
-								<Text style={modalStyles.mainText}>Kiválasztott eszközök:</Text>
-							</TouchableOpacity>
-						</>
+						<RequestAcceptList 
+							items={requestItems
+								.filter((item) => item.is_selected)
+								.sort((a, b) => a.item_name.localeCompare(b.item_name))} 
+							listName={requestList.request_name}
+							setModalIsVisible={setModalIsVisible}
+							onChangeText={(text: string) =>
+								setRequestList((prev) => {
+									return { ...prev, request_name: text };
+								})} 
+							postRequest={postRequest} />
 					</DefaultModal>
 					<HeaderWithSearchBar
 						drawerProps={drawerProps}

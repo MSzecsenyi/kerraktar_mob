@@ -1,4 +1,4 @@
-import { RequestItem, TakenOutItem } from './../interfaces';
+import { DateRange, RequestItem } from './../interfaces';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { API_URL } from '../constants';
@@ -17,28 +17,26 @@ export const dateToStr = (date: Date): string => {
 interface usePostRequestProps {
     requestList: RequestList
 	drawerProps: LoginDrawerProps
-	setStoreId: React.Dispatch<React.SetStateAction<number>>
-    storeId: number
 }
 
-// //Create a new request
-// const postRequest = (token: string, requestList: RequestList) => axios.post(API_URL + 'requests',requestList,{
-//     headers: {
-//         'Authorization': `Bearer ${token}`    
-//     }
-// })
+//Create a new request
+const postRequest = (token: string, requestList: RequestList) => axios.post(API_URL + 'requests',requestList,{
+    headers: {
+        'Authorization': `Bearer ${token}`    
+    }
+})
 
-// export function usePostRequest({requestList, drawerProps, setStoreId, storeId}: usePostRequestProps){
-//     const {loggedInUser} = useContext(UserDataContext);
-//     return useMutation(() => postRequest(loggedInUser.token, requestList), {
-//         onSuccess: () => {
-//             drawerProps.navigation.navigate("RequestSelectorDrawer", {})
-//             setStoreId(-1)
-//         },
-//         onError: ((error) => console.log(error))
+export function usePostRequest({requestList, drawerProps}: usePostRequestProps){
+    const {loggedInUser} = useContext(UserDataContext);
+    return useMutation(() => postRequest(loggedInUser.token, requestList), {
+        onSuccess: () => {
+            console.log("1")
+            drawerProps.navigation.navigate("RequestStack", {screen: "RequestSelectorScreen"})
+        },
+        onError: ((error) => console.log(error))
         
-//     }); 
-// }
+    }); 
+}
 
 //Get all previous requests. 
 //If user is group:         returns all requests made by him

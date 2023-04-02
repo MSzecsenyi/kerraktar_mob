@@ -23,7 +23,7 @@ export function usePostTakeOut({takeOutList, drawerProps, setStoreId, storeId}: 
     const {loggedInUser} = useContext(UserDataContext);
     return useMutation(() => postTakeOut(loggedInUser.token, takeOutList), {
         onSuccess: () => {
-            drawerProps.navigation.navigate("TakeOutStack", {})
+            drawerProps.navigation.navigate("TakeOutStack", {screen: "TakeOutSelectorScreen"})
             setStoreId(-1)
         },
         onError: ((error) => console.log(error))

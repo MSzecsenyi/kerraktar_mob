@@ -17,8 +17,8 @@ import { FlatList, TextInput } from "react-native-gesture-handler";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
 import TakeOutAcceptListItem from "../atoms/TakeOutAcceptListItem";
-import ItemTile from "./Tiles/ItemTile";
-import { ItemAction } from "../../contexts/ItemReducer";
+import TakeOutItemTile from "./Tiles/TakeOutItemTile";
+import { TakeOutItemAction } from "../../contexts/ItemReducer";
 import { usePostTakeOut } from "../../query-hooks/UseTakeOuts";
 import { UseQueryResult } from "react-query";
 import QRScanner from "./QRScanner";
@@ -30,7 +30,7 @@ interface TakeOutListCreatorMainProps {
 	items: Item[];
 	storeId: number;
 	drawerProps: LoginDrawerProps;
-	dispatchItems: React.Dispatch<ItemAction>;
+	dispatchItems: React.Dispatch<TakeOutItemAction>;
 	getItems: UseQueryResult<Item[], unknown>;
 	setStoreId: React.Dispatch<React.SetStateAction<number>>;
 }
@@ -92,7 +92,7 @@ const TakeOutListCreatorMain = ({
 
 	const renderRow = useCallback(({ item }: ListRenderItemInfo<Item>) => {
 		return (
-			<ItemTile
+			<TakeOutItemTile
 				item={item}
 				dispatchItems={dispatchItems}
 				setCameraIsActive={setCameraIsActive}

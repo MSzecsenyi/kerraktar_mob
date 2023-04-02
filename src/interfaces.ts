@@ -1,7 +1,8 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { DrawerStackParamList } from "./navigation/ParamStacks";
-import { ItemAction } from "./contexts/ItemReducer";
-import { TakeOutAction } from "./contexts/TakeOutReducer";
+import { TakeOutItemAction } from "./contexts/ItemReducer";
+import { RequestItemAction } from "./contexts/RequestItemReducer";
+
 export interface LoginInfo {
     email: string;
     password: string;
@@ -32,13 +33,9 @@ export interface User {
 }
 export interface Item {
     id: number;
-    district: number;
     category: string;
-    store: number;
-    owner: string;
     item_name: string;
     amount: number;
-    comment: string;
     is_unique: boolean;
     in_store_amount: number;
     unique_items: UniqueItem[];
@@ -50,9 +47,9 @@ export interface UniqueItem {
     unique_id: string;
     alt_name: string;
 }
-export interface ItemButtonProps {
+export interface TakeOutItemButtonProps {
     item: Item;
-    dispatchItems: React.Dispatch<ItemAction>;
+    dispatchItems: React.Dispatch<TakeOutItemAction>;
     setCameraIsActive?: React.Dispatch<React.SetStateAction<boolean>>;
 }
 export interface ItemFilterBarProps {
@@ -108,19 +105,34 @@ export interface DateRange {
     endDate: Date;
 }
 
-// export interface RequestItem {
-//     id: number,
-//     district: number,
-//     category: string,
-//     store: number,
-//     owner: string,
-//     item_name: string,
-//     amount: number,
-//     comment: string,
-//     is_unique: boolean,
-//     in_store_amount: number,
-//     unique_items: UniqueItem[],
-//     is_selected: boolean,
-//     selected_amount: number,
-//     other_selections:
-// }
+export interface RequestList {
+    id: number
+    start_date: Date
+    end_date: Date
+    user: string
+    store: string
+    request_name: string
+    items: RequestItem[]
+}
+
+export interface RequestItem {
+    id: number,
+    category: string,
+    item_name: string,
+    amount: number,
+    is_selected: boolean,
+    selected_amount: number,
+    other_requests: OtherRequestInfo[]
+}
+
+export interface OtherRequestInfo {
+    start_date: Date
+    end_date: Date
+    amount: number
+    user: string
+}
+
+export interface RequestItemButtonProps {
+    item: RequestItem
+	dispatchRequestItems: React.Dispatch<RequestItemAction>;
+}

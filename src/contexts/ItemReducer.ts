@@ -1,6 +1,6 @@
 import { Item } from "../interfaces";
 
-export type ItemAction =
+export type TakeOutItemAction =
 	| { type: "CREATE_ITEMS";           payload: {items: Item[]} }
 	| { type: "ADD_ITEM";               payload: {id: number} }
 	| { type: "MODIFY_ITEM";            payload: {id: number, amount: number} }
@@ -10,7 +10,7 @@ export type ItemAction =
 	| { type: "ADD_UNIQUE_PIECE";       payload: {id: number, uniqueId: string} }
 	| { type: "DELETE_UNIQUE_PIECE";    payload: {id: number, uniqueId: string} };
 
-export const itemReducer = (items: Item[], action: ItemAction ) => {
+export const itemReducer = (items: Item[], action: TakeOutItemAction ) => {
     switch (action.type) {
         case "CREATE_ITEMS":
             return action.payload.items;

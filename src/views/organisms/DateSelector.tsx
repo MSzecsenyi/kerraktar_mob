@@ -108,7 +108,7 @@ const DateSelector = ({
                 <BottomControlButtons>
                     <BottomCheckButton
                         acceptButtonIsActive={
-                            dateRange.endDate > dateRange.startDate
+                            dateRange.endDate >= dateRange.startDate
                         }
                         acceptButtonOnPress={() => setDateIsSelected(true)}
                     />

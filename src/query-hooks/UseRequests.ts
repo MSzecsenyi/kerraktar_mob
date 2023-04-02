@@ -1,10 +1,19 @@
-import { TakenOutItem } from './../interfaces';
+import { RequestItem, TakenOutItem } from './../interfaces';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { API_URL } from '../constants';
 import { ItemRequest, LoginDrawerProps, RequestList } from '../interfaces';
 import { useContext } from 'react';
 import { UserDataContext } from '../contexts/UserDataContext';
+
+
+export const dateToStr = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 interface usePostRequestProps {
     requestList: RequestList
 	drawerProps: LoginDrawerProps
@@ -12,24 +21,24 @@ interface usePostRequestProps {
     storeId: number
 }
 
-//Create a new request
-const postRequest = (token: string, requestList: RequestList) => axios.post(API_URL + 'requests',requestList,{
-    headers: {
-        'Authorization': `Bearer ${token}`    
-    }
-})
+// //Create a new request
+// const postRequest = (token: string, requestList: RequestList) => axios.post(API_URL + 'requests',requestList,{
+//     headers: {
+//         'Authorization': `Bearer ${token}`    
+//     }
+// })
 
-export function usePostRequest({requestList, drawerProps, setStoreId, storeId}: usePostRequestProps){
-    const {loggedInUser} = useContext(UserDataContext);
-    return useMutation(() => postRequest(loggedInUser.token, requestList), {
-        onSuccess: () => {
-            drawerProps.navigation.navigate("RequestSelectorDrawer", {})
-            setStoreId(-1)
-        },
-        onError: ((error) => console.log(error))
+// export function usePostRequest({requestList, drawerProps, setStoreId, storeId}: usePostRequestProps){
+//     const {loggedInUser} = useContext(UserDataContext);
+//     return useMutation(() => postRequest(loggedInUser.token, requestList), {
+//         onSuccess: () => {
+//             drawerProps.navigation.navigate("RequestSelectorDrawer", {})
+//             setStoreId(-1)
+//         },
+//         onError: ((error) => console.log(error))
         
-    }); 
-}
+//     }); 
+// }
 
 //Get all previous requests. 
 //If user is group:         returns all requests made by him
@@ -41,7 +50,6 @@ async function getRequests(token: string): Promise<ItemRequest[]> {
                 'Authorization': `Bearer ${token}`
             }
         });
-        console.log(response.data)
         return response.data.data;
     } catch (error) {
         console.error(error); throw error;
@@ -54,7 +62,7 @@ export function useGetRequests() {
 
 
 //Get a specific request based on id
-async function getDetailedRequest(token: string, requestId: number): Promise<TakenOutItem[]>{
+async function getDetailedRequest(token: string, requestId: number): Promise<RequestItem[]>{
     try {
         const response = await axios.get(API_URL + `requests/${requestId}`, {
             headers: {

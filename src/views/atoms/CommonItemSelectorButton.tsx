@@ -1,19 +1,21 @@
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
-import { ItemButtonProps } from "../../interfaces";
 import AmountSelector from "./AmountSelector";
 
-const TakeOutCommonSelectorButton = ({
-	item,
-	dispatchItems,
-}: ItemButtonProps) => {
+interface CommonItemSelectorButtonProps {
+	maxAmount:number
+	selectedAmount: number
+	onPressDelete: () => void
+	onValueChange: ((itemValue: number, itemIndex: number) => void)
+}
+
+const CommonItemSelectorButton = (props: CommonItemSelectorButtonProps) => {
 	return (
 		<View style={styles.horizontal_flex}>
-			<Text> {item.selected_amount} </Text>
+			<Text> {props.selectedAmount} </Text>
 			<View>
-				{item.in_store_amount > 1 ? (
-					<AmountSelector
-						item={item}
-						dispatchItems={dispatchItems}
+				{props.maxAmount > 1 ? (
+					<AmountSelector {...props}
+
 					/>
 				) : (
 					<View style={{ width: 35 }} />
@@ -21,9 +23,7 @@ const TakeOutCommonSelectorButton = ({
 			</View>
 			<View>
 				<TouchableHighlight
-					onPress={() => {
-						dispatchItems({ type: "DELETE_ITEM", payload: { id: item.id } });
-					}}
+					onPress={props.onPressDelete}
 					style={styles.discard_button}
 				>
 					<Text style={styles.light_text}>X</Text>
@@ -33,7 +33,7 @@ const TakeOutCommonSelectorButton = ({
 	);
 };
 
-export default TakeOutCommonSelectorButton;
+export default CommonItemSelectorButton;
 
 const styles = StyleSheet.create({
 	horizontal_flex: {

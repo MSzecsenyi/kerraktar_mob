@@ -3,7 +3,8 @@ import { useContext } from "react";
 import { API_URL } from "./../constants";
 import axios from "axios";
 import { UserDataContext } from "../contexts/UserDataContext";
-import { Item } from "../interfaces";
+import { DateRange, Item, RequestItem } from "../interfaces";
+import { dateToStr } from "./UseRequests";
 
 function getItems(store_id: number, token: string): Promise<Item[]> {
     return axios
@@ -29,4 +30,29 @@ export function useGetItems(store_id: number) {
     );
 }
 
-// function getRequestItems(store: number, startDate: Date, endDate: Date, token: string): Promise
+function getRequestItems(store_id: number, dateRange: DateRange, token: string): Promise<RequestItem[]> {
+    const url = API_URL + `request_items?store_id=[${store_id}]&startDate=${dateToStr(dateRange.startDate)}&endDate=${dateToStr(dateRange.endDate)}`
+    return axios
+        .get(url, {
+            headers: {
+                Authorization: `Bearer ${token}`,
+            },
+        })
+        .then((response) => response.data.data)
+        .catch((error) => {
+            console.error(error);
+        });
+}
+
+
+//Items for Requests
+export function useGetRequestItems(store_id: number, dateRange: DateRange, dateIsSelected: boolean) {
+    const { loggedInUser } = useContext(UserDataContext);
+    return useQuery(
+        ["items", store_id, dateRange],
+        () => getRequestItems(store_id, dateRange, loggedInUser.token),
+        {
+            enabled: store_id != -1 && dateIsSelected,
+        }
+    );
+}

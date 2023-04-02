@@ -1,26 +1,25 @@
 import { Picker } from "@react-native-picker/picker";
 import { StyleSheet } from "react-native";
-import { Item, ItemButtonProps } from "../../interfaces";
-import { useContext } from "react";
-import { TakeOutListContext } from "../../contexts/TakeOutListContext";
+
+interface AmountSelectorProps {
+	maxAmount: number
+	selectedAmount: number
+	onValueChange: ((itemValue: number, itemIndex: number) => void)
+}
 
 export default function AmountSelector({
-	item,
-	dispatchItems,
-}: ItemButtonProps) {
+	maxAmount,
+	selectedAmount,
+	onValueChange,
+}: AmountSelectorProps) {
 	return (
 		<Picker
-			selectedValue={item.selected_amount}
-			onValueChange={(itemValue) =>
-				dispatchItems({
-					type: "MODIFY_ITEM",
-					payload: { id: item.id, amount: itemValue },
-				})
-			}
+			selectedValue={selectedAmount}
+			onValueChange={onValueChange}
 			style={styles.picker}
 			mode="dropdown"
 		>
-			{Array.from({ length: item.in_store_amount }, (_, i) => i).map(
+			{Array.from({ length: maxAmount }, (_, i) => i).map(
 				(value) => (
 					<Picker.Item
 						key={value + 1}

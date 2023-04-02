@@ -38,8 +38,6 @@ const RequestSelector = (drawerProps: LoginDrawerProps) => {
 
 	const keyExtractor = (request: ItemRequest) => request.id.toString();
 
-	console.log(filteredRequests)
-
 	return (
 		<View style={{ flex: 1 }}>
 			{getRequests.isSuccess ? (

@@ -1,12 +1,12 @@
 import { BackHandler, View } from "react-native";
-import { useGetItems } from "../../query-hooks/UseItems";
-import { useContext, useEffect, useReducer, useState } from "react";
+import { useGetRequestItems } from "../../query-hooks/UseItems";
+import { SetStateAction, useContext, useEffect, useReducer, useState } from "react";
 import { DateRange, LoginDrawerProps } from "../../interfaces";
-import { itemReducer } from "../../contexts/ItemReducer";
 import { UserDataContext } from "../../contexts/UserDataContext";
 import RequestListCreatorMain from "../organisms/RequestListCreatorMain";
 import StoreSelector from "../organisms/StoreSelector";
 import DateSelector from "../organisms/DateSelector";
+import { requestItemReducer } from "../../contexts/RequestItemReducer";
 
 const RequestListCreatorManager = (drawerProps: LoginDrawerProps) => {
     const stores = useContext(UserDataContext).loggedInUser.stores; // Necessary to get available stores
@@ -18,9 +18,9 @@ const RequestListCreatorManager = (drawerProps: LoginDrawerProps) => {
     const [storeId, setStoreId] = useState(
         stores.length == 1 ? stores[0].store_id : -1
     );
-    const [items, dispatchItems] = useReducer(itemReducer, []); // Mutates selected items
+    const [requestItems, dispatchRequestItems] = useReducer(requestItemReducer, []); // Mutates selected items
 
-    const getItems = useGetItems(storeId);
+    const getRequestItems = useGetRequestItems(storeId, dateRange, dateIsSelected);
 
     useEffect(() => {
         const backAction = () => {
@@ -39,12 +39,12 @@ const RequestListCreatorManager = (drawerProps: LoginDrawerProps) => {
     }, []);
 
     useEffect(() => {
-        if (getItems.isSuccess)
-            dispatchItems({
+        if (getRequestItems.isSuccess)
+            dispatchRequestItems({
                 type: "CREATE_ITEMS",
-                payload: { items: getItems.data },
+                payload: { items: getRequestItems.data },
             });
-    }, [getItems.data]);
+    }, [getRequestItems.data]);
 
     return (
         <View style={{ flex: 1 }}>
@@ -63,11 +63,16 @@ const RequestListCreatorManager = (drawerProps: LoginDrawerProps) => {
                 />
             ) : (
                 <RequestListCreatorMain
-                // items={items}
-                // storeId={storeId}
-                // drawerProps={drawerProps}
+                            requestItems={requestItems}
+                            storeId={storeId} 
+                            drawerProps={drawerProps}
+                            dispatchRequestItems={dispatchRequestItems} 
+                            getRequestItems={getRequestItems}
+                            setStoreId={function (value: SetStateAction<number>): void {
+                                throw new Error("Function not implemented.");
+                            } }                // drawerProps={drawerProps}
                 // dispatchItems={dispatchItems}
-                // getItems={getItems}
+                // getRequestItems={getRequestItems}
                 // setStoreId={setStoreId}
                 />
             )}

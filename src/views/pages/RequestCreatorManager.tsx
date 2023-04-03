@@ -1,7 +1,7 @@
 import { BackHandler, View } from "react-native";
 import { useGetRequestItems } from "../../query-hooks/UseItems";
-import { SetStateAction, useContext, useEffect, useReducer, useState } from "react";
-import { DateRange, LoginDrawerProps } from "../../interfaces";
+import { useContext, useEffect, useReducer, useState } from "react";
+import { LoginDrawerProps } from "../../interfaces";
 import { UserDataContext } from "../../contexts/UserDataContext";
 import RequestListCreatorMain from "../organisms/RequestListCreatorMain";
 import StoreSelector from "../organisms/StoreSelector";
@@ -10,9 +10,9 @@ import { requestItemReducer } from "../../contexts/RequestItemReducer";
 
 const RequestListCreatorManager = (drawerProps: LoginDrawerProps) => {
     const stores = useContext(UserDataContext).loggedInUser.stores; // Necessary to get available stores
-    const [dateRange, setDateRange] = useState<DateRange>({
-        startDate: new Date(),
-        endDate: new Date(),
+    const [dateRange, setDateRange] = useState({
+        startDate: "",
+        endDate: "",
     });
     const [dateIsSelected, setDateIsSelected] = useState(false);
     const [storeId, setStoreId] = useState(
@@ -56,8 +56,8 @@ const RequestListCreatorManager = (drawerProps: LoginDrawerProps) => {
                 />
             ) : !dateIsSelected ? (
                 <DateSelector
-                    dateRange={dateRange}
-                    setDateRange={setDateRange}
+                    stringDateRange={dateRange}
+                    setStringDateRange={setDateRange}
                     setDateIsSelected={setDateIsSelected}
                     drawerProps={drawerProps}
                 />

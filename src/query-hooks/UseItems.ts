@@ -3,8 +3,7 @@ import { useContext } from "react";
 import { API_URL } from "./../constants";
 import axios from "axios";
 import { UserDataContext } from "../contexts/UserDataContext";
-import { DateRange, Item, RequestItem } from "../interfaces";
-import { dateToStr } from "./UseRequests";
+import { Item, RequestItem, StringDateRange } from "../interfaces";
 
 function getItems(store_id: number, token: string): Promise<Item[]> {
     return axios
@@ -30,8 +29,8 @@ export function useGetItems(store_id: number) {
     );
 }
 
-function getRequestItems(store_id: number, dateRange: DateRange, token: string): Promise<RequestItem[]> {
-    const url = API_URL + `request_items?store_id=[${store_id}]&startDate=${dateToStr(dateRange.startDate)}&endDate=${dateToStr(dateRange.endDate)}`
+function getRequestItems(store_id: number, dateRange: StringDateRange, token: string): Promise<RequestItem[]> {
+    const url = API_URL + `request_items?store_id=[${store_id}]&startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`
     return axios
         .get(url, {
             headers: {
@@ -46,7 +45,7 @@ function getRequestItems(store_id: number, dateRange: DateRange, token: string):
 
 
 //Items for Requests
-export function useGetRequestItems(store_id: number, dateRange: DateRange, dateIsSelected: boolean) {
+export function useGetRequestItems(store_id: number, dateRange: StringDateRange, dateIsSelected: boolean) {
     const { loggedInUser } = useContext(UserDataContext);
     return useQuery(
         ["items", store_id, dateRange],

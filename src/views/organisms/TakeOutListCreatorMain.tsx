@@ -8,7 +8,7 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import DefaultModal from "../molecules/DefaultModal";
 import { modalStyles } from "../../styles";
@@ -25,6 +25,7 @@ import QRScanner from "./QRScanner";
 import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
 import BottomControlButtons from "./BottomControlButtons";
 import BottomCheckButton from "../atoms/BottomCheckButton";
+import UnsavedListWarning from "./UnsavedListWarning";
 
 interface TakeOutListCreatorMainProps {
 	items: Item[];
@@ -44,9 +45,10 @@ const TakeOutListCreatorMain = ({
 	setStoreId,
 }: TakeOutListCreatorMainProps) => {
 	const [modalIsVisible, setModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
+	const [warningModalIsVisible, setWarningModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
 	const [searchTerm, setSearchTerm] = useState(""); // The text typed in the header search bar. SHown items are filtered by name based on this
 	const [filteredItems, setFilteredItems] = useState<Item[]>([]); // Displayed data
-	const [selectedItemAmount, setSelectedItemAmount] = useState(0); // Counts selected items
+	const [selectedItemAmount, _setSelectedItemAmount] = useState(0); // Counts selected items
 	const [cameraIsActive, setCameraIsActive] = useState(false); // Sets the qr scanner screen active/inactive
 	const [listSendLoading, setListSentLoading] = useState(false);
 	const [takeOutList, setTakeOutList] = useState<TakeOutList>({
@@ -64,6 +66,12 @@ const TakeOutListCreatorMain = ({
 		storeId,
 	}); // Sends finalized data to the server
 
+	const selectedItemAmountRef = useRef(selectedItemAmount);
+	const setSelectedItemAmount = (data: number) => {
+		selectedItemAmountRef.current = data;
+		_setSelectedItemAmount(data);
+	};
+
 	useEffect(() => {
 		setSelectedItemAmount(items.filter((item) => item.is_selected).length);
 		const filtered = items.filter((item) => {
@@ -77,7 +85,11 @@ const TakeOutListCreatorMain = ({
 			Keyboard.dismiss();
 		});
 		const backAction = () => {
-			setStoreId(-1);
+			if (selectedItemAmountRef.current > 0){
+				setWarningModalIsVisible(true)
+			} else {
+				drawerProps.navigation.navigate("TakeOutStack", {screen: "TakeOutSelectorScreen"});
+			}
 			return true;
 		};
 		const backHandler = BackHandler.addEventListener(
@@ -135,6 +147,15 @@ const TakeOutListCreatorMain = ({
 				/>
 			) : (
 				<>
+					<DefaultModal 
+						visible={warningModalIsVisible} 
+						closeFn={() => setWarningModalIsVisible(false)}>
+						<UnsavedListWarning 
+							acceptModal={() => 
+							drawerProps.navigation.navigate("TakeOutStack", {screen: "TakeOutSelectorScreen"})}
+							closeModal={() => setWarningModalIsVisible(false)}
+							/>
+					</DefaultModal>
 					<DefaultModal
 						visible={modalIsVisible}
 						closeFn={() => setModalIsVisible(false)}

@@ -7,7 +7,7 @@ import { UserDataContext } from "../../../contexts/UserDataContext";
 const TakeOutTile = ({ takeOut, setChosenTakeOut }: TakeOutButtonProps) => {
 	const loggedInUser = useContext(UserDataContext);
 	const getTextColor = (color: string) =>
-		takeOut.end_date ? {} : { color: color };
+		takeOut.end_date ? {color: "gray"} : { color: color };
 	return (
 		<TouchableHighlight
 			style={
@@ -32,7 +32,7 @@ const TakeOutTile = ({ takeOut, setChosenTakeOut }: TakeOutButtonProps) => {
 								: takeOut.user}
 						</Text>
 
-						<Text style={getTextColor("green")}>
+						<Text style={getTextColor("#00000000")}>
 							{takeOut.end_date
 								? takeOut.end_date.toString()
 								: takeOut.start_date.toString()}
@@ -43,7 +43,7 @@ const TakeOutTile = ({ takeOut, setChosenTakeOut }: TakeOutButtonProps) => {
 					<Ionicons
 						name="arrow-forward"
 						size={40}
-						color={takeOut.end_date ? "black" : "white"}
+						color={takeOut.end_date ? "gray" : "white"}
 					/>
 				</View>
 			</>
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
 		margin: 5,
 		height: 70,
 		borderRadius: 15,
-		backgroundColor: "gray",
+		backgroundColor: "#F4FFF0",
 		flex: 1,
 		flexDirection: "row",
 	},

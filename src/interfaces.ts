@@ -107,9 +107,14 @@ export interface DateRange {
     endDate: Date;
 }
 
+export interface StringDateRange {
+    startDate: string;
+    endDate: string;
+}
+
 export interface RequestList {
-    start_date: Date
-    end_date: Date
+    start_date: string
+    end_date: string
     store_id: number
     request_name: string
     items: AcceptListCommonItem[]

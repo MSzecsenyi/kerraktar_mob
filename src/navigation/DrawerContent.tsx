@@ -28,7 +28,7 @@ const DrawerContent = () => {
 					<TouchableOpacity
 						style={styles.drawerButton}
 						onPress={() => {
-							navigation.navigate("TakeOutStack", {});
+							navigation.navigate("TakeOutStack", {screen: "TakeOutSelectorScreen"});
 						}}
 					>
 						<Text style={styles.buttonText}> Eszközkivétel </Text>
@@ -37,7 +37,7 @@ const DrawerContent = () => {
 					
 						style={styles.drawerButton}
 						onPress={() => {
-							navigation.navigate("RequestStack", {});
+							navigation.navigate("RequestStack", {screen: "RequestSelectorScreen"});
 						}}
 					>
 						<Text style={styles.buttonText}> Eszközfoglalás</Text>

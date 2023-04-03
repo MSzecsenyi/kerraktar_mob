@@ -10,13 +10,16 @@ interface RequestButtonProps {
 }
 
 const RequestTile = ({ request, setChosenRequest }: RequestButtonProps) => {
+	const started = new Date(request.start_date) < new Date();
 	const loggedInUser = useContext(UserDataContext);
 	const getTextColor = (color: string) =>
-		request.end_date ? {} : { color: color };
+		started ? {color: 'gray'} : { color: color };
 	return (
 		<TouchableHighlight
 			style={
-				request.end_date ? styles.card_container_done : styles.card_container_ip
+				started
+				? styles.card_container_started
+				: styles.card_container_not_started
 			}
 			onPress={() => setChosenRequest(request.id)}
 		>
@@ -37,7 +40,7 @@ const RequestTile = ({ request, setChosenRequest }: RequestButtonProps) => {
 								: request.user}
 						</Text>
 
-						<Text style={getTextColor("green")}>
+						<Text style={getTextColor("white")}>
 							{request.end_date
 								? request.end_date.toString()
 								: request.start_date.toString()}
@@ -45,10 +48,11 @@ const RequestTile = ({ request, setChosenRequest }: RequestButtonProps) => {
 					</View>
 				</View>
 				<View style={styles.button_part}>
+					
 					<Ionicons
-						name="arrow-forward"
+						name={request.is_conflicted ? "alert" : "arrow-forward"}
 						size={40}
-						color={request.end_date ? "black" : "white"}
+						color={started ? "gray" : request.is_conflicted ? "red" : "white"}
 					/>
 				</View>
 			</>
@@ -57,7 +61,7 @@ const RequestTile = ({ request, setChosenRequest }: RequestButtonProps) => {
 };
 
 const styles = StyleSheet.create({
-	card_container_ip: {
+	card_container_not_started: {
 		padding: 10,
 		margin: 5,
 		height: 70,
@@ -66,12 +70,21 @@ const styles = StyleSheet.create({
 		flex: 1,
 		flexDirection: "row",
 	},
-	card_container_done: {
+	card_container_conflicted: {
 		padding: 10,
 		margin: 5,
 		height: 70,
 		borderRadius: 15,
-		backgroundColor: "gray",
+		backgroundColor: "#ffcccb",
+		flex: 1,
+		flexDirection: "row",
+	},
+	card_container_started: {
+		padding: 10,
+		margin: 5,
+		height: 70,
+		borderRadius: 15,
+		backgroundColor: "#F4FFF0",
 		flex: 1,
 		flexDirection: "row",
 	},

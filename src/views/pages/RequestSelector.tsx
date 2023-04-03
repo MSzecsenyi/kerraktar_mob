@@ -7,12 +7,19 @@ import { useCallback, useEffect, useState } from "react";
 import RequestTile from "../organisms/Tiles/RequestTile";
 import BottomCreateNewButton from "../atoms/BottomCreateNewButton";
 import BottomControlButtons from "../organisms/BottomControlButtons";
+import { useFocusEffect } from "@react-navigation/native";
 
 const RequestSelector = (drawerProps: LoginDrawerProps) => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [chosenRequest, setChosenRequest] = useState(-1);
 	const [filteredRequests, setFilteredRequests] = useState<ItemRequest[]>([]);
 	const getRequests = useGetRequests();
+
+	useFocusEffect(
+		useCallback(() => {
+			getRequests.refetch();
+		}, [])
+	);
 
 	useEffect(() => {
 		if (getRequests.isSuccess) {
@@ -22,7 +29,11 @@ const RequestSelector = (drawerProps: LoginDrawerProps) => {
 						.toLowerCase()
 						.includes(searchTerm.toLowerCase());
 				})
-				.sort((a, b) => b.id - a.id);
+				.sort((a, b) => {
+					const dateA = new Date(a.start_date);
+					const dateB = new Date(b.start_date);
+					return dateB.getTime() - dateA.getTime();
+				});
 			setFilteredRequests(filtered);
 		}
 	}, [searchTerm, getRequests.data]);

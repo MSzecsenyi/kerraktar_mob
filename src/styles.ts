@@ -47,14 +47,14 @@ export const modalStyles = StyleSheet.create({
         minWidth: 100,
         maxWidth: "50%",
 		height: 40,
-		backgroundColor: "lightgray",
+		backgroundColor: "light#F4FFF0",
 		borderRadius: 15,
 		justifyContent: "center",
 	},
 	textInput: {
 		borderRadius: 10,
 		borderWidth: 1,
-		borderColor: "gray",
+		borderColor: "#F4FFF0",
 		height: 40,
 		padding: 10,
 		marginTop: 20

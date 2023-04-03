@@ -6,14 +6,6 @@ import { ItemRequest, LoginDrawerProps, RequestList } from '../interfaces';
 import { useContext } from 'react';
 import { UserDataContext } from '../contexts/UserDataContext';
 
-
-export const dateToStr = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
-}
-
 interface usePostRequestProps {
     requestList: RequestList
 	drawerProps: LoginDrawerProps

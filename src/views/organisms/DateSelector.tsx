@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
     Button,
     Platform,
@@ -10,26 +10,45 @@ import {
 import DateTimePicker, {
     DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { DateRange, LoginDrawerProps } from "../../interfaces";
+import { LoginDrawerProps, StringDateRange } from "../../interfaces";
 import BottomControlButtons from "./BottomControlButtons";
 import BottomCheckButton from "../atoms/BottomCheckButton";
 import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
 
+export const dateToStr = (date: Date): string => {
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 interface DateSelectorProps {
-    dateRange: DateRange;
-    setDateRange: React.Dispatch<React.SetStateAction<DateRange>>;
+    stringDateRange: StringDateRange;
+    setStringDateRange: React.Dispatch<React.SetStateAction<StringDateRange>>;
     setDateIsSelected: React.Dispatch<React.SetStateAction<boolean>>;
     drawerProps: LoginDrawerProps;
 }
 
 const DateSelector = ({
-    dateRange,
-    setDateRange,
+    stringDateRange,
+    setStringDateRange,
     setDateIsSelected,
     drawerProps,
 }: DateSelectorProps) => {
     const [showStartPicker, setShowStartPicker] = useState(false);
     const [showEndPicker, setShowEndPicker] = useState(false);
+    const [dateRange, setDateRange] = useState({
+        startDate: new Date(),
+        endDate: new Date()
+    })
+
+    useEffect(() => {
+      setStringDateRange({
+        startDate: dateToStr(new Date()),
+        endDate: dateToStr(new Date())
+      })
+    }, [])
+    
 
     const onStartDateChange = (
         event: DateTimePickerEvent,
@@ -53,10 +72,14 @@ const DateSelector = ({
             ? dateRange.startDate
             : dateRange.endDate;
 
-    const setStartDate = (date: Date) =>
+    const setStartDate = (date: Date) => {
         setDateRange({ ...dateRange, startDate: date });
-    const setEndDate = (date: Date) =>
+        setStringDateRange({ ...stringDateRange, startDate: dateToStr(date) });
+    }
+    const setEndDate = (date: Date) => {
         setDateRange({ ...dateRange, endDate: date });
+        setStringDateRange({ ...stringDateRange, endDate: dateToStr(date) });
+    }
 
     return (
         <>
@@ -108,7 +131,7 @@ const DateSelector = ({
                 <BottomControlButtons>
                     <BottomCheckButton
                         acceptButtonIsActive={
-                            dateRange.endDate >= dateRange.startDate
+                            stringDateRange.endDate >= stringDateRange.startDate
                         }
                         acceptButtonOnPress={() => setDateIsSelected(true)}
                     />

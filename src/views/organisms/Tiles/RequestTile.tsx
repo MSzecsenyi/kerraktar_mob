@@ -6,10 +6,10 @@ import { ItemRequest } from "../../../interfaces";
 
 interface RequestButtonProps {
     request: ItemRequest
-    setChosenRequest: React.Dispatch<React.SetStateAction<number>>
+    onTilePress: () => void
 }
 
-const RequestTile = ({ request, setChosenRequest }: RequestButtonProps) => {
+const RequestTile = ({ request, onTilePress }: RequestButtonProps) => {
 	const started = new Date(request.start_date) < new Date();
 	const loggedInUser = useContext(UserDataContext);
 	const getTextColor = (color: string) =>
@@ -21,7 +21,7 @@ const RequestTile = ({ request, setChosenRequest }: RequestButtonProps) => {
 				? styles.card_container_started
 				: styles.card_container_not_started
 			}
-			onPress={() => setChosenRequest(request.id)}
+			onPress={onTilePress}
 		>
 			<>
 				<View style={styles.info_part}>

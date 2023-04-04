@@ -4,17 +4,15 @@ import LoadingSpinner from '../atoms/LoadingSpinner';
 import { RequestItem } from '../../interfaces';
 import { useState } from 'react';
 import RequestAcceptListItem from '../atoms/RequestAcceptListItem';
-import { AxiosResponse } from 'axios';
-import { UseMutationResult } from 'react-query';
 interface RequestAcceptListProps {
     setModalIsVisible: (value: React.SetStateAction<boolean>) => void
     items: RequestItem[]
-    listName: string
-    onChangeText: (text: string) => void
-	postRequest: UseMutationResult<AxiosResponse<any, any>, unknown, void, unknown>
+    listName?: string
+    onChangeText?: (text: string) => void
+	onPressAccept: () => void
 }
 
-const RequestAcceptList = ({setModalIsVisible, items, listName, onChangeText, postRequest}: RequestAcceptListProps) => {
+const RequestAcceptList = ({setModalIsVisible, items, listName, onChangeText, onPressAccept}: RequestAcceptListProps) => {
 	const [listSendLoading, setListSentLoading] = useState(false);
     
   return (
@@ -31,39 +29,40 @@ const RequestAcceptList = ({setModalIsVisible, items, listName, onChangeText, po
 									<RequestAcceptListItem ListItemData={item} />
 								)}
 							/>
+							{listName && 
 							<TextInput
 								style={modalStyles.textInput}
 								defaultValue={listName}
 								onChangeText={onChangeText}
 								placeholder="Hol használod az eszközöket?"
 							/>
+							}
 							<View style={modalStyles.buttonContainer}>
-								{listSendLoading ? (
-									<LoadingSpinner />
-								) : (
-									<>
-										<TouchableHighlight
-											style={modalStyles.buttonReject}
-											onPress={() => setModalIsVisible(false)}
-										>
-											<Text style={modalStyles.buttonRejectText}>Mégse</Text>
-										</TouchableHighlight>
-										<TouchableHighlight
-											style={
-												listName.length != 0
-													? modalStyles.buttonAccept
-													: modalStyles.buttonDisabled
-											}
-											onPress={() => {
-												console.log("pressed")
-												postRequest.mutate();
-												setListSentLoading(true);
-											}}
-										>
-											<Text style={modalStyles.buttonAcceptText}>Kivétel</Text>
-										</TouchableHighlight>
-									</>
-								)}
+							{listSendLoading ? 
+								<LoadingSpinner /> : 
+								<>
+									<TouchableHighlight
+										style={modalStyles.buttonReject}
+										onPress={() => setModalIsVisible(false)}
+									>
+										<Text style={modalStyles.buttonRejectText}>Mégse</Text>
+									</TouchableHighlight>
+									<TouchableHighlight
+										style={
+											typeof(listName) === 'undefined' || listName.length != 0
+												? modalStyles.buttonAccept
+												: modalStyles.buttonDisabled
+										}
+										onPress={() => {
+											console.log("pressed")
+											onPressAccept
+											setListSentLoading(true);
+										}}
+									>
+										<Text style={modalStyles.buttonAcceptText}>Kivétel</Text>
+									</TouchableHighlight>
+								</>
+								}
 							</View>
 						</>
   )

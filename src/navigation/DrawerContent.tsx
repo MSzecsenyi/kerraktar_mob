@@ -5,14 +5,14 @@ import { ScrollView, TouchableOpacity } from "react-native-gesture-handler";
 import { UserDataContext } from "../contexts/UserDataContext";
 import { DrawerNavigationProp } from "@react-navigation/drawer";
 import LoadingSpinner from "../views/atoms/LoadingSpinner";
-import { DrawerStackParamList } from "./ParamStacks";
+import { LoginDrawerParamList } from "./ParamStacks";
 import { useNavigation } from "@react-navigation/native";
 
 const DrawerContent = () => {
 	const logoutUser = useLogoutUser();
 	const { loggedInUser } = useContext(UserDataContext);
 	const navigation =
-		useNavigation<DrawerNavigationProp<DrawerStackParamList, "TakeOutStack">>();
+		useNavigation<DrawerNavigationProp<LoginDrawerParamList, "TakeOutStack">>();
 
 	return (
 		<View style={styles.mainContainer}>

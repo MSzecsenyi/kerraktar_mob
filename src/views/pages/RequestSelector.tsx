@@ -42,7 +42,10 @@ const RequestSelector = (drawerProps: LoginDrawerProps) => {
 		return (
 			<RequestTile
 				request={item}
-				setChosenRequest={setChosenRequest}
+				onTilePress={() => {
+					console.log(item.id)
+					drawerProps.navigation.navigate("RequestStack", {screen: "RequestDetailsScreen"})
+				}}
 			/>
 		);
 	}, []);

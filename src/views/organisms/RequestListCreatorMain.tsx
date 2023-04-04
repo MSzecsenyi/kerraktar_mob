@@ -144,7 +144,7 @@ const RequestListCreatorMain = ({
 								setRequestList((prev) => {
 									return { ...prev, request_name: text };
 								})} 
-							postRequest={postRequest} />
+							onPressAccept={() => postRequest.mutate()} />
 					</DefaultModal>
 					<HeaderWithSearchBar
 						drawerProps={drawerProps}

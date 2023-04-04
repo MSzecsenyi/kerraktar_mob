@@ -1,5 +1,5 @@
 import { DrawerScreenProps } from "@react-navigation/drawer";
-import { DrawerStackParamList } from "./navigation/ParamStacks";
+import { LoginDrawerParamList } from "./navigation/ParamStacks";
 import { TakeOutItemAction } from "./contexts/ItemReducer";
 import { RequestItemAction } from "./contexts/RequestItemReducer";
 
@@ -57,7 +57,7 @@ export interface ItemFilterBarProps {
     filteredData: Item[];
 }
 
-export type LoginDrawerProps = DrawerScreenProps<DrawerStackParamList>;
+export type LoginDrawerProps = DrawerScreenProps<LoginDrawerParamList>;
 
 export interface TakeOutList {
     items: AcceptListCommonItem[];

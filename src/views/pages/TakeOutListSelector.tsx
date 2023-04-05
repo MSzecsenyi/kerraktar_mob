@@ -1,4 +1,4 @@
-import { ListRenderItemInfo, StyleSheet, Text, View } from "react-native";
+import { ListRenderItemInfo, StyleSheet, View } from "react-native";
 import { useGetTakeOuts } from "../../query-hooks/UseTakeOuts";
 import { useCallback, useEffect, useState } from "react";
 import { TakeOut } from "../../interfaces";
@@ -20,7 +20,6 @@ export type TakeOutListSelectorProps = CompositeScreenProps<
 
 const TakeOutListSelector = (navigationProps: TakeOutListSelectorProps) => {
 	const [searchTerm, setSearchTerm] = useState("");
-	const [chosenTakeOut, setChosenTakeOut] = useState(-1);
 	const getTakeOuts = useGetTakeOuts();
 	const [filteredTakeOuts, setFilteredTakeOuts] = useState<TakeOut[]>([]);
 
@@ -91,5 +90,3 @@ const TakeOutListSelector = (navigationProps: TakeOutListSelectorProps) => {
 };
 
 export default TakeOutListSelector;
-
-const styles = StyleSheet.create({});

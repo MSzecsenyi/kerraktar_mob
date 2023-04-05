@@ -147,6 +147,7 @@ const TakeOutListCreatorMain = ({
 				/>
 			) : (
 				<>
+					{/* MODALS */}
 					<DefaultModal 
 						visible={warningModalIsVisible} 
 						closeFn={() => setWarningModalIsVisible(false)}>
@@ -156,6 +157,7 @@ const TakeOutListCreatorMain = ({
 							closeModal={() => setWarningModalIsVisible(false)}
 							/>
 					</DefaultModal>
+					
 					<DefaultModal
 						visible={modalIsVisible}
 						closeFn={() => setModalIsVisible(false)}
@@ -212,6 +214,8 @@ const TakeOutListCreatorMain = ({
 							</View>
 						</>
 					</DefaultModal>
+
+					{/* PAGE CONTENT */}
 					<HeaderWithSearchBar
 						openDrawer={navigationProps.navigation.openDrawer}
 						setSearchTerm={setSearchTerm}

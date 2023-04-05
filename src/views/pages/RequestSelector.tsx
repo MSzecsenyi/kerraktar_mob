@@ -1,4 +1,4 @@
-import { FlatList, ListRenderItemInfo, StyleSheet, Text, View } from "react-native";
+import { FlatList, ListRenderItemInfo, View } from "react-native";
 import { useGetRequests } from "../../query-hooks/UseRequests";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import LoadingSpinner from "../atoms/LoadingSpinner";
@@ -94,5 +94,3 @@ const RequestSelector = ({navigation}: RequestSelectorNavigationProp) => {
 };
 
 export default RequestSelector;
-
-const styles = StyleSheet.create({});

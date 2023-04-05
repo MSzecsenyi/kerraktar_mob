@@ -1,4 +1,4 @@
-import { BackHandler, View } from "react-native";
+import { View } from "react-native";
 import { useGetItems } from "../../query-hooks/UseItems";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { itemReducer } from "../../contexts/ItemReducer";
@@ -23,20 +23,6 @@ const TakeOutListCreatorManager = (navigationProps: TakeOutListCreatorManagerPro
 	const [items, dispatchItems] = useReducer(itemReducer, []); // Mutates selected items
 
 	const getItems = useGetItems(storeId);
-
-	useEffect(() => {
-		const backAction = () => {
-			navigationProps.navigation.navigate("TakeOutSelectorScreen");
-			return true;
-		};
-		const backHandler = BackHandler.addEventListener(
-			"hardwareBackPress",
-			backAction
-		);
-		return () => {
-			backHandler.remove();
-		};
-	}, []);
 
 	useEffect(() => {
 		if (getItems.isSuccess)

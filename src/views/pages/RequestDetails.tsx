@@ -29,12 +29,12 @@ export type RequestDetailsProps = CompositeScreenProps<
 >
 
 const RequestDetails = ({navigation, route}: RequestDetailsProps) => {
-	const [requestItems, dispatchRequestItems] = useReducer(requestItemReducer, []); // Mutates selected items
-	const [acceptModalIsVisible, setAcceptModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
-	const [warningModalIsVisible, setWarningModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
-	const [searchTerm, setSearchTerm] = useState(""); // The text typed in the header search bar. SHown items are filtered by name based on this
-	const [filteredItems, setFilteredItems] = useState<RequestItem[]>([]); // Displayed data
-	const [selectedItemAmount, _setSelectedItemAmount] = useState(0); // Counts selected items
+	const [requestItems, dispatchRequestItems] = useReducer(requestItemReducer, []);
+	const [acceptModalIsVisible, setAcceptModalIsVisible] = useState(false);
+	const [warningModalIsVisible, setWarningModalIsVisible] = useState(false);
+	const [searchTerm, setSearchTerm] = useState("");
+	const [filteredItems, setFilteredItems] = useState<RequestItem[]>([]);
+	const [selectedItemAmount, _setSelectedItemAmount] = useState(0);
 	// const [requestList, setRequestList] = useState<RequestList>({
 	// 	// Final accept data
 	// 	items: [],
@@ -118,6 +118,7 @@ const RequestDetails = ({navigation, route}: RequestDetailsProps) => {
 
 	return (
 				<>
+					{/* MODALS */}
 					<DefaultModal 
 						visible={warningModalIsVisible} 
 						closeFn={() => setWarningModalIsVisible(false)}>
@@ -127,6 +128,7 @@ const RequestDetails = ({navigation, route}: RequestDetailsProps) => {
 							closeModal={() => setWarningModalIsVisible(false)}
 							/>
 					</DefaultModal>
+
 					<DefaultModal
 						visible={acceptModalIsVisible}
 						closeFn={() => setAcceptModalIsVisible(false)}
@@ -138,6 +140,8 @@ const RequestDetails = ({navigation, route}: RequestDetailsProps) => {
 							setModalIsVisible={setAcceptModalIsVisible}
 							onPressAccept={() => {}} />
 					</DefaultModal>
+
+					{/* PAGE CONTENT */}
 					<HeaderWithSearchBar
 						openDrawer={navigation.openDrawer}
 						setSearchTerm={setSearchTerm}

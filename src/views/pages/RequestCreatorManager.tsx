@@ -31,20 +31,6 @@ const RequestListCreatorManager = (navigationProps:RequestListCreatorManagerNavi
     const getRequestItems = useGetRequestItems(storeId, dateRange, dateIsSelected);
 
     useEffect(() => {
-        const backAction = () => {
-            navigationProps.navigation.navigate("RequestSelectorScreen")
-            return true;
-        };
-        const backHandler = BackHandler.addEventListener(
-            "hardwareBackPress",
-            backAction
-        );
-        return () => {
-            backHandler.remove();
-        };
-    }, []);
-
-    useEffect(() => {
         if (getRequestItems.isSuccess)
             dispatchRequestItems({
                 type: "CREATE_ITEMS",

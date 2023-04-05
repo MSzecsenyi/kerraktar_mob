@@ -1,5 +1,4 @@
 import {
-	BackHandler,
 	FlatList,
 	ListRenderItemInfo,
 	StyleSheet,
@@ -7,23 +6,29 @@ import {
 	View,
 } from "react-native";
 import { useGetDetailedTakeOut } from "../../query-hooks/UseTakeOuts";
-import { TakeOutButtonProps, TakenOutItem } from "../../interfaces";
+import { TakenOutItem } from "../../interfaces";
 import { useCallback, useEffect, useState } from "react";
-import TakeOutDeatilsItemTile from "./Tiles/TakeOutDeatilsItemTile";
-import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
-import BottomControlButtons from "./BottomControlButtons";
+import TakeOutDeatilsItemTile from "../organisms/Tiles/TakeOutDeatilsItemTile";
+import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
+import BottomControlButtons from "../organisms/BottomControlButtons";
 import DefaultModal from "../molecules/DefaultModal";
 import ReturnTakeOutModalContent from "../molecules/ReturnTakeOutModalContent";
 import BottomCheckButton from "../atoms/BottomCheckButton";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { CompositeScreenProps } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { TakeOutStackParams, LoginDrawerParamList } from "../../navigation/ParamStacks";
 
-const TakeOutDetails = ({
-	takeOut,
-	setChosenTakeOut,
-	drawerProps,
-}: TakeOutButtonProps) => {
+export type TakeOutDetailsProps = CompositeScreenProps<
+	NativeStackScreenProps<TakeOutStackParams, "TakeOutDetailsScreen">,
+	DrawerScreenProps<LoginDrawerParamList>
+>
+
+const TakeOutDetails = ({navigation, route}: TakeOutDetailsProps) => {
 	const [itemList, setItemList] = useState<TakenOutItem[]>([]);
 	const [allItemsChecked, setAllItemsChecked] = useState(false);
 	const [modalIsVisible, setModalIsVisible] = useState(false);
+	const takeOut = route.params.takeOut;
 
 	const getTakeOutItems = useGetDetailedTakeOut(takeOut.id);
 
@@ -36,20 +41,6 @@ const TakeOutDetails = ({
 			!itemList.some((listItem) => listItem.is_checked === false)
 		);
 	}, [itemList]);
-
-	useEffect(() => {
-		const backAction = () => {
-			setChosenTakeOut(-1);
-			return true;
-		};
-		const backHandler = BackHandler.addEventListener(
-			"hardwareBackPress",
-			backAction
-		);
-		return () => {
-			backHandler.remove();
-		};
-	}, []);
 
 	const toggleItemChecked = (itemId: number) => {
 		setItemList((prev) =>
@@ -77,7 +68,7 @@ const TakeOutDetails = ({
 	return (
 		<View style={{ flex: 1 }}>
 			<HeaderWithSearchBar
-				drawerProps={drawerProps}
+				openDrawer={navigation.openDrawer}
 				title={takeOut.take_out_name}
 			/>
 			<Text style={styles.headerInfoText}>Kivett eszközök:</Text>
@@ -101,7 +92,7 @@ const TakeOutDetails = ({
 				<ReturnTakeOutModalContent
 					closeFn={() => setModalIsVisible(false)}
 					takeOutId={takeOut.id}
-					setChosenTakeOut={setChosenTakeOut}
+					acceptOnPress={navigation.goBack}
 				/>
 			</DefaultModal>
 		</View>

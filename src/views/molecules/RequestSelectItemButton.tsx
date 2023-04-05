@@ -27,7 +27,6 @@ const RequestSelectItemButton = ({
 						<TouchableHighlight
 							style={styles.active_add_button}
 							onPress={() => {
-									console.log(item)
 									dispatchRequestItems({
 											type: "ADD_ITEM",
 											payload: { id: item.id },

@@ -6,29 +6,29 @@ import {
 } from "react-native";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import DefaultModal from "../molecules/DefaultModal";
-import { LoginDrawerProps, RequestItem, StringDateRange } from "../../interfaces";
+import { RequestItem } from "../../interfaces";
 import { FlatList } from "react-native-gesture-handler";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
-import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
-import BottomControlButtons from "./BottomControlButtons";
+import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
+import BottomControlButtons from "../organisms/BottomControlButtons";
 import BottomCheckButton from "../atoms/BottomCheckButton";
 import { requestItemReducer } from "../../contexts/RequestItemReducer";
-import RequestItemTile from "./Tiles/RequestItemTile";
-import RequestAcceptList from "./RequestAcceptList";
+import RequestItemTile from "../organisms/Tiles/RequestItemTile";
+import RequestAcceptList from "../organisms/RequestAcceptList";
 import { useGetDetailedRequest } from "../../query-hooks/UseRequests";
-import UnsavedListWarning from "./UnsavedListWarning";
+import UnsavedListWarning from "../organisms/UnsavedListWarning";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { CompositeScreenProps } from "@react-navigation/native";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { RequestStackParamList, LoginDrawerParamList } from "../../navigation/ParamStacks";
 
-interface RequestDetailsProps {
-	requestId: number;
-	drawerProps: LoginDrawerProps;
-	dateRange: StringDateRange
-}
+export type RequestDetailsProps = CompositeScreenProps<
+	NativeStackScreenProps<RequestStackParamList, "RequestDetailsScreen">,
+	DrawerScreenProps<LoginDrawerParamList>
+>
 
-const RequestDetails = ({
-	requestId = 1,
-	drawerProps,
-}: RequestDetailsProps) => {
+const RequestDetails = ({navigation, route}: RequestDetailsProps) => {
 	const [requestItems, dispatchRequestItems] = useReducer(requestItemReducer, []); // Mutates selected items
 	const [acceptModalIsVisible, setAcceptModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
 	const [warningModalIsVisible, setWarningModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
@@ -43,8 +43,8 @@ const RequestDetails = ({
 	// 	start_date: dateRange.startDate,
 	// 	end_date: dateRange.endDate,
 	// });
-
-	const getRequestItems = useGetDetailedRequest(requestId);
+	const request = route.params.request
+	const getRequestItems = useGetDetailedRequest(request.id);
 
 	const selectedItemAmountRef = useRef(selectedItemAmount);
 	const setSelectedItemAmount = (data: number) => {
@@ -73,11 +73,10 @@ const RequestDetails = ({
 			Keyboard.dismiss();
 		});
 		const backAction = () => {
-			console.log(selectedItemAmount)
 			if (selectedItemAmountRef.current > 0){
 				setWarningModalIsVisible(true)
 			} else {
-				drawerProps.navigation.navigate("RequestStack", {screen: "RequestSelectorScreen"});
+				navigation.navigate("RequestSelectorScreen");
 			}
 			return true;
 		};
@@ -124,7 +123,7 @@ const RequestDetails = ({
 						closeFn={() => setWarningModalIsVisible(false)}>
 						<UnsavedListWarning 
 							acceptModal={() => 
-							drawerProps.navigation.navigate("RequestStack", {screen: "RequestSelectorScreen"})}
+							navigation.navigate("RequestSelectorScreen")}
 							closeModal={() => setWarningModalIsVisible(false)}
 							/>
 					</DefaultModal>
@@ -140,7 +139,7 @@ const RequestDetails = ({
 							onPressAccept={() => {}} />
 					</DefaultModal>
 					<HeaderWithSearchBar
-						drawerProps={drawerProps}
+						openDrawer={navigation.openDrawer}
 						setSearchTerm={setSearchTerm}
 						searchTerm={searchTerm}
 					/>

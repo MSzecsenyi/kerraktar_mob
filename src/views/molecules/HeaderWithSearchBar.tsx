@@ -1,17 +1,16 @@
 import { StyleSheet, TouchableOpacity, View, Text } from "react-native";
 import SearchBar from "../atoms/SearchBar";
-import { LoginDrawerProps } from "../../interfaces";
 import { Ionicons } from "@expo/vector-icons";
 
 interface HeaderWithSearchBarProps {
 	searchTerm?: string;
 	setSearchTerm?: React.Dispatch<React.SetStateAction<string>>;
-	drawerProps: LoginDrawerProps;
+	openDrawer: () => void;
 	title?: string;
 }
 
 const HeaderWithSearchBar = ({
-	drawerProps,
+	openDrawer,
 	searchTerm,
 	setSearchTerm,
 	title,
@@ -20,7 +19,7 @@ const HeaderWithSearchBar = ({
 		<View style={styles.headerContainer}>
 			<TouchableOpacity
 				style={styles.menuIconStyle}
-				onPress={drawerProps.navigation.openDrawer}
+				onPress={openDrawer}
 			>
 				<Ionicons
 					name="menu"

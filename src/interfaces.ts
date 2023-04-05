@@ -57,8 +57,6 @@ export interface ItemFilterBarProps {
     filteredData: Item[];
 }
 
-export type LoginDrawerProps = DrawerScreenProps<LoginDrawerParamList>;
-
 export interface TakeOutList {
     items: AcceptListCommonItem[];
     uniqueItems: string[];
@@ -78,11 +76,6 @@ export interface TakeOut {
     user: string;
     store: number;
     take_out_name: string;
-}
-export interface TakeOutButtonProps {
-    takeOut: TakeOut;
-    setChosenTakeOut: React.Dispatch<React.SetStateAction<number>>;
-    drawerProps: LoginDrawerProps;
 }
 
 export interface TakenOutItem {

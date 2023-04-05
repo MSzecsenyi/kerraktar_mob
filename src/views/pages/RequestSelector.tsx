@@ -1,17 +1,24 @@
 import { FlatList, ListRenderItemInfo, StyleSheet, Text, View } from "react-native";
 import { useGetRequests } from "../../query-hooks/UseRequests";
-import HeaderWithSearchBar from "./HeaderWithSearchBar";
+import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import LoadingSpinner from "../atoms/LoadingSpinner";
-import { ItemRequest, LoginDrawerProps } from "../../interfaces";
+import { ItemRequest } from "../../interfaces";
 import { useCallback, useEffect, useState } from "react";
 import RequestTile from "../organisms/Tiles/RequestTile";
 import BottomCreateNewButton from "../atoms/BottomCreateNewButton";
 import BottomControlButtons from "../organisms/BottomControlButtons";
-import { useFocusEffect } from "@react-navigation/native";
+import { CompositeScreenProps, useFocusEffect } from "@react-navigation/native";
+import { LoginDrawerParamList, RequestStackParamList } from "../../navigation/ParamStacks";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { DrawerScreenProps } from "@react-navigation/drawer";
 
-const RequestSelector = (drawerProps: LoginDrawerProps) => {
+type RequestSelectorNavigationProp = CompositeScreenProps<
+	NativeStackScreenProps<RequestStackParamList, "RequestSelectorScreen">,
+	DrawerScreenProps<LoginDrawerParamList>
+>
+
+const RequestSelector = ({navigation}: RequestSelectorNavigationProp) => {
 	const [searchTerm, setSearchTerm] = useState("");
-	const [chosenRequest, setChosenRequest] = useState(-1);
 	const [filteredRequests, setFilteredRequests] = useState<ItemRequest[]>([]);
 	const getRequests = useGetRequests();
 
@@ -44,7 +51,7 @@ const RequestSelector = (drawerProps: LoginDrawerProps) => {
 				request={item}
 				onTilePress={() => {
 					console.log(item.id)
-					drawerProps.navigation.navigate("RequestStack", {screen: "RequestDetailsScreen"})
+					navigation.navigate("RequestDetailsScreen", {request: item})
 				}}
 			/>
 		);
@@ -56,7 +63,7 @@ const RequestSelector = (drawerProps: LoginDrawerProps) => {
 		<View style={{ flex: 1 }}>
 			{getRequests.isSuccess ? (
 				<>
-					<HeaderWithSearchBar drawerProps={drawerProps} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
+					<HeaderWithSearchBar openDrawer={() => navigation.openDrawer()} searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
 					<View style={{flex: 1}}>
 						<FlatList
 								data={filteredRequests}
@@ -73,9 +80,7 @@ const RequestSelector = (drawerProps: LoginDrawerProps) => {
 								<BottomCreateNewButton
 									text="Új kivétel"
 									onPress={() =>
-										drawerProps.navigation.navigate("RequestStack", {
-											screen: "RequestCreatorScreen",
-										})
+										navigation.navigate("RequestCreatorScreen")
 									}
 								/>
 							</BottomControlButtons>

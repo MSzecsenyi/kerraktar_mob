@@ -10,10 +10,10 @@ import {
 import DateTimePicker, {
     DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import { LoginDrawerProps, StringDateRange } from "../../interfaces";
+import { StringDateRange } from "../../interfaces";
 import BottomControlButtons from "./BottomControlButtons";
 import BottomCheckButton from "../atoms/BottomCheckButton";
-import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
+import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 
 export const dateToStr = (date: Date): string => {
     const year = date.getFullYear();
@@ -26,14 +26,14 @@ interface DateSelectorProps {
     stringDateRange: StringDateRange;
     setStringDateRange: React.Dispatch<React.SetStateAction<StringDateRange>>;
     setDateIsSelected: React.Dispatch<React.SetStateAction<boolean>>;
-    drawerProps: LoginDrawerProps;
+    openDrawer: () => void;
 }
 
 const DateSelector = ({
     stringDateRange,
     setStringDateRange,
     setDateIsSelected,
-    drawerProps,
+    openDrawer,
 }: DateSelectorProps) => {
     const [showStartPicker, setShowStartPicker] = useState(false);
     const [showEndPicker, setShowEndPicker] = useState(false);
@@ -83,7 +83,7 @@ const DateSelector = ({
 
     return (
         <>
-            <HeaderWithSearchBar drawerProps={drawerProps} />
+            <HeaderWithSearchBar openDrawer={openDrawer} />
             <View style={styles.container}>
                 {/* start date picker */}
 

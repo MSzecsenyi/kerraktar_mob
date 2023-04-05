@@ -2,7 +2,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RequestListCreatorManager from "../views/pages/RequestCreatorManager";
 import RequestSelector from "../views/pages/RequestSelector";
 import { RequestStackParamList } from "./ParamStacks";
-import RequestDetails from "../views/organisms/RequestDetails";
+import RequestDetails from "../views/pages/RequestDetails";
 
 export default function TakeOutStack() {
 	const RequestStack = createNativeStackNavigator<RequestStackParamList>();

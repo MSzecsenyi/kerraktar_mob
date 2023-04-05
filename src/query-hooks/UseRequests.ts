@@ -1,32 +1,32 @@
-import { DateRange, RequestItem } from './../interfaces';
+import { RequestItem } from './../interfaces';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { API_URL } from '../constants';
-import { ItemRequest, LoginDrawerProps, RequestList } from '../interfaces';
+import { ItemRequest, RequestList } from '../interfaces';
 import { useContext } from 'react';
 import { UserDataContext } from '../contexts/UserDataContext';
+import { RequestListCreatorManagerNavigationProps } from '../views/pages/RequestCreatorManager';
 
 interface usePostRequestProps {
     requestList: RequestList
-	drawerProps: LoginDrawerProps
+	navigationProps: RequestListCreatorManagerNavigationProps
 }
 
 //Create a new request
-const postRequest = (token: string, requestList: RequestList) => axios.post(API_URL + 'requests',requestList,{
+const postRequest = async (token: string, requestList: RequestList) => {
+    axios.post(API_URL + 'requests',requestList,{
     headers: {
         'Authorization': `Bearer ${token}`    
     }
-})
+})}
 
-export function usePostRequest({requestList, drawerProps}: usePostRequestProps){
+export function usePostRequest({requestList, navigationProps}: usePostRequestProps){
     const {loggedInUser} = useContext(UserDataContext);
     return useMutation(() => postRequest(loggedInUser.token, requestList), {
         onSuccess: () => {
-            console.log("1")
-            drawerProps.navigation.navigate("RequestStack", {screen: "RequestSelectorScreen"})
+            navigationProps.navigation.navigate("RequestSelectorScreen")
         },
-        onError: ((error) => console.log(error))
-        
+        onError: ((error) => console.log(error)),
     }); 
 }
 
@@ -59,7 +59,7 @@ async function getDetailedRequest(token: string, requestId: number): Promise<Req
                 'Authorization': `Bearer ${token}`
             }
         });
-        return response.data;
+        return response.data.data;
     } catch (error) {
         console.error(error); throw error;
     }

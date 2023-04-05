@@ -1,17 +1,24 @@
 import { ListRenderItemInfo, StyleSheet, Text, View } from "react-native";
 import { useGetTakeOuts } from "../../query-hooks/UseTakeOuts";
 import { useCallback, useEffect, useState } from "react";
-import { LoginDrawerProps, TakeOut } from "../../interfaces";
-import HeaderWithSearchBar from "./HeaderWithSearchBar";
+import { TakeOut } from "../../interfaces";
+import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import { FlatList } from "react-native-gesture-handler";
 import TakeOutTile from "../organisms/Tiles/TakeOutTile";
 import LoadingSpinner from "../atoms/LoadingSpinner";
-import { useFocusEffect } from "@react-navigation/native";
-import TakeOutDetails from "../organisms/TakeOutDetails";
+import { CompositeScreenProps, useFocusEffect } from "@react-navigation/native";
 import BottomControlButtons from "../organisms/BottomControlButtons";
 import BottomCreateNewButton from "../atoms/BottomCreateNewButton";
+import { DrawerScreenProps } from "@react-navigation/drawer";
+import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import { TakeOutStackParams, LoginDrawerParamList } from "../../navigation/ParamStacks";
 
-const TakeOutListSelector = (drawerProps: LoginDrawerProps) => {
+export type TakeOutListSelectorProps = CompositeScreenProps<
+	NativeStackScreenProps<TakeOutStackParams, "TakeOutSelectorScreen">,
+	DrawerScreenProps<LoginDrawerParamList>
+>
+
+const TakeOutListSelector = (navigationProps: TakeOutListSelectorProps) => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const [chosenTakeOut, setChosenTakeOut] = useState(-1);
 	const getTakeOuts = useGetTakeOuts();
@@ -40,8 +47,7 @@ const TakeOutListSelector = (drawerProps: LoginDrawerProps) => {
 		return (
 			<TakeOutTile
 				takeOut={item}
-				setChosenTakeOut={setChosenTakeOut}
-				drawerProps={drawerProps}
+				navigationProps={navigationProps}
 			/>
 		);
 	}, []);
@@ -50,10 +56,9 @@ const TakeOutListSelector = (drawerProps: LoginDrawerProps) => {
 
 	return (
 		<View style={{ flex: 1 }}>
-			{chosenTakeOut === -1 ? (
 				<>
 					<HeaderWithSearchBar
-						drawerProps={drawerProps}
+						openDrawer={navigationProps.navigation.openDrawer}
 						searchTerm={searchTerm}
 						setSearchTerm={setSearchTerm}
 					/>
@@ -73,11 +78,7 @@ const TakeOutListSelector = (drawerProps: LoginDrawerProps) => {
 							<BottomControlButtons>
 								<BottomCreateNewButton
 									text="Új kivétel"
-									onPress={() =>
-										drawerProps.navigation.navigate("TakeOutStack", {
-											screen: "TakeOutCreatorScreen",
-										})
-									}
+									onPress={() => navigationProps.navigation.navigate("TakeOutCreatorScreen")}
 								/>
 							</BottomControlButtons>
 						</>
@@ -85,20 +86,6 @@ const TakeOutListSelector = (drawerProps: LoginDrawerProps) => {
 						<LoadingSpinner />
 					)}
 				</>
-			) : (
-				getTakeOuts.isSuccess &&
-				getTakeOuts.data.some((takeOut) => takeOut.id === chosenTakeOut) && (
-					<TakeOutDetails
-						takeOut={
-							getTakeOuts.data.find(
-								(takeOut) => takeOut.id === chosenTakeOut
-							) as TakeOut
-						}
-						setChosenTakeOut={setChosenTakeOut}
-						drawerProps={drawerProps}
-					/>
-				)
-			)}
 		</View>
 	);
 };

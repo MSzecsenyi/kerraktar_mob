@@ -6,12 +6,12 @@ import {
 } from "react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import DefaultModal from "../molecules/DefaultModal";
-import { LoginDrawerProps, RequestItem, RequestList, StringDateRange } from "../../interfaces";
+import { RequestItem, RequestList, StringDateRange } from "../../interfaces";
 import { FlatList } from "react-native-gesture-handler";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
 import { UseQueryResult } from "react-query";
-import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
+import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import BottomControlButtons from "./BottomControlButtons";
 import BottomCheckButton from "../atoms/BottomCheckButton";
 import { RequestItemAction } from "../../contexts/RequestItemReducer";
@@ -19,11 +19,12 @@ import RequestItemTile from "./Tiles/RequestItemTile";
 import RequestAcceptList from "./RequestAcceptList";
 import { usePostRequest } from "../../query-hooks/UseRequests";
 import UnsavedListWarning from "./UnsavedListWarning";
+import { RequestListCreatorManagerNavigationProps } from "../pages/RequestCreatorManager";
 
 interface RequestListCreatorMainProps {
 	requestItems: RequestItem[];
 	storeId: number;
-	drawerProps: LoginDrawerProps;
+	navigationProps: RequestListCreatorManagerNavigationProps;
 	dispatchRequestItems: React.Dispatch<RequestItemAction>;
 	getRequestItems: UseQueryResult<RequestItem[], unknown>;
 	dateRange: StringDateRange
@@ -32,7 +33,7 @@ interface RequestListCreatorMainProps {
 const RequestListCreatorMain = ({
 	requestItems,
 	storeId,
-	drawerProps,
+	navigationProps,
 	dispatchRequestItems,
 	getRequestItems,
 	dateRange
@@ -53,7 +54,7 @@ const RequestListCreatorMain = ({
 
 	const postRequest = usePostRequest({
 		requestList,
-		drawerProps,
+		navigationProps,
 	}); // Sends finalized data to the server
 
 	const selectedItemAmountRef = useRef(selectedItemAmount);
@@ -75,11 +76,10 @@ const RequestListCreatorMain = ({
 			Keyboard.dismiss();
 		});
 		const backAction = () => {
-			console.log(selectedItemAmount)
 			if (selectedItemAmountRef.current > 0){
 				setWarningModalIsVisible(true)
 			} else {
-				drawerProps.navigation.navigate("RequestStack", {screen: "RequestSelectorScreen"});
+				navigationProps.navigation.navigate("RequestSelectorScreen");
 			}
 			return true;
 		};
@@ -126,7 +126,7 @@ const RequestListCreatorMain = ({
 						closeFn={() => setWarningModalIsVisible(false)}>
 						<UnsavedListWarning 
 							acceptModal={() => 
-							drawerProps.navigation.navigate("RequestStack", {screen: "RequestSelectorScreen"})}
+							navigationProps.navigation.navigate("RequestSelectorScreen")}
 							closeModal={() => setWarningModalIsVisible(false)}
 							/>
 					</DefaultModal>
@@ -147,7 +147,7 @@ const RequestListCreatorMain = ({
 							onPressAccept={() => postRequest.mutate()} />
 					</DefaultModal>
 					<HeaderWithSearchBar
-						drawerProps={drawerProps}
+						openDrawer={() => navigationProps.navigation.openDrawer()}
 						setSearchTerm={setSearchTerm}
 						searchTerm={searchTerm}
 					/>

@@ -12,7 +12,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import DefaultModal from "../molecules/DefaultModal";
 import { modalStyles } from "../../styles";
-import { Item, LoginDrawerProps, TakeOutList } from "../../interfaces";
+import { Item, TakeOutList } from "../../interfaces";
 import { FlatList, TextInput } from "react-native-gesture-handler";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
@@ -22,15 +22,16 @@ import { TakeOutItemAction } from "../../contexts/ItemReducer";
 import { usePostTakeOut } from "../../query-hooks/UseTakeOuts";
 import { UseQueryResult } from "react-query";
 import QRScanner from "./QRScanner";
-import HeaderWithSearchBar from "../pages/HeaderWithSearchBar";
+import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import BottomControlButtons from "./BottomControlButtons";
 import BottomCheckButton from "../atoms/BottomCheckButton";
 import UnsavedListWarning from "./UnsavedListWarning";
+import { TakeOutListCreatorManagerProps } from "../pages/TakeOutListCreatorManager";
 
 interface TakeOutListCreatorMainProps {
 	items: Item[];
 	storeId: number;
-	drawerProps: LoginDrawerProps;
+	navigationProps: TakeOutListCreatorManagerProps;
 	dispatchItems: React.Dispatch<TakeOutItemAction>;
 	getItems: UseQueryResult<Item[], unknown>;
 	setStoreId: React.Dispatch<React.SetStateAction<number>>;
@@ -39,7 +40,7 @@ interface TakeOutListCreatorMainProps {
 const TakeOutListCreatorMain = ({
 	items,
 	storeId,
-	drawerProps,
+	navigationProps,
 	dispatchItems,
 	getItems,
 	setStoreId,
@@ -61,9 +62,8 @@ const TakeOutListCreatorMain = ({
 
 	const postTakeOut = usePostTakeOut({
 		takeOutList,
-		drawerProps,
+		navigationProps,
 		setStoreId,
-		storeId,
 	}); // Sends finalized data to the server
 
 	const selectedItemAmountRef = useRef(selectedItemAmount);
@@ -88,7 +88,7 @@ const TakeOutListCreatorMain = ({
 			if (selectedItemAmountRef.current > 0){
 				setWarningModalIsVisible(true)
 			} else {
-				drawerProps.navigation.navigate("TakeOutStack", {screen: "TakeOutSelectorScreen"});
+				navigationProps.navigation.navigate("TakeOutSelectorScreen");
 			}
 			return true;
 		};
@@ -152,7 +152,7 @@ const TakeOutListCreatorMain = ({
 						closeFn={() => setWarningModalIsVisible(false)}>
 						<UnsavedListWarning 
 							acceptModal={() => 
-							drawerProps.navigation.navigate("TakeOutStack", {screen: "TakeOutSelectorScreen"})}
+							navigationProps.navigation.navigate("TakeOutSelectorScreen")}
 							closeModal={() => setWarningModalIsVisible(false)}
 							/>
 					</DefaultModal>
@@ -213,7 +213,7 @@ const TakeOutListCreatorMain = ({
 						</>
 					</DefaultModal>
 					<HeaderWithSearchBar
-						drawerProps={drawerProps}
+						openDrawer={navigationProps.navigation.openDrawer}
 						setSearchTerm={setSearchTerm}
 						searchTerm={searchTerm}
 					/>

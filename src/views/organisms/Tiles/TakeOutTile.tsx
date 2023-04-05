@@ -1,10 +1,16 @@
 import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
-import { TakeOutButtonProps } from "../../../interfaces";
+import { TakeOut } from "../../../interfaces";
 import { Ionicons } from "@expo/vector-icons";
-import { memo, useContext, useState } from "react";
+import { memo, useContext } from "react";
 import { UserDataContext } from "../../../contexts/UserDataContext";
+import { TakeOutListSelectorProps } from "../../pages/TakeOutListSelector";
 
-const TakeOutTile = ({ takeOut, setChosenTakeOut }: TakeOutButtonProps) => {
+interface TakeOutTileProps {
+	takeOut: TakeOut
+	navigationProps: TakeOutListSelectorProps
+}
+
+const TakeOutTile = ({ takeOut, navigationProps }: TakeOutTileProps) => {
 	const loggedInUser = useContext(UserDataContext);
 	const getTextColor = (color: string) =>
 		takeOut.end_date ? {color: "gray"} : { color: color };
@@ -13,7 +19,7 @@ const TakeOutTile = ({ takeOut, setChosenTakeOut }: TakeOutButtonProps) => {
 			style={
 				takeOut.end_date ? styles.card_container_done : styles.card_container_ip
 			}
-			onPress={() => setChosenTakeOut(takeOut.id)}
+			onPress={() => navigationProps.navigation.navigate("TakeOutDetailsScreen", {takeOut: takeOut})}
 		>
 			<>
 				<View style={styles.info_part}>

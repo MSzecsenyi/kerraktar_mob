@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { memo, useContext, useState } from "react";
+import { memo, useContext } from "react";
 import { UserDataContext } from "../../../contexts/UserDataContext";
 import { ItemRequest } from "../../../interfaces";
 

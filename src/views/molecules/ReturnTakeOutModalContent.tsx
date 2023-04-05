@@ -6,15 +6,15 @@ import LoadingSpinner from "../atoms/LoadingSpinner";
 interface ReturnTakeOutModalContentProps {
 	closeFn: () => void;
 	takeOutId: number;
-	setChosenTakeOut: React.Dispatch<React.SetStateAction<number>>;
+	acceptOnPress: () => void;
 }
 
 const ReturnTakeOutModalContent = ({
 	closeFn,
 	takeOutId,
-	setChosenTakeOut,
+	acceptOnPress,
 }: ReturnTakeOutModalContentProps) => {
-	const putTakeOut = usePutTakeOut({ takeOutId, setChosenTakeOut });
+	const putTakeOut = usePutTakeOut( {takeOutId, acceptOnPress} );
 
 	return (
 		<View>

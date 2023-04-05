@@ -2,14 +2,14 @@ import { TakenOutItem } from './../interfaces';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import axios from 'axios';
 import { API_URL } from '../constants';
-import { TakeOut, LoginDrawerProps, TakeOutList } from '../interfaces';
+import { TakeOut, TakeOutList } from '../interfaces';
 import { useContext } from 'react';
 import { UserDataContext } from '../contexts/UserDataContext';
+import { TakeOutListCreatorManagerProps } from '../views/pages/TakeOutListCreatorManager';
 interface usePostTakeOutProps {
     takeOutList: TakeOutList
-	drawerProps: LoginDrawerProps
+	navigationProps: TakeOutListCreatorManagerProps
 	setStoreId: React.Dispatch<React.SetStateAction<number>>
-    storeId: number
 }
 
 //Create a new takeout
@@ -19,11 +19,11 @@ const postTakeOut = (token: string, takeOutList: TakeOutList) => axios.post(API_
     }
 })
 
-export function usePostTakeOut({takeOutList, drawerProps, setStoreId, storeId}: usePostTakeOutProps){
+export function usePostTakeOut({takeOutList, navigationProps, setStoreId}: usePostTakeOutProps){
     const {loggedInUser} = useContext(UserDataContext);
     return useMutation(() => postTakeOut(loggedInUser.token, takeOutList), {
         onSuccess: () => {
-            drawerProps.navigation.navigate("TakeOutStack", {screen: "TakeOutSelectorScreen"})
+            navigationProps.navigation.navigate("TakeOutSelectorScreen")
             setStoreId(-1)
         },
         onError: ((error) => console.log(error))
@@ -80,10 +80,10 @@ const putTakeOut = (takeOutId: number, token: string) => axios.put(API_URL + `ta
 
 interface usePutTakeOutProps {
     takeOutId: number
-	setChosenTakeOut: React.Dispatch<React.SetStateAction<number>>
+	acceptOnPress: () => void
 }
 
-export function usePutTakeOut({takeOutId, setChosenTakeOut}: usePutTakeOutProps) {
+export function usePutTakeOut({takeOutId, acceptOnPress}: usePutTakeOutProps) {
     const {loggedInUser} = useContext(UserDataContext);
   const queryClient = useQueryClient();
 
@@ -97,7 +97,7 @@ export function usePutTakeOut({takeOutId, setChosenTakeOut}: usePutTakeOutProps)
               });
               queryClient.setQueryData('takeOuts', newData);
             }
-          setChosenTakeOut(-1)
+          acceptOnPress
           }
     })
 }

@@ -2,23 +2,22 @@ import {
 	ListRenderItemInfo,
 	StyleSheet,
 	Text,
-	TouchableOpacity,
 	View,
 } from "react-native";
-import { Store, LoginDrawerProps } from "../../interfaces";
+import { Store } from "../../interfaces";
 import { FlatList, TouchableHighlight } from "react-native-gesture-handler";
-import { Ionicons } from "@expo/vector-icons";
+import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 
 interface StoreSelectorProps {
 	setStoreId: React.Dispatch<React.SetStateAction<number>>;
 	stores: Store[];
-	drawerProps: LoginDrawerProps;
+	openDrawer: () => void;
 }
 
 const StoreSelector = ({
 	setStoreId,
 	stores,
-	drawerProps,
+	openDrawer,
 }: StoreSelectorProps) => {
 	const renderRow = (storeInfo: ListRenderItemInfo<Store>) => {
 		const store = storeInfo.item;
@@ -36,16 +35,7 @@ const StoreSelector = ({
 
 	return (
 		<View style={styles.mainContainer}>
-			<TouchableOpacity
-				style={{ paddingLeft: 12, paddingTop: 9 }}
-				onPress={drawerProps.navigation.openDrawer}
-			>
-				<Ionicons
-					name="menu"
-					size={40}
-					color="#333"
-				/>
-			</TouchableOpacity>
+			<HeaderWithSearchBar openDrawer={openDrawer} />
 			<Text style={styles.titleText}>Válassz raktárat:</Text>
 			<FlatList
 				data={stores.sort((a, b) => a.address.localeCompare(b.address))}

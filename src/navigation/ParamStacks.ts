@@ -1,10 +1,19 @@
+import { NavigatorScreenParams } from "@react-navigation/native";
+import { ItemRequest, TakeOut } from "../interfaces";
+
 export type LoginDrawerParamList = {
-    TakeOutStack: {screen: "TakeOutSelectorScreen" | "TakeOutCreatorScreen"}
-    RequestStack: {screen: "RequestSelectorScreen" | "RequestCreatorScreen" | "RequestDetailsScreen"}
+    TakeOutStack: NavigatorScreenParams<TakeOutStackParams>
+    RequestStack: NavigatorScreenParams<RequestStackParamList>
   };
 
 export type RequestStackParamList = {
   RequestSelectorScreen: undefined
   RequestCreatorScreen: undefined
-  RequestDetailsScreen: {requestId: number}
+  RequestDetailsScreen: {request: ItemRequest}
+}
+
+export type TakeOutStackParams = {
+  TakeOutSelectorScreen: undefined
+  TakeOutCreatorScreen: undefined
+  TakeOutDetailsScreen: {takeOut: TakeOut}
 }

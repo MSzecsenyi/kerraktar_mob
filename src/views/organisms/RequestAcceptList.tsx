@@ -14,7 +14,6 @@ interface RequestAcceptListProps {
 
 const RequestAcceptList = ({setModalIsVisible, items, listName, onChangeText, onPressAccept}: RequestAcceptListProps) => {
 	const [listSendLoading, setListSentLoading] = useState(false);
-    
   return (
     <>
 							<TouchableOpacity onPress={() => setModalIsVisible(false)}>
@@ -29,7 +28,7 @@ const RequestAcceptList = ({setModalIsVisible, items, listName, onChangeText, on
 									<RequestAcceptListItem ListItemData={item} />
 								)}
 							/>
-							{listName && 
+							{typeof(listName) !== 'undefined' && 
 							<TextInput
 								style={modalStyles.textInput}
 								defaultValue={listName}
@@ -54,8 +53,7 @@ const RequestAcceptList = ({setModalIsVisible, items, listName, onChangeText, on
 												: modalStyles.buttonDisabled
 										}
 										onPress={() => {
-											console.log("pressed")
-											onPressAccept
+											onPressAccept()
 											setListSentLoading(true);
 										}}
 									>
@@ -69,5 +67,3 @@ const RequestAcceptList = ({setModalIsVisible, items, listName, onChangeText, on
 }
 
 export default RequestAcceptList
-
-const styles = StyleSheet.create({})

@@ -17,10 +17,10 @@ import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 
 export const dateToStr = (date: Date): string => {
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
-}
+};
 
 interface DateSelectorProps {
     stringDateRange: StringDateRange;
@@ -39,16 +39,15 @@ const DateSelector = ({
     const [showEndPicker, setShowEndPicker] = useState(false);
     const [dateRange, setDateRange] = useState({
         startDate: new Date(),
-        endDate: new Date()
-    })
+        endDate: new Date(),
+    });
 
     useEffect(() => {
-      setStringDateRange({
-        startDate: dateToStr(new Date()),
-        endDate: dateToStr(new Date())
-      })
-    }, [])
-    
+        setStringDateRange({
+            startDate: dateToStr(new Date()),
+            endDate: dateToStr(new Date()),
+        });
+    }, []);
 
     const onStartDateChange = (
         event: DateTimePickerEvent,
@@ -75,11 +74,11 @@ const DateSelector = ({
     const setStartDate = (date: Date) => {
         setDateRange({ ...dateRange, startDate: date });
         setStringDateRange({ ...stringDateRange, startDate: dateToStr(date) });
-    }
+    };
     const setEndDate = (date: Date) => {
         setDateRange({ ...dateRange, endDate: date });
         setStringDateRange({ ...stringDateRange, endDate: dateToStr(date) });
-    }
+    };
 
     return (
         <>
@@ -90,11 +89,11 @@ const DateSelector = ({
                 {Platform.OS === "android" && (
                     <TouchableHighlight
                         style={styles.dateSelectorButton}
-                        onPress={() => setShowStartPicker(true)}
-                    >
+                        onPress={() => setShowStartPicker(true)}>
                         <Text
-                            style={styles.dateSelectorButtonText}
-                        >{`StartDate: ${dateRange.startDate.getFullYear()}.${
+                            style={
+                                styles.dateSelectorButtonText
+                            }>{`StartDate: ${dateRange.startDate.getFullYear()}.${
                             dateRange.startDate.getMonth() + 1
                         }.${dateRange.startDate.getDate()}`}</Text>
                     </TouchableHighlight>
@@ -103,8 +102,7 @@ const DateSelector = ({
                     <DateTimePicker
                         value={dateRange.startDate}
                         minimumDate={new Date()}
-                        onChange={onStartDateChange}
-                    ></DateTimePicker>
+                        onChange={onStartDateChange}></DateTimePicker>
                 )}
 
                 {/* end date picker */}
@@ -112,11 +110,11 @@ const DateSelector = ({
                 {Platform.OS === "android" && (
                     <TouchableHighlight
                         style={styles.dateSelectorButton}
-                        onPress={() => setShowEndPicker(true)}
-                    >
+                        onPress={() => setShowEndPicker(true)}>
                         <Text
-                            style={styles.dateSelectorButtonText}
-                        >{`EndDate: ${dateRange.endDate.getFullYear()}.${
+                            style={
+                                styles.dateSelectorButtonText
+                            }>{`EndDate: ${dateRange.endDate.getFullYear()}.${
                             dateRange.endDate.getMonth() + 1
                         }.${dateRange.endDate.getDate()}`}</Text>
                     </TouchableHighlight>
@@ -125,8 +123,7 @@ const DateSelector = ({
                     <DateTimePicker
                         value={initialEndDate}
                         minimumDate={dateRange.startDate}
-                        onChange={onEndDateChange}
-                    ></DateTimePicker>
+                        onChange={onEndDateChange}></DateTimePicker>
                 )}
                 <BottomControlButtons>
                     <BottomCheckButton

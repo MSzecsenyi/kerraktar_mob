@@ -29,8 +29,14 @@ export function useGetItems(store_id: number) {
     );
 }
 
-function getRequestItems(store_id: number, dateRange: StringDateRange, token: string): Promise<RequestItem[]> {
-    const url = API_URL + `request_items?store_id=[${store_id}]&startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`
+function getRequestItems(
+    store_id: number,
+    dateRange: StringDateRange,
+    token: string
+): Promise<RequestItem[]> {
+    const url =
+        API_URL +
+        `request_items?store_id=[${store_id}]&startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`;
     return axios
         .get(url, {
             headers: {
@@ -43,9 +49,12 @@ function getRequestItems(store_id: number, dateRange: StringDateRange, token: st
         });
 }
 
-
 //Items for Requests
-export function useGetRequestItems(store_id: number, dateRange: StringDateRange, dateIsSelected: boolean) {
+export function useGetRequestItems(
+    store_id: number,
+    dateRange: StringDateRange,
+    dateIsSelected: boolean
+) {
     const { loggedInUser } = useContext(UserDataContext);
     return useQuery(
         ["items", store_id, dateRange],

@@ -1,62 +1,69 @@
-import { FlatList, ListRenderItemInfo, StyleSheet, Text, TouchableHighlight, TouchableOpacity } from 'react-native'
-import { OtherRequestInfo, RequestItem } from '../../interfaces'
-import DefaultModal from '../molecules/DefaultModal'
-import { useCallback, useState } from 'react'
-import { modalStyles } from '../../styles'
+import {
+    FlatList,
+    ListRenderItemInfo,
+    StyleSheet,
+    Text,
+    TouchableHighlight,
+    TouchableOpacity,
+} from "react-native";
+import { OtherRequestInfo, RequestItem } from "../../interfaces";
+import DefaultModal from "../molecules/DefaultModal";
+import { useCallback, useState } from "react";
+import { modalStyles } from "../../styles";
 
 interface RequestWarningButtonProps {
-    item: RequestItem
+    item: RequestItem;
 }
 
-const RequestWarningButton = ({item}: RequestWarningButtonProps) => {
+const RequestWarningButton = ({ item }: RequestWarningButtonProps) => {
     const [modalIsVisible, setModalIsVisible] = useState(false);
 
-    const renderRow = useCallback(({ item }: ListRenderItemInfo<OtherRequestInfo>) => {
-		return (
-            <Text>{`${item.user} - ${item.amount}`}</Text>
-		);
-	}, []);
+    const renderRow = useCallback(
+        ({ item }: ListRenderItemInfo<OtherRequestInfo>) => {
+            return <Text>{`${item.user} - ${item.amount}`}</Text>;
+        },
+        []
+    );
 
-
-  return (
-    <>
-    <DefaultModal
-        visible={modalIsVisible}
-        closeFn={() => setModalIsVisible(false)}
-    >
+    return (
         <>
-            <TouchableOpacity onPress={() => setModalIsVisible(false)}>
-                <Text style={modalStyles.mainText}>Mások is foglaltak ebből az eszközből:</Text>
-                <FlatList
-								data={item.other_requests}
-								keyExtractor={(item) => item.user}
-								renderItem={renderRow}
-							/>
-            </TouchableOpacity>
+            <DefaultModal
+                visible={modalIsVisible}
+                closeFn={() => setModalIsVisible(false)}>
+                <>
+                    <TouchableOpacity onPress={() => setModalIsVisible(false)}>
+                        <Text style={modalStyles.mainText}>
+                            Mások is foglaltak ebből az eszközből:
+                        </Text>
+                        <FlatList
+                            data={item.other_requests}
+                            keyExtractor={(item) => item.user}
+                            renderItem={renderRow}
+                        />
+                    </TouchableOpacity>
+                </>
+            </DefaultModal>
+            <TouchableHighlight
+                onPress={() => setModalIsVisible(true)}
+                style={styles.warning_button}>
+                <Text style={styles.light_text}>!</Text>
+            </TouchableHighlight>
         </>
-    </DefaultModal>
-    <TouchableHighlight
-        onPress={() => setModalIsVisible(true)}
-        style={styles.warning_button}
-    >
-        <Text style={styles.light_text}>!</Text>
-    </TouchableHighlight>
-    </>
-  )
-}
+    );
+};
 
-export default RequestWarningButton
+export default RequestWarningButton;
 
 const styles = StyleSheet.create({
-	warning_button: {
-		width: 30,
-		height: 30,
-		backgroundColor: "red",
-		borderRadius: 50,
-		alignItems: "center",
-		justifyContent: "center",
-	},
+    warning_button: {
+        width: 30,
+        height: 30,
+        backgroundColor: "red",
+        borderRadius: 50,
+        alignItems: "center",
+        justifyContent: "center",
+    },
     light_text: {
-        color: "white"
-    }
-})
+        color: "white",
+    },
+});

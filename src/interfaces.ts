@@ -106,31 +106,31 @@ export interface StringDateRange {
 }
 
 export interface RequestList {
-    start_date: string
-    end_date: string
-    store_id: number
-    request_name: string
-    items: AcceptListCommonItem[]
+    start_date: string;
+    end_date: string;
+    store_id: number;
+    request_name: string;
+    items: AcceptListCommonItem[];
 }
 
 export interface RequestItem {
-    id: number,
-    category: string,
-    item_name: string,
-    amount: number,
-    is_selected: boolean,
-    selected_amount: number,
-    other_requests: OtherRequestInfo[]
+    id: number;
+    category: string;
+    item_name: string;
+    amount: number;
+    is_selected: boolean;
+    selected_amount: number;
+    other_requests: OtherRequestInfo[];
 }
 
 export interface OtherRequestInfo {
-    start_date: Date
-    end_date: Date
-    amount: number
-    user: string
+    start_date: Date;
+    end_date: Date;
+    amount: number;
+    user: string;
 }
 
 export interface RequestItemButtonProps {
-    item: RequestItem
-	dispatchRequestItems: React.Dispatch<RequestItemAction>;
+    item: RequestItem;
+    dispatchRequestItems: React.Dispatch<RequestItemAction>;
 }

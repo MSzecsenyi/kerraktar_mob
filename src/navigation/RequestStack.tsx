@@ -5,31 +5,26 @@ import { RequestStackParamList } from "./ParamStacks";
 import RequestDetails from "../views/pages/RequestDetails";
 
 export default function TakeOutStack() {
-	const RequestStack = createNativeStackNavigator<RequestStackParamList>();
+    const RequestStack = createNativeStackNavigator<RequestStackParamList>();
 
-	return (
-		<RequestStack.Navigator
-			screenOptions={{
-				headerShown: false,
-			}}
-			initialRouteName="RequestSelectorScreen"
-		>
-			{/* <RequestStack.Screen
-				name="RequestCreatorScreen"
-				component={RequestListCreatorManager}
-			/> */}
-			<RequestStack.Screen
-				name="RequestSelectorScreen"
-				component={RequestSelector}
-			/>
-			<RequestStack.Screen
-				name="RequestCreatorScreen"
-				component={RequestListCreatorManager}
-			/>
-			<RequestStack.Screen
-				name="RequestDetailsScreen"
-				component={RequestDetails}
-			/>
-		</RequestStack.Navigator>
-	);
+    return (
+        <RequestStack.Navigator
+            screenOptions={{
+                headerShown: false,
+            }}
+            initialRouteName="RequestSelectorScreen">
+            <RequestStack.Screen
+                name="RequestSelectorScreen"
+                component={RequestSelector}
+            />
+            <RequestStack.Screen
+                name="RequestCreatorScreen"
+                component={RequestListCreatorManager}
+            />
+            <RequestStack.Screen
+                name="RequestDetailsScreen"
+                component={RequestDetails}
+            />
+        </RequestStack.Navigator>
+    );
 }

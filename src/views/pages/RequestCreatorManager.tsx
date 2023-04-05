@@ -9,14 +9,19 @@ import { requestItemReducer } from "../../contexts/RequestItemReducer";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
-import { RequestStackParamList, LoginDrawerParamList } from "../../navigation/ParamStacks";
+import {
+    RequestStackParamList,
+    LoginDrawerParamList,
+} from "../../navigation/ParamStacks";
 
 export type RequestListCreatorManagerNavigationProps = CompositeScreenProps<
-	NativeStackScreenProps<RequestStackParamList, "RequestCreatorScreen">,
-	DrawerScreenProps<LoginDrawerParamList>
->
+    NativeStackScreenProps<RequestStackParamList, "RequestCreatorScreen">,
+    DrawerScreenProps<LoginDrawerParamList>
+>;
 
-const RequestListCreatorManager = (navigationProps:RequestListCreatorManagerNavigationProps) => {
+const RequestListCreatorManager = (
+    navigationProps: RequestListCreatorManagerNavigationProps
+) => {
     const stores = useContext(UserDataContext).loggedInUser.stores; // Necessary to get available stores
     const [dateRange, setDateRange] = useState({
         startDate: "",
@@ -26,9 +31,16 @@ const RequestListCreatorManager = (navigationProps:RequestListCreatorManagerNavi
     const [storeId, setStoreId] = useState(
         stores.length == 1 ? stores[0].store_id : -1
     );
-    const [requestItems, dispatchRequestItems] = useReducer(requestItemReducer, []); // Mutates selected items
+    const [requestItems, dispatchRequestItems] = useReducer(
+        requestItemReducer,
+        []
+    ); // Mutates selected items
 
-    const getRequestItems = useGetRequestItems(storeId, dateRange, dateIsSelected);
+    const getRequestItems = useGetRequestItems(
+        storeId,
+        dateRange,
+        dateIsSelected
+    );
 
     useEffect(() => {
         if (getRequestItems.isSuccess)
@@ -55,12 +67,12 @@ const RequestListCreatorManager = (navigationProps:RequestListCreatorManagerNavi
                 />
             ) : (
                 <RequestListCreatorMain
-                            requestItems={requestItems}
-                            storeId={storeId} 
-                            navigationProps={navigationProps}
-                            dispatchRequestItems={dispatchRequestItems} 
-                            getRequestItems={getRequestItems}
-                            dateRange={dateRange}
+                    requestItems={requestItems}
+                    storeId={storeId}
+                    navigationProps={navigationProps}
+                    dispatchRequestItems={dispatchRequestItems}
+                    getRequestItems={getRequestItems}
+                    dateRange={dateRange}
                 />
             )}
         </View>

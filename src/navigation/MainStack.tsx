@@ -11,69 +11,64 @@ import LoggedInDrawer from "./LoggedInDrawer";
 const Stack = createNativeStackNavigator();
 
 export default function MainStack() {
-	const { dispatch, loggedInUser } = useContext(UserDataContext);
-	const [isLoading, setIsLoadinig] = useState<Boolean>(true);
+    const { dispatch, loggedInUser } = useContext(UserDataContext);
+    const [isLoading, setIsLoadinig] = useState<Boolean>(true);
 
-	// On app load I check if there is a saved bearer token, and if it is connected to an existing user
-	useEffect(() => {
-		const loadLogin = async () => {
-			const token: string | null = await AsyncStorage.getItem("persToken");
-			if (token != null) {
-				var config = {
-					method: "get",
-					url: `${API_URL}checkuser`,
-					headers: {
-						Authorization: `Bearer ${token}`,
-					},
-				};
-				await axios(config)
-					.then(function (response) {
-						dispatch({
-							type: "SET_LOGGED_IN_USER",
-							payload: response.data,
-						});
-						setIsLoadinig(false);
-					})
-					.catch(function (error) {
-						console.error(error.response.status);
-						if (error.response.status == 401) {
-							AsyncStorage.removeItem("persToken");
-							setIsLoadinig(false);
-							console.error(
-								"Unauthorized, you might have been logged out elsewhere"
-							);
-						} else {
-							console.error(error);
-						}
-					});
-			} else {
-				setIsLoadinig(false);
-			}
-		};
-		loadLogin();
-	}, []);
+    // On app load I check if there is a saved bearer token, and if it is connected to an existing user
+    useEffect(() => {
+        const loadLogin = async () => {
+            const token: string | null = await AsyncStorage.getItem(
+                "persToken"
+            );
+            if (token != null) {
+                var config = {
+                    method: "get",
+                    url: `${API_URL}checkuser`,
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
+                };
+                await axios(config)
+                    .then(function (response) {
+                        dispatch({
+                            type: "SET_LOGGED_IN_USER",
+                            payload: response.data,
+                        });
+                        setIsLoadinig(false);
+                    })
+                    .catch(function (error) {
+                        console.error(error.response.status);
+                        if (error.response.status == 401) {
+                            AsyncStorage.removeItem("persToken");
+                            setIsLoadinig(false);
+                            console.error(
+                                "Unauthorized, you might have been logged out elsewhere"
+                            );
+                        } else {
+                            console.error(error);
+                        }
+                    });
+            } else {
+                setIsLoadinig(false);
+            }
+        };
+        loadLogin();
+    }, []);
 
-	if (isLoading) {
-		return <SplashScreen />;
-	}
+    if (isLoading) {
+        return <SplashScreen />;
+    }
 
-	return (
-		<Stack.Navigator
-			screenOptions={{
-				headerShown: false,
-			}}
-		>
-			{loggedInUser.user.id != -1 ? (
-				<Stack.Screen
-					name="LoggedIn"
-					component={LoggedInDrawer}
-				/>
-			) : (
-				<Stack.Screen
-					name="Login"
-					component={LoginPage}
-				/>
-			)}
-		</Stack.Navigator>
-	);
+    return (
+        <Stack.Navigator
+            screenOptions={{
+                headerShown: false,
+            }}>
+            {loggedInUser.user.id != -1 ? (
+                <Stack.Screen name="LoggedIn" component={LoggedInDrawer} />
+            ) : (
+                <Stack.Screen name="Login" component={LoginPage} />
+            )}
+        </Stack.Navigator>
+    );
 }

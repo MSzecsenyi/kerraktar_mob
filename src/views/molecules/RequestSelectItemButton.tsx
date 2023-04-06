@@ -1,11 +1,16 @@
 import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
 import CommonItemSelectorButton from "../atoms/CommonItemSelectorButton";
-import { RequestItemButtonProps } from "../../interfaces";
+import { RequestItem } from "../../interfaces";
+import { RequestItemAction } from "../../contexts/RequestItemReducer";
+interface RequestSelectItemButtonProps {
+    item: RequestItem;
+    dispatchRequestItems: React.Dispatch<RequestItemAction>;
+}
 
 const RequestSelectItemButton = ({
     item,
     dispatchRequestItems,
-}: RequestItemButtonProps) => {
+}: RequestSelectItemButtonProps) => {
     return (
         <View>
             {item.is_selected ? (

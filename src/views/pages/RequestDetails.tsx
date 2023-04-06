@@ -1,9 +1,4 @@
-import {
-    BackHandler,
-    Keyboard,
-    ListRenderItemInfo,
-    StyleSheet,
-} from "react-native";
+import { BackHandler, Keyboard, ListRenderItemInfo } from "react-native";
 import { useCallback, useEffect, useReducer, useRef, useState } from "react";
 import DefaultModal from "../molecules/DefaultModal";
 import { RequestItem } from "../../interfaces";
@@ -12,7 +7,8 @@ import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import BottomControlButtons from "../organisms/BottomControlButtons";
-import BottomCheckButton from "../atoms/BottomCheckButton";
+import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import Feather from "react-native-vector-icons/Feather";
 import { requestItemReducer } from "../../contexts/RequestItemReducer";
 import RequestItemTile from "../organisms/Tiles/RequestItemTile";
 import RequestAcceptList from "../organisms/RequestAcceptList";
@@ -21,10 +17,12 @@ import UnsavedListWarning from "../organisms/UnsavedListWarning";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
+import isEqual from "lodash/isEqual";
 import {
     RequestStackParamList,
     LoginDrawerParamList,
 } from "../../navigation/ParamStacks";
+import BottomUniversalButton from "../atoms/bottomButtons/BottomUniversalButton";
 
 export type RequestDetailsProps = CompositeScreenProps<
     NativeStackScreenProps<RequestStackParamList, "RequestDetailsScreen">,
@@ -36,11 +34,16 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
         requestItemReducer,
         []
     );
+    const [defaultItems, dispatchDefaultItems] = useReducer(
+        requestItemReducer,
+        []
+    );
     const [acceptModalIsVisible, setAcceptModalIsVisible] = useState(false);
     const [warningModalIsVisible, setWarningModalIsVisible] = useState(false);
     const [searchTerm, setSearchTerm] = useState("");
     const [filteredItems, setFilteredItems] = useState<RequestItem[]>([]);
-    const [selectedItemAmount, _setSelectedItemAmount] = useState(0);
+    const [changed, _setChanged] = useState(false);
+    const [editMode, setEditMode] = useState(false);
     // const [requestList, setRequestList] = useState<RequestList>({
     // 	// Final accept data
     // 	items: [],
@@ -52,30 +55,40 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
     const request = route.params.request;
     const getRequestItems = useGetDetailedRequest(request.id);
 
-    const selectedItemAmountRef = useRef(selectedItemAmount);
-    const setSelectedItemAmount = (data: number) => {
-        selectedItemAmountRef.current = data;
-        _setSelectedItemAmount(data);
+    const changedRef = useRef(changed);
+    const setChanged = (data: boolean) => {
+        changedRef.current = data;
+        _setChanged(data);
     };
-
+    //filtering data
     useEffect(() => {
-        setSelectedItemAmount(
-            requestItems.filter((item) => item.is_selected).length
-        );
-        const filtered = requestItems.filter((item) => {
+        setChanged(!isEqual(requestItems, defaultItems));
+        //filtering based on searchbar
+        let filtered = requestItems.filter((item) => {
             return item.item_name
                 .toLowerCase()
                 .includes(searchTerm.toLowerCase());
         });
-        if (filtered) setFilteredItems(filtered);
-    }, [searchTerm, requestItems]);
+        //filtering based on selected state
+        if (!editMode) {
+            filtered = filtered.filter((item) => {
+                return item.is_selected;
+            });
+        }
+        setFilteredItems(filtered);
+    }, [searchTerm, requestItems, editMode]);
 
     useEffect(() => {
-        if (getRequestItems.isSuccess)
+        if (getRequestItems.isSuccess) {
             dispatchRequestItems({
                 type: "CREATE_ITEMS",
                 payload: { items: getRequestItems.data },
             });
+            dispatchDefaultItems({
+                type: "CREATE_ITEMS",
+                payload: { items: getRequestItems.data },
+            });
+        }
     }, [getRequestItems.data]);
 
     useEffect(() => {
@@ -83,7 +96,7 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
             Keyboard.dismiss();
         });
         const backAction = () => {
-            if (selectedItemAmountRef.current > 0) {
+            if (changedRef.current) {
                 setWarningModalIsVisible(true);
             } else {
                 navigation.navigate("RequestSelectorScreen");
@@ -106,10 +119,11 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
                 <RequestItemTile
                     item={item}
                     dispatchRequestItems={dispatchRequestItems}
+                    editable={editMode}
                 />
             );
         },
-        []
+        [editMode]
     );
 
     const keyExtractor = (item: RequestItem) => item.id.toString();
@@ -129,7 +143,7 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
         // 	};
         // });
 
-        setAcceptModalIsVisible(selectedItemAmount > 0 ? true : false);
+        setAcceptModalIsVisible(changed ? true : false);
     };
 
     return (
@@ -186,28 +200,48 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
                     />
                 </>
             )}
-            <BottomControlButtons>
-                <>
-                    <BottomCheckButton
-                        acceptButtonIsActive={selectedItemAmount > 0}
-                        acceptButtonOnPress={acceptButtonOnPress}
-                    />
-                </>
-            </BottomControlButtons>
+            {getRequestItems.isSuccess && (
+                <BottomControlButtons>
+                    <>
+                        <BottomUniversalButton //Enable / Disable edit
+                            buttonOnPress={() => setEditMode((prev) => !prev)}>
+                            <MaterialIcons
+                                name={editMode ? "edit-off" : "edit"}
+                                size={35}
+                                color="white"
+                            />
+                        </BottomUniversalButton>
+                        {editMode ? (
+                            <BottomUniversalButton //Accept changes OR delete request
+                                buttonIsActive={changed}
+                                buttonOnPress={() => acceptButtonOnPress()}
+                            />
+                        ) : (
+                            <>
+                                <BottomUniversalButton //Accept changes OR delete request
+                                    buttonColor="red"
+                                    buttonOnPress={() => setEditMode(false)}>
+                                    <Feather
+                                        name={"trash-2"}
+                                        size={35}
+                                        color="white"
+                                    />
+                                </BottomUniversalButton>
+                                {changed && (
+                                    <BottomUniversalButton //Accept changes OR delete request
+                                        buttonIsActive={changed}
+                                        buttonOnPress={() =>
+                                            acceptButtonOnPress()
+                                        }
+                                    />
+                                )}
+                            </>
+                        )}
+                    </>
+                </BottomControlButtons>
+            )}
         </>
     );
 };
 
 export default RequestDetails;
-
-const styles = StyleSheet.create({
-    footerButton: {
-        backgroundColor: "#007aff",
-        width: 60,
-        height: 60,
-        borderRadius: 30,
-        justifyContent: "center",
-        alignItems: "center",
-        marginHorizontal: 20,
-    },
-});

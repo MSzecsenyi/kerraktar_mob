@@ -12,14 +12,14 @@ import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
 import { UseQueryResult } from "react-query";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
-import BottomControlButtons from "./BottomControlButtons";
-import BottomCheckButton from "../atoms/BottomCheckButton";
+import BottomControlButtons from "../organisms/BottomControlButtons";
+import BottomCheckButton from "../atoms/bottomButtons/BottomCheckButton";
 import { RequestItemAction } from "../../contexts/RequestItemReducer";
-import RequestItemTile from "./Tiles/RequestItemTile";
-import RequestAcceptList from "./RequestAcceptList";
+import RequestItemTile from "../organisms/Tiles/RequestItemTile";
+import RequestAcceptList from "../organisms/RequestAcceptList";
 import { usePostRequest } from "../../query-hooks/UseRequests";
-import UnsavedListWarning from "./UnsavedListWarning";
-import { RequestListCreatorManagerNavigationProps } from "../pages/RequestCreatorManager";
+import UnsavedListWarning from "../organisms/UnsavedListWarning";
+import { RequestListCreatorManagerNavigationProps } from "./RequestCreatorManager";
 
 interface RequestListCreatorMainProps {
     requestItems: RequestItem[];

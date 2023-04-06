@@ -3,7 +3,7 @@ import { useGetItems } from "../../query-hooks/UseItems";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { itemReducer } from "../../contexts/ItemReducer";
 import { UserDataContext } from "../../contexts/UserDataContext";
-import TakeOutListCreatorMain from "../organisms/TakeOutListCreatorMain";
+import TakeOutListCreatorMain from "./TakeOutListCreatorMain";
 import StoreSelector from "../organisms/StoreSelector";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { CompositeScreenProps } from "@react-navigation/native";

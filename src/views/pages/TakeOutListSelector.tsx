@@ -8,7 +8,7 @@ import TakeOutTile from "../organisms/Tiles/TakeOutTile";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 import { CompositeScreenProps, useFocusEffect } from "@react-navigation/native";
 import BottomControlButtons from "../organisms/BottomControlButtons";
-import BottomCreateNewButton from "../atoms/BottomCreateNewButton";
+import BottomCreateNewButton from "../atoms/bottomButtons/BottomCreateNewButton";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import {

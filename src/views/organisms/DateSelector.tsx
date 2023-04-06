@@ -12,7 +12,7 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import { StringDateRange } from "../../interfaces";
 import BottomControlButtons from "./BottomControlButtons";
-import BottomCheckButton from "../atoms/BottomCheckButton";
+import BottomCheckButton from "../atoms/bottomButtons/BottomCheckButton";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 
 export const dateToStr = (date: Date): string => {

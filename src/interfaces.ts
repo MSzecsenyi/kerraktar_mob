@@ -129,8 +129,3 @@ export interface OtherRequestInfo {
     amount: number;
     user: string;
 }
-
-export interface RequestItemButtonProps {
-    item: RequestItem;
-    dispatchRequestItems: React.Dispatch<RequestItemAction>;
-}

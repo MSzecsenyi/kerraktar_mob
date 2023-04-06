@@ -114,7 +114,7 @@ export function usePutTakeOut({
                 });
                 queryClient.setQueryData("takeOuts", newData);
             }
-            acceptOnPress;
+            acceptOnPress();
         },
     });
 }

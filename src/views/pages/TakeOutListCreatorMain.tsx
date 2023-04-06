@@ -17,16 +17,16 @@ import { FlatList, TextInput } from "react-native-gesture-handler";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 // import ItemFilterBar from "../organisms/ItemFilterBar";
 import TakeOutAcceptListItem from "../atoms/TakeOutAcceptListItem";
-import TakeOutItemTile from "./Tiles/TakeOutItemTile";
+import TakeOutItemTile from "../organisms/Tiles/TakeOutItemTile";
 import { TakeOutItemAction } from "../../contexts/ItemReducer";
 import { usePostTakeOut } from "../../query-hooks/UseTakeOuts";
 import { UseQueryResult } from "react-query";
-import QRScanner from "./QRScanner";
+import QRScanner from "../organisms/QRScanner";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
-import BottomControlButtons from "./BottomControlButtons";
-import BottomCheckButton from "../atoms/BottomCheckButton";
-import UnsavedListWarning from "./UnsavedListWarning";
-import { TakeOutListCreatorManagerProps } from "../pages/TakeOutListCreatorManager";
+import BottomControlButtons from "../organisms/BottomControlButtons";
+import BottomCheckButton from "../atoms/bottomButtons/BottomCheckButton";
+import UnsavedListWarning from "../organisms/UnsavedListWarning";
+import { TakeOutListCreatorManagerProps } from "./TakeOutListCreatorManager";
 
 interface TakeOutListCreatorMainProps {
     items: Item[];

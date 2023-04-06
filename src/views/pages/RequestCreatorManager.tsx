@@ -2,7 +2,7 @@ import { BackHandler, View } from "react-native";
 import { useGetRequestItems } from "../../query-hooks/UseItems";
 import { useContext, useEffect, useReducer, useState } from "react";
 import { UserDataContext } from "../../contexts/UserDataContext";
-import RequestListCreatorMain from "../organisms/RequestListCreatorMain";
+import RequestListCreatorMain from "./RequestListCreatorMain";
 import StoreSelector from "../organisms/StoreSelector";
 import DateSelector from "../organisms/DateSelector";
 import { requestItemReducer } from "../../contexts/RequestItemReducer";

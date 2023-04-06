@@ -1,13 +1,21 @@
 import { View, StyleSheet, Text } from "react-native";
-import { RequestItem, RequestItemButtonProps } from "../../../interfaces";
+import { RequestItem } from "../../../interfaces";
 import { memo, useEffect, useState } from "react";
 import RequestSelectItemButton from "../../molecules/RequestSelectItemButton";
 import RequestWarningButton from "../../atoms/RequestWarningButton";
+import { RequestItemAction } from "../../../contexts/RequestItemReducer";
+
+interface RequestItemTileProps {
+    item: RequestItem;
+    dispatchRequestItems: React.Dispatch<RequestItemAction>;
+    editable?: boolean;
+}
 
 const RequestItemTile = ({
     item,
     dispatchRequestItems,
-}: RequestItemButtonProps) => {
+    editable = true,
+}: RequestItemTileProps) => {
     const [isConflicted, setIsConflicted] = useState(false);
 
     useEffect(() => {
@@ -38,18 +46,17 @@ const RequestItemTile = ({
                 </View>
             </View>
             <View style={styles.warning_part}>
-                {isConflicted && (
-                    <RequestWarningButton
+                {isConflicted && <RequestWarningButton item={item} />}
+            </View>
+            <View style={styles.button_part}>
+                {editable ? (
+                    <RequestSelectItemButton
                         item={item}
                         dispatchRequestItems={dispatchRequestItems}
                     />
+                ) : (
+                    <Text>{item.selected_amount}</Text>
                 )}
-            </View>
-            <View style={styles.button_part}>
-                <RequestSelectItemButton
-                    item={item}
-                    dispatchRequestItems={dispatchRequestItems}
-                />
             </View>
         </View>
     );

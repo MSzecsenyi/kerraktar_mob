@@ -5,7 +5,7 @@ import LoadingSpinner from "../atoms/LoadingSpinner";
 import { ItemRequest } from "../../interfaces";
 import { useCallback, useEffect, useState } from "react";
 import RequestTile from "../organisms/Tiles/RequestTile";
-import BottomCreateNewButton from "../atoms/BottomCreateNewButton";
+import BottomCreateNewButton from "../atoms/bottomButtons/BottomCreateNewButton";
 import BottomControlButtons from "../organisms/BottomControlButtons";
 import { CompositeScreenProps, useFocusEffect } from "@react-navigation/native";
 import {

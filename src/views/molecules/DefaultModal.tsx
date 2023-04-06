@@ -1,5 +1,12 @@
 import { useEffect, useRef, useState } from "react";
-import { Dimensions, StyleSheet, Modal, View, Animated } from "react-native";
+import {
+    Dimensions,
+    StyleSheet,
+    Modal,
+    Animated,
+    TouchableWithoutFeedback,
+    View,
+} from "react-native";
 
 interface DefaultModalProps {
     visible: boolean;
@@ -43,15 +50,17 @@ const DefaultModal = ({ visible, children, closeFn }: DefaultModalProps) => {
             onRequestClose={() => {
                 closeFn();
             }}>
-            <View style={styles.modalBackGround}>
-                <Animated.View
-                    style={[
-                        styles.modalContainter,
-                        { transform: [{ scale: scaleValue }] },
-                    ]}>
-                    {children}
-                </Animated.View>
-            </View>
+            <TouchableWithoutFeedback onPress={() => closeFn()}>
+                <View style={styles.modalBackGround}>
+                    <Animated.View
+                        style={[
+                            styles.modalContainter,
+                            { transform: [{ scale: scaleValue }] },
+                        ]}>
+                        {children}
+                    </Animated.View>
+                </View>
+            </TouchableWithoutFeedback>
         </Modal>
     );
 };

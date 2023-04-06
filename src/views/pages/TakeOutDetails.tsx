@@ -1,6 +1,7 @@
 import {
     BackHandler,
     FlatList,
+    Keyboard,
     ListRenderItemInfo,
     StyleSheet,
     Text,
@@ -14,7 +15,7 @@ import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import BottomControlButtons from "../organisms/BottomControlButtons";
 import DefaultModal from "../molecules/DefaultModal";
 import ReturnTakeOutModalContent from "../molecules/ReturnTakeOutModalContent";
-import BottomCheckButton from "../atoms/BottomCheckButton";
+import BottomCheckButton from "../atoms/bottomButtons/BottomCheckButton";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -55,9 +56,9 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
     }, [itemList]);
 
     useEffect(() => {
-        // const kListener = Keyboard.addListener("keyboardDidHide", () => {
-        // 	Keyboard.dismiss();
-        // });
+        const kListener = Keyboard.addListener("keyboardDidHide", () => {
+            Keyboard.dismiss();
+        });
         const backAction = () => {
             if (allItemsCheckedRef.current) {
                 setWarningModalIsVisible(true);
@@ -71,7 +72,7 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
             backAction
         );
         return () => {
-            // kListener.remove();
+            kListener.remove();
             backHandler.remove();
         };
     }, []);
@@ -121,7 +122,9 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
                 <ReturnTakeOutModalContent
                     closeFn={() => setAcceptModalIsVisible(false)}
                     takeOutId={takeOut.id}
-                    acceptOnPress={navigation.goBack}
+                    acceptOnPress={() =>
+                        navigation.navigate("TakeOutSelectorScreen")
+                    }
                 />
             </DefaultModal>
 

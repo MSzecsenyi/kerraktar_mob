@@ -2,33 +2,39 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { modalStyles } from "../../styles";
 
 interface UnsavedListWarningProps {
-    closeModal: () => void;
-    acceptModal: () => void;
+	closeModal: () => void;
+	acceptModal: () => void;
+	mainText?: string;
+	explainText?: string;
 }
 const UnsavedListWarning = ({
-    closeModal,
-    acceptModal,
+	closeModal,
+	acceptModal,
+	mainText = "Biztosan kilépsz?",
+	explainText = "A most végrehajtott módosítások nem lesznek elmentve!",
 }: UnsavedListWarningProps) => {
-    return (
-        <View>
-            <Text style={modalStyles.infoText}>
-                <Text style={modalStyles.boldText}>Biztos kilépsz?</Text>
-                {`\n\n A most hozzáadott elemek nem lesznek elmentve!`}
-            </Text>
-            <View style={modalStyles.buttonContainer}>
-                <TouchableOpacity
-                    style={modalStyles.buttonReject}
-                    onPress={closeModal}>
-                    <Text style={modalStyles.buttonRejectText}>Mégse</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={modalStyles.buttonDelete}
-                    onPress={acceptModal}>
-                    <Text style={modalStyles.buttonAcceptText}>Kilépés</Text>
-                </TouchableOpacity>
-            </View>
-        </View>
-    );
+	return (
+		<View>
+			<Text style={modalStyles.infoText}>
+				<Text style={modalStyles.boldText}>{mainText}</Text>
+				{`\n\n ${explainText}`}
+			</Text>
+			<View style={modalStyles.buttonContainer}>
+				<TouchableOpacity
+					style={modalStyles.buttonReject}
+					onPress={closeModal}
+				>
+					<Text style={modalStyles.buttonRejectText}>Mégse</Text>
+				</TouchableOpacity>
+				<TouchableOpacity
+					style={modalStyles.buttonDelete}
+					onPress={acceptModal}
+				>
+					<Text style={modalStyles.buttonAcceptText}>Igen</Text>
+				</TouchableOpacity>
+			</View>
+		</View>
+	);
 };
 
 export default UnsavedListWarning;

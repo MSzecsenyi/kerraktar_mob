@@ -17,7 +17,7 @@ import {
 	useGetDetailedRequest,
 	useUpdateRequest,
 } from "../../query-hooks/UseRequests";
-import UnsavedListWarning from "../organisms/UnsavedListWarning";
+import WarningModalContent from "../organisms/WarningModalContent";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -27,6 +27,7 @@ import {
 	LoginDrawerParamList,
 } from "../../navigation/ParamStacks";
 import BottomButton from "../atoms/bottomButtons/BottomButton";
+import EmptyList from "../atoms/EmptyList";
 
 export type RequestDetailsProps = CompositeScreenProps<
 	NativeStackScreenProps<RequestStackParamList, "RequestDetailsScreen">,
@@ -48,7 +49,7 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 	const [deleteModalIsVisible, setDeleteModalIsVisible] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filteredItems, setFilteredItems] = useState<RequestItem[]>([]);
-	const [changed, _setChanged] = useState(false);
+	const [changed, _setChanged] = useState(true);
 	const [itemsSelected, _setItemsSelected] = useState(true);
 	const [editMode, setEditMode] = useState(false);
 	const [updatedRequestList, setUpdatedRequestList] = useState<
@@ -80,9 +81,10 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 	//EFFECTS
 	useEffect(() => {
 		setChanged(!isEqual(requestItems, defaultItems));
-		setItemsSelected(
-			requestItems.filter((item) => item.is_selected).length > 0
-		);
+		if (getRequestItems.isSuccess)
+			setItemsSelected(
+				requestItems.filter((item) => item.is_selected).length > 0
+			);
 		//filtering based on searchbar
 		let filtered = requestItems.filter((item) => {
 			return item.item_name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -106,6 +108,7 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 				type: "CREATE_ITEMS",
 				payload: { items: getRequestItems.data },
 			});
+			setChanged(false);
 		}
 	}, [getRequestItems.data]);
 
@@ -114,6 +117,9 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 			Keyboard.dismiss();
 		});
 		const backAction = () => {
+			console.log(
+				`changed: ${changedRef.current}, items: ${itemsSelectedRef.current}`
+			);
 			if (changedRef.current || !itemsSelectedRef.current) {
 				setWarningModalIsVisible(true);
 			} else {
@@ -167,7 +173,7 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 			<DefaultModal //Warning on backbutton press
 				visible={warningModalIsVisible}
 				closeFn={() => setWarningModalIsVisible(false)}>
-				<UnsavedListWarning
+				<WarningModalContent
 					acceptModal={() => navigation.navigate("RequestSelectorScreen")}
 					closeModal={() => setWarningModalIsVisible(false)}
 				/>
@@ -188,7 +194,7 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 			<DefaultModal //Warning before deleting the list
 				visible={deleteModalIsVisible}
 				closeFn={() => setDeleteModalIsVisible(false)}>
-				<UnsavedListWarning
+				<WarningModalContent
 					acceptModal={() => deleteRequest.mutate()}
 					closeModal={() => setDeleteModalIsVisible(false)}
 					mainText="Biztosan törlöd a foglalást?"
@@ -221,6 +227,9 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 							index,
 						})}
 						renderItem={renderRow}
+						ListEmptyComponent={() => (
+							<EmptyList text="Válassz ki legalább egy elemet!" />
+						)}
 					/>
 				</>
 			)}

@@ -1,4 +1,4 @@
-import { ListRenderItemInfo, StyleSheet, View } from "react-native";
+import { ListRenderItemInfo, RefreshControl, View } from "react-native";
 import { useGetTakeOuts } from "../../query-hooks/UseTakeOuts";
 import { useCallback, useEffect, useState } from "react";
 import { TakeOut } from "../../interfaces";
@@ -15,6 +15,7 @@ import {
 	TakeOutStackParams,
 	LoginDrawerParamList,
 } from "../../navigation/ParamStacks";
+import EmptyList from "../atoms/EmptyList";
 
 export type TakeOutListSelectorProps = CompositeScreenProps<
 	NativeStackScreenProps<TakeOutStackParams, "TakeOutSelectorScreen">,
@@ -24,6 +25,7 @@ export type TakeOutListSelectorProps = CompositeScreenProps<
 const TakeOutListSelector = (navigationProps: TakeOutListSelectorProps) => {
 	const [searchTerm, setSearchTerm] = useState("");
 	const getTakeOuts = useGetTakeOuts();
+	const [listIsRefreshing, setListIsRefreshing] = useState(false);
 	const [filteredTakeOuts, setFilteredTakeOuts] = useState<TakeOut[]>([]);
 
 	useFocusEffect(
@@ -40,7 +42,19 @@ const TakeOutListSelector = (navigationProps: TakeOutListSelectorProps) => {
 						.toLowerCase()
 						.includes(searchTerm.toLowerCase());
 				})
-				.sort((a, b) => b.id - a.id);
+				.sort((a, b) => b.id - a.id)
+				.sort((a, b) => {
+					const endDateAIsNull = a.end_date === null;
+					const endDateBIsNull = b.end_date === null;
+
+					if (endDateAIsNull && endDateBIsNull) {
+						return 0;
+					} else if (endDateAIsNull) {
+						return -1;
+					} else {
+						return 1;
+					}
+				});
 			setFilteredTakeOuts(filtered);
 		}
 	}, [searchTerm, getTakeOuts.data]);
@@ -76,6 +90,22 @@ const TakeOutListSelector = (navigationProps: TakeOutListSelectorProps) => {
 								index,
 							})}
 							renderItem={renderRow}
+							ListEmptyComponent={() => (
+								<EmptyList text="Még nem történt egy eszközkivétel sem" />
+							)}
+							refreshControl={
+								<RefreshControl
+									refreshing={listIsRefreshing}
+									onRefresh={() => {
+										setListIsRefreshing(true);
+										getTakeOuts.refetch().then(() => {
+											setListIsRefreshing(false);
+										});
+									}}
+									colors={["green"]}
+									tintColor={"green"}
+								/>
+							}
 						/>
 						<BottomControlButtons>
 							<BottomCreateNewButton

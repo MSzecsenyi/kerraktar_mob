@@ -24,7 +24,7 @@ import { UseQueryResult } from "react-query";
 import QRScanner from "../organisms/QRScanner";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import BottomControlButtons from "../atoms/bottomButtons/BottomButtonContainer";
-import UnsavedListWarning from "../organisms/UnsavedListWarning";
+import WarningModalContent from "../organisms/WarningModalContent";
 import { TakeOutListCreatorManagerProps } from "./TakeOutListCreatorManager";
 import BottomButton from "../atoms/bottomButtons/BottomButton";
 
@@ -150,9 +150,8 @@ const TakeOutListCreatorMain = ({
 					{/* MODALS */}
 					<DefaultModal
 						visible={warningModalIsVisible}
-						closeFn={() => setWarningModalIsVisible(false)}
-					>
-						<UnsavedListWarning
+						closeFn={() => setWarningModalIsVisible(false)}>
+						<WarningModalContent
 							acceptModal={() =>
 								navigationProps.navigation.navigate("TakeOutSelectorScreen")
 							}
@@ -162,8 +161,7 @@ const TakeOutListCreatorMain = ({
 
 					<DefaultModal
 						visible={modalIsVisible}
-						closeFn={() => setModalIsVisible(false)}
-					>
+						closeFn={() => setModalIsVisible(false)}>
 						<>
 							<TouchableOpacity onPress={() => setModalIsVisible(false)}>
 								<Text style={modalStyles.mainText}>Kiválasztott eszközök:</Text>
@@ -194,8 +192,7 @@ const TakeOutListCreatorMain = ({
 									<>
 										<TouchableHighlight
 											style={modalStyles.buttonReject}
-											onPress={() => setModalIsVisible(false)}
-										>
+											onPress={() => setModalIsVisible(false)}>
 											<Text style={modalStyles.buttonRejectText}>Mégse</Text>
 										</TouchableHighlight>
 										<TouchableHighlight
@@ -207,8 +204,7 @@ const TakeOutListCreatorMain = ({
 											onPress={() => {
 												postTakeOut.mutate();
 												setListSentLoading(true);
-											}}
-										>
+											}}>
 											<Text style={modalStyles.buttonAcceptText}>Kivétel</Text>
 										</TouchableHighlight>
 									</>
@@ -246,8 +242,7 @@ const TakeOutListCreatorMain = ({
 					<BottomControlButtons>
 						<>
 							<BottomButton //Enable QRScanner
-								buttonOnPress={() => setCameraIsActive(true)}
-							>
+								buttonOnPress={() => setCameraIsActive(true)}>
 								<Ionicons
 									name="camera"
 									size={24}

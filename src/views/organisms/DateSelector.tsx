@@ -13,13 +13,7 @@ import { StringDateRange } from "../../interfaces";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import BottomButton from "../atoms/bottomButtons/BottomButton";
 import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
-
-export const dateToStr = (date: Date): string => {
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, "0");
-	const day = String(date.getDate()).padStart(2, "0");
-	return `${year}-${month}-${day}`;
-};
+import { dateToStr, displayDate } from "../../functions";
 
 interface DateSelectorProps {
 	stringDateRange: StringDateRange;
@@ -81,47 +75,40 @@ const DateSelector = ({
 			<HeaderWithSearchBar openDrawer={openDrawer} />
 			<View style={styles.container}>
 				{/* start date picker */}
-
+				<Text style={styles.titleText}>Kezdő dátum:</Text>
 				{Platform.OS === "android" && (
 					<TouchableHighlight
 						style={styles.dateSelectorButton}
-						onPress={() => setShowStartPicker(true)}
-					>
-						<Text
-							style={styles.dateSelectorButtonText}
-						>{`StartDate: ${dateRange.startDate.getFullYear()}.${
-							dateRange.startDate.getMonth() + 1
-						}.${dateRange.startDate.getDate()}`}</Text>
+						onPress={() => setShowStartPicker(true)}>
+						<Text style={styles.dateSelectorButtonText}>
+							{displayDate(dateRange.startDate)}
+						</Text>
 					</TouchableHighlight>
 				)}
 				{(showStartPicker || Platform.OS === "ios") && (
 					<DateTimePicker
 						value={dateRange.startDate}
 						minimumDate={new Date()}
-						onChange={onStartDateChange}
-					></DateTimePicker>
+						onChange={onStartDateChange}></DateTimePicker>
 				)}
 
 				{/* end date picker */}
 
+				<Text style={styles.titleText}>Záró dátum:</Text>
 				{Platform.OS === "android" && (
 					<TouchableHighlight
 						style={styles.dateSelectorButton}
-						onPress={() => setShowEndPicker(true)}
-					>
-						<Text
-							style={styles.dateSelectorButtonText}
-						>{`EndDate: ${dateRange.endDate.getFullYear()}.${
-							dateRange.endDate.getMonth() + 1
-						}.${dateRange.endDate.getDate()}`}</Text>
+						onPress={() => setShowEndPicker(true)}>
+						<Text style={styles.dateSelectorButtonText}>
+							{displayDate(dateRange.endDate)}
+						</Text>
 					</TouchableHighlight>
 				)}
 				{(showEndPicker || Platform.OS === "ios") && (
 					<DateTimePicker
 						value={initialEndDate}
 						minimumDate={dateRange.startDate}
-						onChange={onEndDateChange}
-					></DateTimePicker>
+						onChange={onEndDateChange}></DateTimePicker>
 				)}
 				<BottomButtonContainer>
 					<BottomButton //Accept changes
@@ -139,17 +126,24 @@ const DateSelector = ({
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		justifyContent: "center",
 		padding: 8,
+		marginTop: "25%",
+	},
+	titleText: {
+		textAlign: "center",
+		paddingTop: 25,
+		paddingBottom: 5,
+		fontWeight: "bold",
+		fontSize: 16,
 	},
 	dateSelectorButton: {
 		padding: 10,
-		margin: 5,
+		marginHorizontal: 50,
 		height: 70,
 		borderRadius: 15,
 		backgroundColor: "green",
-		flexDirection: "row",
 		justifyContent: "center",
+		alignItems: "center",
 	},
 	dateSelectorButtonText: {
 		fontSize: 18,

@@ -1,18 +1,18 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 import { modalStyles } from "../../styles";
 
-interface UnsavedListWarningProps {
+interface WarningModalContentProps {
 	closeModal: () => void;
 	acceptModal: () => void;
 	mainText?: string;
 	explainText?: string;
 }
-const UnsavedListWarning = ({
+const WarningModalContent = ({
 	closeModal,
 	acceptModal,
 	mainText = "Biztosan kilépsz?",
 	explainText = "A most végrehajtott módosítások nem lesznek elmentve!",
-}: UnsavedListWarningProps) => {
+}: WarningModalContentProps) => {
 	return (
 		<View>
 			<Text style={modalStyles.infoText}>
@@ -22,14 +22,12 @@ const UnsavedListWarning = ({
 			<View style={modalStyles.buttonContainer}>
 				<TouchableOpacity
 					style={modalStyles.buttonReject}
-					onPress={closeModal}
-				>
+					onPress={closeModal}>
 					<Text style={modalStyles.buttonRejectText}>Mégse</Text>
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={modalStyles.buttonDelete}
-					onPress={acceptModal}
-				>
+					onPress={acceptModal}>
 					<Text style={modalStyles.buttonAcceptText}>Igen</Text>
 				</TouchableOpacity>
 			</View>
@@ -37,6 +35,4 @@ const UnsavedListWarning = ({
 	);
 };
 
-export default UnsavedListWarning;
-
-const styles = StyleSheet.create({});
+export default WarningModalContent;

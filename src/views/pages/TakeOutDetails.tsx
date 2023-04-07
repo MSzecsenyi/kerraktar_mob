@@ -21,9 +21,10 @@ import {
 	TakeOutStackParams,
 	LoginDrawerParamList,
 } from "../../navigation/ParamStacks";
-import UnsavedListWarning from "../organisms/UnsavedListWarning";
+import WarningModalContent from "../organisms/WarningModalContent";
 import BottomButton from "../atoms/bottomButtons/BottomButton";
 import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
+import EmptyList from "../atoms/EmptyList";
 
 export type TakeOutDetailsProps = CompositeScreenProps<
 	NativeStackScreenProps<TakeOutStackParams, "TakeOutDetailsScreen">,
@@ -105,9 +106,8 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 			{/* MODALS */}
 			<DefaultModal
 				visible={warningModalIsVisible}
-				closeFn={() => setWarningModalIsVisible(false)}
-			>
-				<UnsavedListWarning
+				closeFn={() => setWarningModalIsVisible(false)}>
+				<WarningModalContent
 					acceptModal={() => navigation.navigate("TakeOutSelectorScreen")}
 					closeModal={() => setWarningModalIsVisible(false)}
 				/>
@@ -115,8 +115,7 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 
 			<DefaultModal
 				visible={acceptModalIsVisible}
-				closeFn={() => setAcceptModalIsVisible(false)}
-			>
+				closeFn={() => setAcceptModalIsVisible(false)}>
 				<ReturnTakeOutModalContent
 					closeFn={() => setAcceptModalIsVisible(false)}
 					takeOutId={takeOut.id}
@@ -136,6 +135,7 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 				keyExtractor={keyExtractor}
 				renderItem={renderRow}
 				extraData={setItemList}
+				ListEmptyComponent={() => <EmptyList />}
 			/>
 			<BottomButtonContainer>
 				<BottomButton //Accept changes

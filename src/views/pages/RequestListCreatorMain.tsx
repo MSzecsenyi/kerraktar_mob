@@ -16,7 +16,7 @@ import { RequestItemAction } from "../../contexts/RequestItemReducer";
 import RequestItemTile from "../organisms/Tiles/RequestItemTile";
 import RequestAcceptList from "../organisms/RequestAcceptList";
 import { usePostRequest } from "../../query-hooks/UseRequests";
-import UnsavedListWarning from "../organisms/UnsavedListWarning";
+import WarningModalContent from "../organisms/WarningModalContent";
 import { RequestListCreatorManagerNavigationProps } from "./RequestCreatorManager";
 import BottomButton from "../atoms/bottomButtons/BottomButton";
 import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
@@ -126,23 +126,21 @@ const RequestListCreatorMain = ({
 
 	return (
 		<>
-			<DefaultModal
+			{/* MODALS */}
+			<DefaultModal // Warning modal
 				visible={warningModalIsVisible}
-				closeFn={() => setWarningModalIsVisible(false)}
-			>
-				<UnsavedListWarning
+				closeFn={() => setWarningModalIsVisible(false)}>
+				<WarningModalContent
 					acceptModal={() =>
 						navigationProps.navigation.navigate("RequestSelectorScreen")
 					}
 					closeModal={() => setWarningModalIsVisible(false)}
-					mainText={""}
-					explainText={""}
 				/>
 			</DefaultModal>
-			<DefaultModal
+
+			<DefaultModal // Accept modal
 				visible={acceptModalIsVisible}
-				closeFn={() => setAcceptModalIsVisible(false)}
-			>
+				closeFn={() => setAcceptModalIsVisible(false)}>
 				<RequestAcceptList
 					items={requestItems
 						.filter((item) => item.is_selected)
@@ -157,6 +155,8 @@ const RequestListCreatorMain = ({
 					onPressAccept={() => postRequest.mutate()}
 				/>
 			</DefaultModal>
+
+			{/* PAGE CONTENT */}
 			<HeaderWithSearchBar
 				openDrawer={() => navigationProps.navigation.openDrawer()}
 				setSearchTerm={setSearchTerm}

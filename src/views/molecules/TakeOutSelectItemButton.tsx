@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TakeOutItemButtonProps } from "../../interfaces";
 import TakeOutUniqueSelectorButton from "../atoms/TakeOutUniqueSelectorButton";
 import CommonItemSelectorButton from "../atoms/CommonItemSelectorButton";
@@ -44,7 +44,7 @@ const TakeOutSelectItemButton = ({
 							)}
 						</View>
 					) : (
-						<TouchableHighlight
+						<TouchableOpacity
 							style={styles.active_add_button}
 							onPress={() => {
 								item.is_unique && setCameraIsActive
@@ -55,7 +55,7 @@ const TakeOutSelectItemButton = ({
 									  });
 							}}>
 							<Text style={styles.light_text}>Add</Text>
-						</TouchableHighlight>
+						</TouchableOpacity>
 					)}
 				</View>
 			) : (

@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import CommonItemSelectorButton from "../atoms/CommonItemSelectorButton";
 import { RequestItem } from "../../interfaces";
 import { RequestItemAction } from "../../contexts/RequestItemReducer";
@@ -33,7 +33,7 @@ const RequestSelectItemButton = ({
 					/>
 				</View>
 			) : (
-				<TouchableHighlight
+				<TouchableOpacity
 					style={styles.active_add_button}
 					onPress={() => {
 						dispatchRequestItems({
@@ -42,7 +42,7 @@ const RequestSelectItemButton = ({
 						});
 					}}>
 					<Text style={styles.light_text}>Add</Text>
-				</TouchableHighlight>
+				</TouchableOpacity>
 			)}
 		</View>
 	);

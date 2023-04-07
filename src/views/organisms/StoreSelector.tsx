@@ -1,6 +1,6 @@
 import { ListRenderItemInfo, StyleSheet, Text, View } from "react-native";
 import { Store } from "../../interfaces";
-import { FlatList, TouchableHighlight } from "react-native-gesture-handler";
+import { FlatList, TouchableOpacity } from "react-native-gesture-handler";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import EmptyList from "../atoms/EmptyList";
 
@@ -18,13 +18,13 @@ const StoreSelector = ({
 	const renderRow = (storeInfo: ListRenderItemInfo<Store>) => {
 		const store = storeInfo.item;
 		return (
-			<TouchableHighlight
+			<TouchableOpacity
 				style={styles.button}
 				onPress={() => {
 					setStoreId(store.store_id);
 				}}>
 				<Text style={styles.buttonText}>{store.address}</Text>
-			</TouchableHighlight>
+			</TouchableOpacity>
 		);
 	};
 

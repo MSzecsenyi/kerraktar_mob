@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TakeOutItemButtonProps } from "../../interfaces";
 import { Ionicons } from "@expo/vector-icons";
 import DefaultModal from "../molecules/DefaultModal";
@@ -28,12 +28,12 @@ const TakeOutUniqueSelectorButton = ({
 						eszközt.
 					</Text>
 					<View style={modalStyles.buttonContainer}>
-						<TouchableHighlight
+						<TouchableOpacity
 							style={modalStyles.buttonReject}
 							onPress={() => setDeletModalVisible(false)}>
 							<Text style={modalStyles.buttonRejectText}>Mégse</Text>
-						</TouchableHighlight>
-						<TouchableHighlight
+						</TouchableOpacity>
+						<TouchableOpacity
 							style={modalStyles.buttonDelete}
 							onPress={() => {
 								setDeletModalVisible(false);
@@ -43,13 +43,13 @@ const TakeOutUniqueSelectorButton = ({
 								});
 							}}>
 							<Text style={modalStyles.buttonAcceptText}>Törlés</Text>
-						</TouchableHighlight>
+						</TouchableOpacity>
 					</View>
 				</>
 			</DefaultModal>
 
 			{/* CONTENT */}
-			<TouchableHighlight
+			<TouchableOpacity
 				onPress={() => {
 					if (setCameraIsActive) setCameraIsActive(true);
 				}}
@@ -62,14 +62,14 @@ const TakeOutUniqueSelectorButton = ({
 						color="#000"
 					/>
 				</>
-			</TouchableHighlight>
-			<TouchableHighlight
+			</TouchableOpacity>
+			<TouchableOpacity
 				onPress={() => {
 					setDeletModalVisible(true);
 				}}
 				style={styles.discard_button}>
 				<Text style={styles.light_text}>X</Text>
-			</TouchableHighlight>
+			</TouchableOpacity>
 		</View>
 	);
 };

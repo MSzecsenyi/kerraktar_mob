@@ -1,4 +1,4 @@
-import { StyleSheet, Text, TouchableHighlight, View } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import AmountSelector from "./AmountSelector";
 
 interface CommonItemSelectorButtonProps {
@@ -16,11 +16,11 @@ const CommonItemSelectorButton = (props: CommonItemSelectorButtonProps) => {
 				{props.maxAmount > 1 && <AmountSelector {...props} />}
 			</View>
 			<View>
-				<TouchableHighlight
+				<TouchableOpacity
 					onPress={props.onPressDelete}
 					style={styles.discard_button}>
 					<Text style={styles.light_text}>X</Text>
-				</TouchableHighlight>
+				</TouchableOpacity>
 			</View>
 		</View>
 	);

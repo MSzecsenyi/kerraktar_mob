@@ -3,7 +3,7 @@ import {
 	Platform,
 	StyleSheet,
 	Text,
-	TouchableHighlight,
+	TouchableOpacity,
 	View,
 } from "react-native";
 import DateTimePicker, {
@@ -77,13 +77,13 @@ const DateSelector = ({
 				{/* start date picker */}
 				<Text style={styles.titleText}>Kezdő dátum:</Text>
 				{Platform.OS === "android" && (
-					<TouchableHighlight
+					<TouchableOpacity
 						style={styles.dateSelectorButton}
 						onPress={() => setShowStartPicker(true)}>
 						<Text style={styles.dateSelectorButtonText}>
 							{displayDate(dateRange.startDate)}
 						</Text>
-					</TouchableHighlight>
+					</TouchableOpacity>
 				)}
 				{(showStartPicker || Platform.OS === "ios") && (
 					<DateTimePicker
@@ -96,13 +96,13 @@ const DateSelector = ({
 
 				<Text style={styles.titleText}>Záró dátum:</Text>
 				{Platform.OS === "android" && (
-					<TouchableHighlight
+					<TouchableOpacity
 						style={styles.dateSelectorButton}
 						onPress={() => setShowEndPicker(true)}>
 						<Text style={styles.dateSelectorButtonText}>
 							{displayDate(dateRange.endDate)}
 						</Text>
-					</TouchableHighlight>
+					</TouchableOpacity>
 				)}
 				{(showEndPicker || Platform.OS === "ios") && (
 					<DateTimePicker

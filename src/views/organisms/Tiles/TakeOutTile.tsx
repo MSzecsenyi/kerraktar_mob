@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { TakeOut } from "../../../interfaces";
 import { Ionicons } from "@expo/vector-icons";
 import { memo, useContext } from "react";
@@ -16,7 +16,7 @@ const TakeOutTile = ({ takeOut, navigationProps }: TakeOutTileProps) => {
 	const getTextColor = (color: string) =>
 		takeOut.end_date ? { color: "gray" } : { color: color };
 	return (
-		<TouchableHighlight
+		<TouchableOpacity
 			style={
 				takeOut.end_date ? styles.card_container_done : styles.card_container_ip
 			}
@@ -57,7 +57,7 @@ const TakeOutTile = ({ takeOut, navigationProps }: TakeOutTileProps) => {
 					/>
 				</View>
 			</>
-		</TouchableHighlight>
+		</TouchableOpacity>
 	);
 };
 

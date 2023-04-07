@@ -4,7 +4,6 @@ import {
 	ListRenderItemInfo,
 	StyleSheet,
 	Text,
-	TouchableHighlight,
 	TouchableOpacity,
 	View,
 } from "react-native";
@@ -190,12 +189,12 @@ const TakeOutListCreatorMain = ({
 									<LoadingSpinner />
 								) : (
 									<>
-										<TouchableHighlight
+										<TouchableOpacity
 											style={modalStyles.buttonReject}
 											onPress={() => setModalIsVisible(false)}>
 											<Text style={modalStyles.buttonRejectText}>Mégse</Text>
-										</TouchableHighlight>
-										<TouchableHighlight
+										</TouchableOpacity>
+										<TouchableOpacity
 											style={
 												takeOutList.take_out_name.length != 0
 													? modalStyles.buttonAccept
@@ -206,7 +205,7 @@ const TakeOutListCreatorMain = ({
 												setListSentLoading(true);
 											}}>
 											<Text style={modalStyles.buttonAcceptText}>Kivétel</Text>
-										</TouchableHighlight>
+										</TouchableOpacity>
 									</>
 								)}
 							</View>

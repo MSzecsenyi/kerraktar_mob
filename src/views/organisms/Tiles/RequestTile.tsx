@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableHighlight } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { memo, useContext } from "react";
 import { UserDataContext } from "../../../contexts/UserDataContext";
@@ -17,7 +17,7 @@ const RequestTile = ({ request, onTilePress }: RequestButtonProps) => {
 	const getTextColor = (color: string) =>
 		started ? { color: "gray" } : { color: color };
 	return (
-		<TouchableHighlight
+		<TouchableOpacity
 			style={
 				started
 					? styles.card_container_started
@@ -54,7 +54,7 @@ const RequestTile = ({ request, onTilePress }: RequestButtonProps) => {
 					/>
 				</View>
 			</>
-		</TouchableHighlight>
+		</TouchableOpacity>
 	);
 };
 

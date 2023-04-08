@@ -44,7 +44,6 @@ const RequestSelector = ({ navigation }: RequestSelectorNavigationProp) => {
 		if (getRequests.isSuccess) {
 			const filtered = getRequests.data
 				.filter((request) => {
-					console.log(request.end_date);
 					return request.request_name
 						.toLowerCase()
 						.includes(searchTerm.toLowerCase());
@@ -81,6 +80,7 @@ const RequestSelector = ({ navigation }: RequestSelectorNavigationProp) => {
 						openDrawer={() => navigation.openDrawer()}
 						searchTerm={searchTerm}
 						setSearchTerm={setSearchTerm}
+						title="Eddigi foglalások"
 					/>
 					<View style={{ flex: 1 }}>
 						<FlatList

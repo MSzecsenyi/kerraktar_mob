@@ -2,13 +2,13 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { TakeOutItemButtonProps } from "../../interfaces";
 import TakeOutUniqueSelectorButton from "../atoms/TakeOutUniqueSelectorButton";
 import CommonItemSelectorButton from "../atoms/CommonItemSelectorButton";
+import { Ionicons } from "@expo/vector-icons";
 
 const TakeOutSelectItemButton = ({
 	item,
 	dispatchItems,
 	setCameraIsActive,
 }: TakeOutItemButtonProps) => {
-	console.log(item.in_store_amount);
 	return (
 		<View>
 			{item.in_store_amount !== 0 ? (
@@ -54,7 +54,16 @@ const TakeOutSelectItemButton = ({
 											payload: { id: item.id },
 									  });
 							}}>
-							<Text style={styles.light_text}>Add</Text>
+							<View style={styles.button_flex_row}>
+								{item.is_unique && (
+									<Ionicons
+										name="camera"
+										size={18}
+										color="#fff"
+									/>
+								)}
+								<Text style={styles.light_text}> Add</Text>
+							</View>
 						</TouchableOpacity>
 					)}
 				</View>
@@ -88,5 +97,9 @@ const styles = StyleSheet.create({
 	},
 	light_text: {
 		color: "white",
+	},
+	button_flex_row: {
+		flexDirection: "row",
+		justifyContent: "space-between",
 	},
 });

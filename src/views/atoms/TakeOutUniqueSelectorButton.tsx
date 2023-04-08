@@ -19,13 +19,12 @@ const TakeOutUniqueSelectorButton = ({
 				closeFn={() => setDeletModalVisible(false)}>
 				<>
 					<Text style={modalStyles.mainText}>
-						Biztosan törölni szeretnéd a listából az összes eddig hozzáadott
-						<Text style={modalStyles.boldText}>{` ${item.item_name}`}</Text>
-						-t?
+						Biztosan törölni szeretnéd az
+						<Text style={modalStyles.boldText}>{" összes"}</Text>
+						{` ${item.item_name}-t`}
 					</Text>
 					<Text style={modalStyles.infoText}>
-						Ha csak egyet szeretnél kivenni a listából, olvasd le újra a konkrét
-						eszközt.
+						Ha csak egyet szeretnél törölni, olvasd be újra a törlendő eszközt.
 					</Text>
 					<View style={modalStyles.buttonContainer}>
 						<TouchableOpacity

@@ -43,7 +43,7 @@ const RequestAcceptList = ({
 					style={modalStyles.textInput}
 					defaultValue={listName}
 					onChangeText={onChangeText}
-					placeholder="Hol használod az eszközöket?"
+					placeholder="Mi legyen a foglalás neve?"
 				/>
 			)}
 			<View style={modalStyles.buttonContainer}>
@@ -66,7 +66,7 @@ const RequestAcceptList = ({
 								onPressAccept();
 								setListSentLoading(true);
 							}}>
-							<Text style={modalStyles.buttonAcceptText}>Kivétel</Text>
+							<Text style={modalStyles.buttonAcceptText}>Foglalás</Text>
 						</TouchableOpacity>
 					</>
 				)}

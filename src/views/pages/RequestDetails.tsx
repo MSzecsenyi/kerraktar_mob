@@ -56,6 +56,9 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 		AcceptListCommonItem[]
 	>([]);
 	const request = route.params.request;
+	const defaultSelected = defaultItems
+		.filter((item) => item.is_selected)
+		.map((item) => item.id);
 
 	//SERVER CONNECTIONS
 	const getRequestItems = useGetDetailedRequest(request.id);
@@ -89,6 +92,22 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 		let filtered = requestItems.filter((item) => {
 			return item.item_name.toLowerCase().includes(searchTerm.toLowerCase());
 		});
+		//sorting based on default selected state
+		filtered = filtered.sort((a, b) => {
+			if (
+				defaultSelected.some((id) => id === a.id) &&
+				!defaultSelected.some((id) => id === b.id)
+			) {
+				return -1;
+			} else if (
+				!defaultSelected.some((id) => id === a.id) &&
+				defaultSelected.some((id) => id === b.id)
+			) {
+				return 1;
+			} else {
+				return 0;
+			}
+		});
 		//filtering based on selected state
 		if (!editMode) {
 			filtered = filtered.filter((item) => {
@@ -117,9 +136,6 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 			Keyboard.dismiss();
 		});
 		const backAction = () => {
-			console.log(
-				`changed: ${changedRef.current}, items: ${itemsSelectedRef.current}`
-			);
 			if (changedRef.current || !itemsSelectedRef.current) {
 				setWarningModalIsVisible(true);
 			} else {
@@ -207,6 +223,7 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 				openDrawer={navigation.openDrawer}
 				setSearchTerm={setSearchTerm}
 				searchTerm={searchTerm}
+				title={`Foglalás: ${request.request_name}`}
 			/>
 			{(getRequestItems.isLoading || getRequestItems.isIdle) && (
 				<LoadingSpinner />
@@ -245,10 +262,22 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 							/>
 						</BottomButton>
 						{editMode ? (
-							<BottomButton //Accept changes
-								buttonIsActive={changed}
-								buttonOnPress={() => acceptButtonOnPress()}
-							/>
+							itemsSelected ? (
+								<BottomButton //Accept changes
+									buttonIsActive={changed}
+									buttonOnPress={() => acceptButtonOnPress()}
+								/>
+							) : (
+								<BottomButton //Delete request
+									buttonColor="red"
+									buttonOnPress={() => setDeleteModalIsVisible(true)}>
+									<Feather
+										name={"trash-2"}
+										size={35}
+										color="white"
+									/>
+								</BottomButton>
+							)
 						) : (
 							<>
 								<BottomButton //Delete request

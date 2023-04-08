@@ -34,6 +34,8 @@ export type TakeOutDetailsProps = CompositeScreenProps<
 const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 	const [itemList, setItemList] = useState<TakenOutItem[]>([]);
 	const [allItemsChecked, _setAllItemsChecked] = useState(false);
+	const [searchTerm, setSearchTerm] = useState("");
+	const [filteredItems, setFilteredItems] = useState<TakenOutItem[]>([]);
 	const [acceptModalIsVisible, setAcceptModalIsVisible] = useState(false);
 	const [warningModalIsVisible, setWarningModalIsVisible] = useState(false);
 	const takeOut = route.params.takeOut;
@@ -54,7 +56,11 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 		setAllItemsChecked(
 			!itemList.some((listItem) => listItem.is_checked === false)
 		);
-	}, [itemList]);
+		const filtered = itemList.filter((item) => {
+			return item.name.toLowerCase().includes(searchTerm.toLowerCase());
+		});
+		setFilteredItems(filtered);
+	}, [itemList, searchTerm]);
 
 	useEffect(() => {
 		const kListener = Keyboard.addListener("keyboardDidHide", () => {
@@ -126,11 +132,12 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 			{/* PAGE CONTENT */}
 			<HeaderWithSearchBar
 				openDrawer={navigation.openDrawer}
-				title={takeOut.take_out_name}
+				setSearchTerm={setSearchTerm}
+				searchTerm={searchTerm}
+				title={`Eszközök visszaadása: ${takeOut.take_out_name}`}
 			/>
-			<Text style={styles.headerInfoText}>Kivett eszközök:</Text>
 			<FlatList
-				data={itemList}
+				data={filteredItems}
 				style={{ flex: 1 }}
 				keyExtractor={keyExtractor}
 				renderItem={renderRow}
@@ -148,11 +155,3 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 };
 
 export default TakeOutDetails;
-
-const styles = StyleSheet.create({
-	headerInfoText: {
-		paddingHorizontal: 20,
-		paddingBottom: 3,
-		fontSize: 16,
-	},
-});

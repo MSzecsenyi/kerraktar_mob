@@ -74,8 +74,9 @@ const DateSelector = ({
 		<>
 			<HeaderWithSearchBar openDrawer={openDrawer} />
 			<View style={styles.container}>
+				<Text style={styles.titleText}>Válassz időtartamot:</Text>
 				{/* start date picker */}
-				<Text style={styles.titleText}>Kezdő dátum:</Text>
+				<Text style={styles.subtitleText}>Kezdő dátum:</Text>
 				{Platform.OS === "android" && (
 					<TouchableOpacity
 						style={styles.dateSelectorButton}
@@ -94,7 +95,7 @@ const DateSelector = ({
 
 				{/* end date picker */}
 
-				<Text style={styles.titleText}>Záró dátum:</Text>
+				<Text style={styles.subtitleText}>Záró dátum:</Text>
 				{Platform.OS === "android" && (
 					<TouchableOpacity
 						style={styles.dateSelectorButton}
@@ -127,9 +128,14 @@ const styles = StyleSheet.create({
 	container: {
 		flex: 1,
 		padding: 8,
-		marginTop: "25%",
 	},
 	titleText: {
+		marginTop: "20%",
+		marginBottom: 30,
+		fontSize: 24,
+		textAlign: "center",
+	},
+	subtitleText: {
 		textAlign: "center",
 		paddingTop: 25,
 		paddingBottom: 5,

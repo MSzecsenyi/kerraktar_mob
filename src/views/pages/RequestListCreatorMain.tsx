@@ -161,6 +161,7 @@ const RequestListCreatorMain = ({
 				openDrawer={() => navigationProps.navigation.openDrawer()}
 				setSearchTerm={setSearchTerm}
 				searchTerm={searchTerm}
+				title="Új foglalás"
 			/>
 			{(getRequestItems.isLoading || getRequestItems.isIdle) && (
 				<LoadingSpinner />

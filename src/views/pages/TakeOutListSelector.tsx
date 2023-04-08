@@ -77,6 +77,7 @@ const TakeOutListSelector = (navigationProps: TakeOutListSelectorProps) => {
 					openDrawer={navigationProps.navigation.openDrawer}
 					searchTerm={searchTerm}
 					setSearchTerm={setSearchTerm}
+					title="Eddigi eszközkivételek"
 				/>
 				{getTakeOuts.isSuccess ? (
 					<>
@@ -109,7 +110,7 @@ const TakeOutListSelector = (navigationProps: TakeOutListSelectorProps) => {
 						/>
 						<BottomControlButtons>
 							<BottomCreateNewButton
-								text="Új kivétel"
+								text="Új eszközkivétel"
 								onPress={() =>
 									navigationProps.navigation.navigate("TakeOutCreatorScreen")
 								}

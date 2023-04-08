@@ -1,5 +1,5 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import AmountSelector from "./AmountSelector";
+import { Picker } from "@react-native-picker/picker";
 
 interface CommonItemSelectorButtonProps {
 	maxAmount: number;
@@ -8,16 +8,36 @@ interface CommonItemSelectorButtonProps {
 	onValueChange: (itemValue: number, itemIndex: number) => void;
 }
 
-const CommonItemSelectorButton = (props: CommonItemSelectorButtonProps) => {
+const CommonItemSelectorButton = ({
+	maxAmount,
+	selectedAmount,
+	onPressDelete,
+	onValueChange,
+}: CommonItemSelectorButtonProps) => {
 	return (
 		<View style={styles.horizontal_flex}>
 			<View style={styles.selectedLeftSide}>
-				<Text> {props.selectedAmount} </Text>
-				{props.maxAmount > 1 && <AmountSelector {...props} />}
+				<Text> {selectedAmount} </Text>
+				{maxAmount > 1 && (
+					<Picker
+						selectedValue={selectedAmount}
+						onValueChange={onValueChange}
+						style={styles.picker}
+						mode="dialog">
+						{Array.from({ length: maxAmount }, (_, i) => i).map((value) => (
+							<Picker.Item
+								key={value + 1}
+								label={(value + 1).toString()}
+								value={value + 1}
+								style={styles.pickerItem}
+							/>
+						))}
+					</Picker>
+				)}
 			</View>
 			<View>
 				<TouchableOpacity
-					onPress={props.onPressDelete}
+					onPress={onPressDelete}
 					style={styles.discard_button}>
 					<Text style={styles.light_text}>X</Text>
 				</TouchableOpacity>
@@ -54,5 +74,11 @@ const styles = StyleSheet.create({
 	},
 	light_text: {
 		color: "white",
+	},
+	picker: {
+		width: 30,
+	},
+	pickerItem: {
+		width: 70,
 	},
 });

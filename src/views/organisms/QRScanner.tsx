@@ -6,6 +6,7 @@ import {
 	StyleSheet,
 	BackHandler,
 	TouchableOpacity,
+	Platform,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { BarCodeScanner } from "expo-barcode-scanner";
@@ -16,7 +17,8 @@ import { Item, UniqueItem } from "../../interfaces";
 import DefaultModal from "../molecules/DefaultModal";
 import { modalStyles } from "../../styles";
 import { TakeOutItemAction } from "../../contexts/ItemReducer";
-
+import Feather from "react-native-vector-icons/Feather";
+import { getPlatformOrientationLockAsync } from "expo-screen-orientation";
 interface BarcodeScannerResultType {
 	type: string;
 	data: string;
@@ -121,7 +123,7 @@ export default function QRScanner({
 				"There was no acceptable qr code read before calling the function, scannedItem and scannedUniqueItem must not be null!"
 			);
 		}
-		closeModal();
+		setCameraIsActive(false);
 	};
 
 	const closeModal = () => {
@@ -139,7 +141,7 @@ export default function QRScanner({
 	}
 
 	return (
-		<View style={styles.container}>
+		<>
 			<StatusBar hidden={true} />
 			<DefaultModal
 				visible={visible}
@@ -179,21 +181,34 @@ export default function QRScanner({
 					</View>
 				</View>
 			</DefaultModal>
-			<BarCodeScanner
-				onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-				style={styles.cameraViewStyle}>
-				<Toast />
-				<TouchableOpacity
-					onPress={() => setCameraIsActive(false)}
-					style={styles.backButtonContainer}>
-					<Ionicons
-						name="chevron-back"
-						size={24}
+			<View style={styles.container}>
+				<BarCodeScanner
+					onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+					style={styles.cameraViewStyle}>
+					<Toast />
+					{Platform.OS === "ios" && (
+						<TouchableOpacity
+							onPress={() => setCameraIsActive(false)}
+							style={styles.backButtonContainer}>
+							<Ionicons
+								name="chevron-back"
+								size={24}
+								color="white"
+							/>
+						</TouchableOpacity>
+					)}
+
+					<Text style={styles.infoText}>
+						Eszközök kivételéhez olvasd be a rajtuk levő QR kódot!
+					</Text>
+					<Feather
+						name={"maximize"}
+						size={300}
 						color="white"
 					/>
-				</TouchableOpacity>
-			</BarCodeScanner>
-		</View>
+				</BarCodeScanner>
+			</View>
+		</>
 	);
 }
 
@@ -202,6 +217,7 @@ const styles = StyleSheet.create({
 		width: Dimensions.get("screen").width,
 		height: Dimensions.get("screen").height,
 		position: "absolute",
+		alignItems: "center",
 	},
 	container: {
 		flex: 1,
@@ -216,5 +232,13 @@ const styles = StyleSheet.create({
 		backgroundColor: "#000",
 		borderRadius: 24,
 		padding: 8,
+	},
+	infoText: {
+		color: "white",
+		paddingTop: "50%",
+		alignSelf: "center",
+		fontSize: 16,
+		paddingHorizontal: "10%",
+		textAlign: "center",
 	},
 });

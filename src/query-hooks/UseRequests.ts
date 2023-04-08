@@ -31,7 +31,7 @@ export function usePostRequest({
 		onSuccess: () => {
 			navigationProps.navigation.navigate("RequestSelectorScreen");
 		},
-		onError: (error) => console.log(error),
+		onError: (error) => console.error(error),
 	});
 }
 

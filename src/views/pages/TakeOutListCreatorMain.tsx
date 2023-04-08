@@ -33,7 +33,6 @@ interface TakeOutListCreatorMainProps {
 	navigationProps: TakeOutListCreatorManagerProps;
 	dispatchItems: React.Dispatch<TakeOutItemAction>;
 	getItems: UseQueryResult<Item[], unknown>;
-	setStoreId: React.Dispatch<React.SetStateAction<number>>;
 }
 
 const TakeOutListCreatorMain = ({
@@ -42,7 +41,6 @@ const TakeOutListCreatorMain = ({
 	navigationProps,
 	dispatchItems,
 	getItems,
-	setStoreId,
 }: TakeOutListCreatorMainProps) => {
 	const [modalIsVisible, setModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
 	const [warningModalIsVisible, setWarningModalIsVisible] = useState(false); // Decides wether the final accept modal is displayed
@@ -62,7 +60,6 @@ const TakeOutListCreatorMain = ({
 	const postTakeOut = usePostTakeOut({
 		takeOutList,
 		navigationProps,
-		setStoreId,
 	}); // Sends finalized data to the server
 
 	const selectedItemAmountRef = useRef(selectedItemAmount);
@@ -80,6 +77,7 @@ const TakeOutListCreatorMain = ({
 	}, [searchTerm, items]);
 
 	useEffect(() => {
+		getItems.refetch();
 		const kListener = Keyboard.addListener("keyboardDidHide", () => {
 			Keyboard.dismiss();
 		});
@@ -182,7 +180,7 @@ const TakeOutListCreatorMain = ({
 										return { ...prev, take_out_name: text };
 									})
 								}
-								placeholder="Hol használod az eszközöket?"
+								placeholder="Mi legyen az eszközkivétel neve?"
 							/>
 							<View style={modalStyles.buttonContainer}>
 								{listSendLoading ? (
@@ -217,6 +215,7 @@ const TakeOutListCreatorMain = ({
 						openDrawer={navigationProps.navigation.openDrawer}
 						setSearchTerm={setSearchTerm}
 						searchTerm={searchTerm}
+						title="Új eszközkivétel"
 					/>
 					{(getItems.isLoading || getItems.isIdle) && <LoadingSpinner />}
 					{getItems.isSuccess && (

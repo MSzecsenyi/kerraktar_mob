@@ -15,7 +15,7 @@ const TakeOutItemTile = ({
 					<Text style={styles.card_title}> {item.item_name} </Text>
 				</View>
 				<View style={styles.info_row}>
-					<Text> Raktáron összesen: {item.amount} </Text>
+					<Text> Raktáron összesen: {item.in_store_amount} </Text>
 				</View>
 			</View>
 			<View style={styles.button_part}>

@@ -18,7 +18,6 @@ import DefaultModal from "../molecules/DefaultModal";
 import { modalStyles } from "../../styles";
 import { TakeOutItemAction } from "../../contexts/ItemReducer";
 import Feather from "react-native-vector-icons/Feather";
-import { getPlatformOrientationLockAsync } from "expo-screen-orientation";
 interface BarcodeScannerResultType {
 	type: string;
 	data: string;
@@ -67,15 +66,31 @@ export default function QRScanner({
 		const guidExistsInItems = items.some((item) => {
 			return item.unique_items.some((uniqueItem) => {
 				if (uniqueItem.unique_id === data) {
-					setScannedItem(item);
-					setScannedUniqueItem(uniqueItem);
-					setGuidInTakeOutList(
-						item.selected_unique_items.some(
-							(selectedUniqueItem) => selectedUniqueItem === data
-						)
-					);
-					setScanned(true);
-					setVisible(true);
+					if (uniqueItem.is_in_store) {
+						setScannedItem(item);
+						setScannedUniqueItem(uniqueItem);
+						setGuidInTakeOutList(
+							item.selected_unique_items.some(
+								(selectedUniqueItem) => selectedUniqueItem === data
+							)
+						);
+						setScanned(true);
+						setVisible(true);
+					} else {
+						// Unknown QR code scanned
+						setScanned(true);
+						Toast.show({
+							type: "info",
+							text1: "Kivett eszköz",
+							text2:
+								"Ez az eszköz jelenleg nincs a raktárban. Ha mégis ott találtad, kérlek jelezd a raktárosnak",
+							topOffset: 60,
+							visibilityTime: 2500,
+						});
+						setTimeout(() => {
+							setScanned(false);
+						}, 3000);
+					}
 					return true;
 				} else {
 					return false;

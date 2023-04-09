@@ -8,12 +8,14 @@ interface StoreSelectorProps {
 	setStoreId: React.Dispatch<React.SetStateAction<number>>;
 	stores: Store[];
 	openDrawer: () => void;
+	title?: string;
 }
 
 const StoreSelector = ({
 	setStoreId,
 	stores,
 	openDrawer,
+	title = "",
 }: StoreSelectorProps) => {
 	const renderRow = (storeInfo: ListRenderItemInfo<Store>) => {
 		const store = storeInfo.item;
@@ -30,7 +32,10 @@ const StoreSelector = ({
 
 	return (
 		<View style={styles.mainContainer}>
-			<HeaderWithSearchBar openDrawer={openDrawer} />
+			<HeaderWithSearchBar
+				openDrawer={openDrawer}
+				title={title}
+			/>
 			<Text style={styles.titleText}>Válassz raktárat:</Text>
 			<FlatList
 				data={stores.sort((a, b) => a.address.localeCompare(b.address))}

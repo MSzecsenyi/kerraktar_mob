@@ -11,7 +11,7 @@ import { ItemRequest } from "../../interfaces";
 import { useCallback, useContext, useEffect, useState } from "react";
 import RequestTile from "../organisms/Tiles/RequestTile";
 import BottomCreateNewButton from "../atoms/bottomButtons/BottomCreateNewButton";
-import BottomControlButtons from "../atoms/bottomButtons/BottomButtonContainer";
+import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
 import { CompositeScreenProps, useFocusEffect } from "@react-navigation/native";
 import {
 	LoginDrawerParamList,
@@ -111,12 +111,12 @@ const RequestSelector = ({ navigation }: RequestSelectorNavigationProp) => {
 							}
 						/>
 						{user.is_group && (
-							<BottomControlButtons>
+							<BottomButtonContainer>
 								<BottomCreateNewButton
 									text="Új foglalás"
 									onPress={() => navigation.navigate("RequestCreatorScreen")}
 								/>
-							</BottomControlButtons>
+							</BottomButtonContainer>
 						)}
 					</View>
 				</>

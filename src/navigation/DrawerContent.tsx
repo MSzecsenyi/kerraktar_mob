@@ -43,6 +43,17 @@ const DrawerContent = () => {
 						}}>
 						<Text style={styles.buttonText}> Eszközfoglalás</Text>
 					</TouchableOpacity>
+					{loggedInUser.user.is_storekeeper && (
+						<TouchableOpacity
+							style={styles.drawerButton}
+							onPress={() => {
+								navigation.navigate("ItemStack", {
+									screen: "ItemListManager",
+								});
+							}}>
+							<Text style={styles.buttonText}> Eszközök kezelése</Text>
+						</TouchableOpacity>
+					)}
 				</ScrollView>
 			</View>
 			<View style={styles.container}>

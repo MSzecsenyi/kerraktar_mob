@@ -1,7 +1,4 @@
-import { DrawerScreenProps } from "@react-navigation/drawer";
-import { LoginDrawerParamList } from "./navigation/ParamStacks";
 import { TakeOutItemAction } from "./contexts/ItemReducer";
-import { RequestItemAction } from "./contexts/RequestItemReducer";
 
 export interface LoginInfo {
 	email: string;
@@ -46,7 +43,7 @@ export interface Item {
 export interface UniqueItem {
 	unique_id: string;
 	alt_name: string;
-	is_in_store: string;
+	taken_out_by: string;
 }
 export interface TakeOutItemButtonProps {
 	item: Item;

@@ -22,7 +22,7 @@ import { usePostTakeOut } from "../../query-hooks/UseTakeOuts";
 import { UseQueryResult } from "react-query";
 import QRScanner from "../organisms/QRScanner";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
-import BottomControlButtons from "../atoms/bottomButtons/BottomButtonContainer";
+import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
 import WarningModalContent from "../organisms/WarningModalContent";
 import { TakeOutListCreatorManagerProps } from "./TakeOutListCreatorManager";
 import BottomButton from "../atoms/bottomButtons/BottomButton";
@@ -236,24 +236,24 @@ const TakeOutListCreatorMain = ({
 								})}
 								renderItem={renderRow}
 							/>
+							<BottomButtonContainer>
+								<>
+									<BottomButton //Enable QRScanner
+										buttonOnPress={() => setCameraIsActive(true)}>
+										<Ionicons
+											name="camera"
+											size={24}
+											color="#fff"
+										/>
+									</BottomButton>
+									<BottomButton //Accept changes
+										buttonIsActive={selectedItemAmount > 0}
+										buttonOnPress={acceptButtonOnPress}
+									/>
+								</>
+							</BottomButtonContainer>
 						</>
 					)}
-					<BottomControlButtons>
-						<>
-							<BottomButton //Enable QRScanner
-								buttonOnPress={() => setCameraIsActive(true)}>
-								<Ionicons
-									name="camera"
-									size={24}
-									color="#fff"
-								/>
-							</BottomButton>
-							<BottomButton //Accept changes
-								buttonIsActive={selectedItemAmount > 0}
-								buttonOnPress={acceptButtonOnPress}
-							/>
-						</>
-					</BottomControlButtons>
 				</>
 			)}
 		</>

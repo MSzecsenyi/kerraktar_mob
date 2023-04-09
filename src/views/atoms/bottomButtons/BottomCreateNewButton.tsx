@@ -12,7 +12,7 @@ const BottomCreateNewButton = ({
 }: BottomCreateNewButtonProps) => {
 	return (
 		<TouchableOpacity
-			style={styles.buttonCoiner}
+			style={styles.buttonContaier}
 			onPress={onPress}>
 			<>
 				<View style={styles.horizontalContainer}>
@@ -31,10 +31,7 @@ const BottomCreateNewButton = ({
 export default BottomCreateNewButton;
 
 const styles = StyleSheet.create({
-	buttonCoiner: {
-		position: "absolute",
-		right: 30,
-		bottom: 10,
+	buttonContaier: {
 		minWidth: 100,
 		height: 50,
 		backgroundColor: "green",

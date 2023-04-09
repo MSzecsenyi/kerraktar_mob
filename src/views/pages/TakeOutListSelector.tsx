@@ -7,7 +7,7 @@ import { FlatList } from "react-native-gesture-handler";
 import TakeOutTile from "../organisms/Tiles/TakeOutTile";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 import { CompositeScreenProps, useFocusEffect } from "@react-navigation/native";
-import BottomControlButtons from "../atoms/bottomButtons/BottomButtonContainer";
+import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
 import BottomCreateNewButton from "../atoms/bottomButtons/BottomCreateNewButton";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -108,14 +108,14 @@ const TakeOutListSelector = (navigationProps: TakeOutListSelectorProps) => {
 								/>
 							}
 						/>
-						<BottomControlButtons>
+						<BottomButtonContainer>
 							<BottomCreateNewButton
 								text="Új eszközkivétel"
 								onPress={() =>
 									navigationProps.navigation.navigate("TakeOutCreatorScreen")
 								}
 							/>
-						</BottomControlButtons>
+						</BottomButtonContainer>
 					</>
 				) : (
 					<LoadingSpinner />

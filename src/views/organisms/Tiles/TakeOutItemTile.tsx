@@ -1,13 +1,19 @@
 import { View, StyleSheet, Text } from "react-native";
-import { TakeOutItemButtonProps } from "../../../interfaces";
 import TakeOutSelectItemButton from "../../molecules/TakeOutSelectItemButton";
 import { memo } from "react";
+import { Item } from "../../../interfaces";
+import { TakeOutItemAction } from "../../../contexts/ItemReducer";
+export interface TakeOutItemTileProps {
+	item: Item;
+	dispatchItems: React.Dispatch<TakeOutItemAction>;
+	setCameraIsActive: React.Dispatch<React.SetStateAction<boolean>>;
+}
 
 const TakeOutItemTile = ({
 	item,
 	dispatchItems,
 	setCameraIsActive,
-}: TakeOutItemButtonProps) => {
+}: TakeOutItemTileProps) => {
 	return (
 		<View style={styles.card_template}>
 			<View style={styles.info_part}>

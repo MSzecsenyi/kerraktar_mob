@@ -66,7 +66,7 @@ export default function QRScanner({
 		const guidExistsInItems = items.some((item) => {
 			return item.unique_items.some((uniqueItem) => {
 				if (uniqueItem.unique_id === data) {
-					if (uniqueItem.is_in_store) {
+					if (uniqueItem.taken_out_by == "-1") {
 						setScannedItem(item);
 						setScannedUniqueItem(uniqueItem);
 						setGuidInTakeOutList(
@@ -82,8 +82,7 @@ export default function QRScanner({
 						Toast.show({
 							type: "info",
 							text1: "Kivett eszköz",
-							text2:
-								"Ez az eszköz jelenleg nincs a raktárban. Ha mégis ott találtad, kérlek jelezd a raktárosnak",
+							text2: `Ez az eszköz jelenleg ${uniqueItem.taken_out_by} által ki van véve`,
 							topOffset: 60,
 							visibilityTime: 2500,
 						});
@@ -115,6 +114,7 @@ export default function QRScanner({
 	};
 
 	const acceptModal = () => {
+		console.log("scanned");
 		if (!guidInTakeOutList && scannedItem && scannedUniqueItem) {
 			//unique item is not selected yet
 			dispatchItems({
@@ -186,7 +186,10 @@ export default function QRScanner({
 									? modalStyles.buttonDelete
 									: modalStyles.buttonAccept
 							}
-							onPress={() => acceptModal()}>
+							onPress={() => {
+								acceptModal();
+								console.log("accept pressed");
+							}}>
 							<Text style={modalStyles.buttonAcceptText}>
 								{guidInTakeOutList
 									? "Törlés a listából"

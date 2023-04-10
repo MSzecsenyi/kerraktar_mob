@@ -41,7 +41,8 @@ export interface Item {
 	selected_unique_items: string[];
 }
 export interface UniqueItem {
-	unique_id: string;
+	id: string;
+	uuid: string;
 	alt_name: string;
 	taken_out_by: string;
 }
@@ -126,4 +127,25 @@ export interface OtherRequestInfo {
 	end_date: Date;
 	amount: number;
 	user: string;
+}
+export interface UniqueItemCreatorType {
+	[index: number]: {
+		id: string | null;
+		alt_name: string;
+		uuid: string;
+	};
+}
+
+export interface SendItemData {
+	store_id: number;
+	amount: number;
+	item_name: string;
+	is_unique: boolean;
+	unique_items: sendUniqueItemData[];
+}
+
+export interface sendUniqueItemData {
+	id: number;
+	uuid: string;
+	alt_name: string;
 }

@@ -10,7 +10,6 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useCallback, useEffect, useState } from "react";
-import NumericInput from "react-native-numeric-input";
 import { FlatList } from "react-native-gesture-handler";
 import {
 	Item,
@@ -35,80 +34,115 @@ const ItemCreator = ({
 	const [isUnique, setIsUnique] = useState(item ? item.is_unique : false);
 	const [name, setName] = useState(item ? item.item_name : "");
 	const [amount, setAmount] = useState(item ? item.amount : 1);
-	const [uniqueItems, setUniqueItems] = useState<UniqueItemCreatorType>({});
-	const [scannedUuids, setScannedUuids] = useState<string[]>([]);
+	const [uniqueItems, setUniqueItems] = useState<UniqueItemCreatorType[]>([]);
 	const [acceptActive, setAcceptActive] = useState(false);
 	const getUUIds = useGetUUIds();
 
+	// functions responsible for the unique item flatlist values
+	const shiftArray = (index: number) => {
+		setAmount((prev) => (prev === 1 ? 1 : prev - 1));
+		setUniqueItems((prev) => {
+			const newarr = [
+				...prev.slice(0, index),
+				...prev.slice(index + 1, prev.length),
+			];
+			return amount === 1
+				? [
+						{
+							id: -1,
+							alt_name: "",
+							uuid: "",
+						},
+				  ]
+				: newarr;
+		});
+	};
+
 	useEffect(() => {
-		for (let i = 1; i <= 10; i++) {
-			uniqueItems[i] = {
-				id: null,
-				alt_name: "",
-				uuid: "",
-			};
-		}
+		getUUIds.refetch();
 		if (item?.is_unique) {
-			for (let i = 1; i <= item.amount; i++) {
-				uniqueItems[i] = {
-					id: item.unique_items[i - 1].id,
-					alt_name: item.unique_items[i - 1].alt_name,
-					uuid: item.unique_items[i - 1].uuid,
-				};
+			for (let i = 0; i < item.amount; i++) {
+				setUniqueItems((prev) => {
+					return prev.concat([
+						{
+							id: item.unique_items[i].id,
+							alt_name: item.unique_items[i].alt_name,
+							uuid: item.unique_items[i].uuid,
+						},
+					]);
+				});
 			}
 		}
 	}, []);
 
-	useEffect(() => {}, [name, amount, isUnique, uniqueItems]);
-
-	const renderRow = useCallback(
-		({ item, index }: ListRenderItemInfo<sendUniqueItemData>) => {
-			return (
-				<>
-					{getUUIds.isSuccess && (
-						<CreateItemUItemTile
-							item={item}
-							index={index}
-							uuids={getUUIds.data}
-							updateUniqueItem={updateUniqueItem}
-						/>
-					)}
-				</>
-			);
-		},
-		[getUUIds.data]
-	);
-
-	const filteredUniqueItems = Object.values(uniqueItems)
-		.slice(0, amount)
-		.map((item, index) => ({
-			...item,
-			index,
-		}));
+	useEffect(() => {
+		if (isUnique) {
+			setUniqueItems((prev) => {
+				while (prev.length < amount) {
+					prev = prev.concat([
+						{
+							id: -1,
+							alt_name: "",
+							uuid: "",
+						},
+					]);
+				}
+				while (prev.length > amount) {
+					prev.pop();
+				}
+				return prev;
+			});
+		}
+	}, [isUnique, amount]);
 
 	const updateUniqueItem = (
 		key: number,
 		alt_name?: string,
 		uuid?: string,
-		id?: null
+		id?: -1
 	) => {
 		setUniqueItems((prevData) => {
-			return {
-				...prevData,
-				[key]: {
-					id: id !== undefined ? id : prevData[key].id,
-					alt_name: alt_name !== undefined ? alt_name : prevData[key].alt_name,
-					uuid: uuid !== undefined ? uuid : prevData[key].uuid,
-				},
+			const newData = [...prevData];
+			newData[key] = {
+				id: id !== undefined ? id : prevData[key].id,
+				alt_name: alt_name !== undefined ? alt_name : prevData[key].alt_name,
+				uuid: uuid !== undefined ? uuid : prevData[key].uuid,
 			};
+			return newData;
 		});
 	};
+
+	const scannedUuids = uniqueItems
+		.map((item) => item.uuid)
+		.filter((uuid) => uuid !== "");
+
+	const renderRow = useCallback(
+		({ item, index }: ListRenderItemInfo<sendUniqueItemData>) => {
+			console.log(scannedUuids);
+			return (
+				<>
+					{getUUIds.isSuccess && (
+						<CreateItemUItemTile
+							scannedUuids={scannedUuids}
+							item={item}
+							index={index}
+							uuids={getUUIds.data}
+							updateUniqueItem={updateUniqueItem}
+							shiftArray={shiftArray}
+						/>
+					)}
+				</>
+			);
+		},
+		[getUUIds.data, scannedUuids]
+	);
 
 	return (
 		<KeyboardAvoidingView
 			style={{ minHeight: isUnique ? "100%" : "40%", maxHeight: "100%" }}
 			// behavior="padding"
 		>
+			{/* PAGE CONTENT */}
 			{getUUIds.isSuccess ? (
 				<>
 					<View style={styles.basicInfoContainer}>
@@ -121,32 +155,35 @@ const ItemCreator = ({
 							onChangeText={(name) => setName(name)}
 						/>
 						<View style={styles.rowContainer}>
-							<NumericInput
-								value={amount}
-								onChange={(amount) => setAmount(amount)}
-								initValue={amount}
-								minValue={
-									item
-										? item.amount - item.in_store_amount === 0
-											? 1
-											: item.amount - item.in_store_amount
-										: 1
-								}
-								maxValue={999}
-								rounded
-								totalHeight={40}
-								totalWidth={100}
-								rightButtonBackgroundColor="green"
-								leftButtonBackgroundColor="green"
-								iconStyle={{ color: "white" }}
+							<TextInput
+								style={styles.amountInput}
+								maxLength={3}
+								textAlign="center"
+								value={amount.toString()}
+								onChangeText={(input) => {
+									let inputNumber: number = parseInt(input);
+									if (isNaN(inputNumber) || inputNumber < 0) {
+										setAmount(0);
+									} else {
+										if (isUnique) {
+											inputNumber > 50 ? setAmount(50) : setAmount(inputNumber);
+										} else {
+											setAmount(inputNumber);
+										}
+									}
+								}}
+								keyboardType="numeric"
 							/>
-							<Text style={styles.amountText}>Darabszám</Text>
+							<Text style={styles.amountText}>
+								Darabszám{isUnique && " (max. 50)"}
+							</Text>
 						</View>
 
 						<View style={styles.rowContainer}>
 							<View style={styles.checboxAligner}>
 								<TouchableWithoutFeedback
 									onPress={() => {
+										amount > 50 && setAmount(50);
 										setIsUnique((prev) => !prev);
 									}}>
 									{isUnique ? (
@@ -171,15 +208,15 @@ const ItemCreator = ({
 					{isUnique && (
 						<FlatList
 							style={styles.flatListStyle}
-							data={filteredUniqueItems}
-							renderItem={renderRow}
-							keyExtractor={(_, index) => index.toString()}
+							data={uniqueItems}
 							getItemLayout={(data, index) => ({
 								length: 50,
 								offset: 50 * (index + 1),
 								index,
 							})}
-							ListEmptyComponent={<LoadingSpinner />}
+							keyboardShouldPersistTaps="always"
+							renderItem={renderRow}
+							keyExtractor={(_, index) => index.toString()}
 						/>
 					)}
 					<View style={[modalStyles.buttonContainer]}>
@@ -249,7 +286,7 @@ const styles = StyleSheet.create({
 		width: 40,
 	},
 	checboxAligner: {
-		width: 100,
+		width: 42,
 		alignItems: "center",
 	},
 	flatListStyle: {
@@ -258,5 +295,6 @@ const styles = StyleSheet.create({
 		borderTopWidth: 1,
 		borderBottomWidth: 1,
 		marginBottom: 5,
+		marginTop: 5,
 	},
 });

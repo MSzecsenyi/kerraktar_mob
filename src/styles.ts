@@ -23,6 +23,10 @@ export const modalStyles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-around",
 	},
+	buttonOuterContent: {
+		justifyContent: "flex-end",
+		marginBottom: 20,
+	},
 	buttonReject: {
 		paddingHorizontal: 10,
 		minWidth: 100,

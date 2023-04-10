@@ -14,7 +14,7 @@ export default function LoggedInDrawer() {
 				headerShown: false,
 			}}
 			drawerContent={() => <DrawerContent />}
-			initialRouteName="RequestStack">
+			initialRouteName="ItemStack">
 			<Drawer.Screen
 				name="TakeOutStack"
 				component={TakeOutStack}

@@ -11,20 +11,22 @@ import { Item, UniqueItem } from "../../../interfaces";
 import { TakeOutItemAction } from "../../../contexts/ItemReducer";
 import DefaultModal from "../../molecules/DefaultModal";
 import { modalStyles } from "../../../styles";
-import TakeOutItemTile from "./TakeOutItemTile";
+import ItemCreator from "../../pages/ItemCreator";
 
 export interface ItemTileProps {
 	item: Item;
 	dispatchItems: React.Dispatch<TakeOutItemAction>;
 }
 
-const ItemTile = ({ item, dispatchItems }: ItemTileProps) => {
+const ItemTile = ({ item }: ItemTileProps) => {
 	const [infoModalVisible, setInfoModalVisible] = useState(false);
+	const [editMode, setEditMode] = useState(false);
 
 	const renderRow = useCallback(({ item }: ListRenderItemInfo<UniqueItem>) => {
 		return (
 			<View style={styles.modal_uitem}>
 				<Text>{item.alt_name}</Text>
+				<Text>{item.id}</Text>
 				<Text>
 					{item.taken_out_by == "-1" ? "Raktárban" : item.taken_out_by}
 				</Text>
@@ -32,7 +34,7 @@ const ItemTile = ({ item, dispatchItems }: ItemTileProps) => {
 		);
 	}, []);
 
-	const keyExtractor = (item: UniqueItem) => item.unique_id.toString();
+	const keyExtractor = (item: UniqueItem) => item.uuid.toString();
 
 	return (
 		<>
@@ -41,29 +43,55 @@ const ItemTile = ({ item, dispatchItems }: ItemTileProps) => {
 				visible={infoModalVisible}
 				closeFn={() => setInfoModalVisible(false)}>
 				<View>
-					<Text style={[modalStyles.boldText, modalStyles.mainText]}>
-						{item.item_name}
-					</Text>
-					<Text>Kategória: {item.category}</Text>
-					<Text>Összesen: {item.amount}</Text>
-					<Text>Raktárban: {item.in_store_amount}</Text>
-					{item.is_unique && (
-						<View style={styles.modal_uitem_container}>
-							<FlatList
-								data={item.unique_items}
-								style={{ height: item.unique_items.length * 41 }}
-								keyExtractor={keyExtractor}
-								ItemSeparatorComponent={() => (
-									<View style={{ height: 1, backgroundColor: "lightgray" }} />
-								)}
-								getItemLayout={(data, index) => ({
-									length: 80,
-									offset: 80 * (index + 1),
-									index,
-								})}
-								renderItem={renderRow}
-							/>
-						</View>
+					{editMode ? (
+						<ItemCreator
+							item={item}
+							backFn={() => setEditMode(false)}
+						/>
+					) : (
+						<>
+							<Text style={[modalStyles.boldText, modalStyles.mainText]}>
+								{item.item_name}
+							</Text>
+							<View style={styles.modal_item_info}>
+								<Text>Összesen: {item.amount}</Text>
+								<Text>Raktárban: {item.in_store_amount}</Text>
+							</View>
+							{item.is_unique && (
+								<View style={styles.modal_uitem_container}>
+									<FlatList
+										data={item.unique_items}
+										style={{ height: item.unique_items.length * 41 }}
+										keyExtractor={keyExtractor}
+										ItemSeparatorComponent={() => (
+											<View
+												style={{ height: 1, backgroundColor: "lightgray" }}
+											/>
+										)}
+										getItemLayout={(data, index) => ({
+											length: 80,
+											offset: 80 * (index + 1),
+											index,
+										})}
+										renderItem={renderRow}
+									/>
+								</View>
+							)}
+							<View style={modalStyles.buttonContainer}>
+								<TouchableOpacity
+									style={modalStyles.buttonAccept}
+									onPress={() => {
+										setEditMode(true);
+									}}>
+									<Text style={modalStyles.buttonAcceptText}>Szerkesztés</Text>
+								</TouchableOpacity>
+								<TouchableOpacity
+									style={modalStyles.buttonDelete}
+									onPress={() => setInfoModalVisible(false)}>
+									<Text style={modalStyles.buttonAcceptText}>Törlés</Text>
+								</TouchableOpacity>
+							</View>
+						</>
 					)}
 				</View>
 			</DefaultModal>
@@ -75,7 +103,6 @@ const ItemTile = ({ item, dispatchItems }: ItemTileProps) => {
 						<Text style={styles.card_title}> {item.item_name} </Text>
 					</View>
 					<View style={styles.info_row}>
-						{/* <Text> Kategória: {item.category} </Text> */}
 						<Text> Egyedi: {item.is_unique ? "igen" : "nem"} </Text>
 						<Text> Darabszám: {item.amount} </Text>
 						<Text> Raktáron: {item.in_store_amount} </Text>
@@ -149,6 +176,9 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		padding: 10,
 		height: 40,
+	},
+	modal_item_info: {
+		alignItems: "center",
 	},
 });
 

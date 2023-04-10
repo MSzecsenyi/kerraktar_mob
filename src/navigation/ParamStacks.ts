@@ -21,5 +21,5 @@ export type TakeOutStackParams = {
 
 export type ItemStackParamList = {
 	ItemListScreen: undefined;
-	ItemCreatorScreen: undefined;
+	ItemCreatorScreen: { storeId: number; storeName: string };
 };

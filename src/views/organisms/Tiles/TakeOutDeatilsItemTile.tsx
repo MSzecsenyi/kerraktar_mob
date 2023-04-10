@@ -26,9 +26,7 @@ const TakeOutDeatilsItemTile = ({
 				</View>
 				{item.unique_items.map((unique_item) => {
 					return (
-						<Text key={unique_item.unique_id}>
-							{`-${unique_item.alt_name}`}
-						</Text>
+						<Text key={unique_item.uuid}>{`-${unique_item.alt_name}`}</Text>
 					);
 				})}
 			</View>

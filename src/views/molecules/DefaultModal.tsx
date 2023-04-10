@@ -52,13 +52,15 @@ const DefaultModal = ({ visible, children, closeFn }: DefaultModalProps) => {
 			}}>
 			<TouchableWithoutFeedback onPress={() => closeFn()}>
 				<View style={styles.modalBackGround}>
-					<Animated.View
-						style={[
-							styles.modalContainter,
-							{ transform: [{ scale: scaleValue }] },
-						]}>
-						{children}
-					</Animated.View>
+					<TouchableWithoutFeedback onPress={() => 1}>
+						<Animated.View
+							style={[
+								styles.modalContainter,
+								{ transform: [{ scale: scaleValue }] },
+							]}>
+							{children}
+						</Animated.View>
+					</TouchableWithoutFeedback>
 				</View>
 			</TouchableWithoutFeedback>
 		</Modal>

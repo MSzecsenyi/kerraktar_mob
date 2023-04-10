@@ -3,7 +3,7 @@ import MainStack from "./src/navigation/MainStack";
 import { UserDataProvider } from "./src/contexts/UserDataContext";
 import { NavigationContainer } from "@react-navigation/native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { StyleSheet } from "react-native";
+import { KeyboardAvoidingView, StyleSheet } from "react-native";
 import { Platform } from "react-native";
 
 const queryClient = new QueryClient();
@@ -12,13 +12,17 @@ export default function App() {
 	return (
 		<>
 			<SafeAreaView style={styles.safeAreaView}>
-				<QueryClientProvider client={queryClient}>
-					<NavigationContainer>
-						<UserDataProvider>
-							<MainStack />
-						</UserDataProvider>
-					</NavigationContainer>
-				</QueryClientProvider>
+				<KeyboardAvoidingView
+					behavior="hight"
+					style={{ flex: 1 }}>
+					<QueryClientProvider client={queryClient}>
+						<NavigationContainer>
+							<UserDataProvider>
+								<MainStack />
+							</UserDataProvider>
+						</NavigationContainer>
+					</QueryClientProvider>
+				</KeyboardAvoidingView>
 			</SafeAreaView>
 		</>
 	);

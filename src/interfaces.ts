@@ -41,7 +41,7 @@ export interface Item {
 	selected_unique_items: string[];
 }
 export interface UniqueItem {
-	id: string;
+	id: number;
 	uuid: string;
 	alt_name: string;
 	taken_out_by: string;
@@ -129,11 +129,9 @@ export interface OtherRequestInfo {
 	user: string;
 }
 export interface UniqueItemCreatorType {
-	[index: number]: {
-		id: string | null;
-		alt_name: string;
-		uuid: string;
-	};
+	id: number;
+	alt_name: string;
+	uuid: string;
 }
 
 export interface SendItemData {

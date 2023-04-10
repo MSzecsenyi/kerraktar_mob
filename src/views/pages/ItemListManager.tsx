@@ -30,6 +30,8 @@ import { Item } from "../../interfaces";
 import ItemTile from "../organisms/Tiles/ItemTile";
 import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
 import BottomCreateNewButton from "../atoms/bottomButtons/BottomCreateNewButton";
+import DefaultModal from "../molecules/DefaultModal";
+import ItemCreator from "./ItemCreator";
 
 export type ItemSelectorProps = CompositeScreenProps<
 	NativeStackScreenProps<ItemStackParamList, "ItemListScreen">,
@@ -46,6 +48,9 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 	const [searchTerm, setSearchTerm] = useState(""); // The text typed in the header search bar. SHown items are filtered by name based on this
 	const [items, dispatchItems] = useReducer(itemReducer, []); // Mutates selected items
 	const { loggedInUser } = useContext(UserDataContext);
+	const storeName = loggedInUser.stores.find(
+		(store) => store.store_id === storeId
+	)?.address;
 
 	//REFS
 	const storeIdRef = useRef(storeId);
@@ -81,9 +86,9 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 		const backAction = () => {
 			if (storeIdRef.current !== -1 && stores.length != 1) {
 				setStoreId(-1);
-				backHandler.remove();
 			} else {
 				navigationProps.navigation.goBack();
+				backHandler.remove();
 			}
 			return true;
 		};
@@ -105,6 +110,7 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 	}, []);
 
 	const keyExtractor = (item: Item) => item.id.toString();
+	const [addModal, setAddModal] = useState(false);
 
 	return (
 		<View style={{ flex: 1 }}>
@@ -117,14 +123,19 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 				/>
 			) : (
 				<>
+					{/* MODALS */}
+					<DefaultModal
+						visible={addModal}
+						closeFn={() => setAddModal(false)}>
+						<ItemCreator storeId={storeId} />
+					</DefaultModal>
+
+					{/* PAGE CONTENT */}
 					<HeaderWithSearchBar
 						openDrawer={navigationProps.navigation.openDrawer}
 						setSearchTerm={setSearchTerm}
 						searchTerm={searchTerm}
-						title={`Eszközök: ${
-							loggedInUser.stores.find((store) => store.store_id === storeId)
-								?.address
-						}`}
+						title={`Eszközök: ${storeName}`}
 					/>
 					{(getItems.isLoading || getItems.isIdle) && <LoadingSpinner />}
 					{getItems.isSuccess && (
@@ -161,11 +172,7 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 								<BottomButtonContainer>
 									<BottomCreateNewButton
 										text="Eszköz hozzáadása"
-										onPress={() =>
-											navigationProps.navigation.navigate("ItemStack", {
-												screen: "ItemCreatorScreen",
-											})
-										}
+										onPress={() => setAddModal(true)}
 									/>
 								</BottomButtonContainer>
 							)}

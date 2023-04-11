@@ -12,6 +12,7 @@ import { TakeOutItemAction } from "../../../contexts/ItemReducer";
 import DefaultModal from "../../molecules/DefaultModal";
 import { modalStyles } from "../../../styles";
 import ItemCreator from "../../pages/ItemCreator";
+import WarningModalContent from "../WarningModalContent";
 
 export interface ItemTileProps {
 	item: Item;
@@ -21,6 +22,10 @@ export interface ItemTileProps {
 const ItemTile = ({ item }: ItemTileProps) => {
 	const [infoModalVisible, setInfoModalVisible] = useState(false);
 	const [editMode, setEditMode] = useState(false);
+	const [deleteWarning, setDeleteWarning] = useState(false);
+	const [closeModalWarning, setCloseModalWarning] = useState(false);
+	const [closeModalWarningVisible, setCloseModalWarningVisible] =
+		useState(false);
 
 	const renderRow = useCallback(({ item }: ListRenderItemInfo<UniqueItem>) => {
 		return (
@@ -41,12 +46,17 @@ const ItemTile = ({ item }: ItemTileProps) => {
 			{/* MODALS */}
 			<DefaultModal
 				visible={infoModalVisible}
-				closeFn={() => setInfoModalVisible(false)}>
+				closeFn={() =>
+					closeModalWarning
+						? setCloseModalWarningVisible(true)
+						: setInfoModalVisible(false)
+				}>
 				<View>
 					{editMode ? (
 						<ItemCreator
 							item={item}
 							backFn={() => setEditMode(false)}
+							setCloseModalWarning={(value) => setCloseModalWarning(value)}
 						/>
 					) : (
 						<>
@@ -87,13 +97,40 @@ const ItemTile = ({ item }: ItemTileProps) => {
 								</TouchableOpacity>
 								<TouchableOpacity
 									style={modalStyles.buttonDelete}
-									onPress={() => setInfoModalVisible(false)}>
+									onPress={() => setDeleteWarning(true)}>
 									<Text style={modalStyles.buttonAcceptText}>Törlés</Text>
 								</TouchableOpacity>
 							</View>
 						</>
 					)}
 				</View>
+			</DefaultModal>
+
+			<DefaultModal
+				visible={deleteWarning}
+				closeFn={() => setDeleteWarning(false)}>
+				<WarningModalContent
+					closeModal={() => setDeleteWarning(false)}
+					acceptModal={() => {
+						setInfoModalVisible(false);
+						setDeleteWarning(false);
+					}}
+					mainText="Biztosan törlöd?"
+					explainText="Historikus adatok veszhetnek el!"
+				/>
+			</DefaultModal>
+
+			<DefaultModal
+				visible={closeModalWarningVisible}
+				closeFn={() => setCloseModalWarningVisible(false)}>
+				<WarningModalContent
+					closeModal={() => setCloseModalWarningVisible(false)}
+					acceptModal={() => {
+						setCloseModalWarning(false);
+						setCloseModalWarningVisible(false);
+						setInfoModalVisible(false);
+					}}
+				/>
 			</DefaultModal>
 
 			{/* PAGE CONTENT */}

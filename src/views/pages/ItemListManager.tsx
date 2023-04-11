@@ -32,6 +32,7 @@ import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer"
 import BottomCreateNewButton from "../atoms/bottomButtons/BottomCreateNewButton";
 import DefaultModal from "../molecules/DefaultModal";
 import ItemCreator from "./ItemCreator";
+import WarningModalContent from "../organisms/WarningModalContent";
 
 export type ItemSelectorProps = CompositeScreenProps<
 	NativeStackScreenProps<ItemStackParamList, "ItemListScreen">,
@@ -48,6 +49,9 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 	const [searchTerm, setSearchTerm] = useState(""); // The text typed in the header search bar. SHown items are filtered by name based on this
 	const [items, dispatchItems] = useReducer(itemReducer, []); // Mutates selected items
 	const { loggedInUser } = useContext(UserDataContext);
+	const [closeModalWarning, setCloseModalWarning] = useState(false);
+	const [closeModalWarningVisible, setCloseModalWarningVisible] =
+		useState(false);
 	const storeName = loggedInUser.stores.find(
 		(store) => store.store_id === storeId
 	)?.address;
@@ -126,8 +130,29 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 					{/* MODALS */}
 					<DefaultModal
 						visible={addModal}
-						closeFn={() => setAddModal(false)}>
-						<ItemCreator storeId={storeId} />
+						closeFn={() => {
+							console.log(closeModalWarning);
+							closeModalWarning
+								? setCloseModalWarningVisible(true)
+								: setAddModal(false);
+						}}>
+						<ItemCreator
+							storeId={storeId}
+							setCloseModalWarning={(value) => setCloseModalWarning(value)}
+						/>
+					</DefaultModal>
+
+					<DefaultModal
+						visible={closeModalWarningVisible}
+						closeFn={() => setCloseModalWarningVisible(false)}>
+						<WarningModalContent
+							closeModal={() => setCloseModalWarningVisible(false)}
+							acceptModal={() => {
+								setCloseModalWarning(false);
+								setCloseModalWarningVisible(false);
+								setAddModal(false);
+							}}
+						/>
 					</DefaultModal>
 
 					{/* PAGE CONTENT */}

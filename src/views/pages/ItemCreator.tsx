@@ -24,23 +24,30 @@ interface ItemCreatorProps {
 	storeId?: number | undefined;
 	item?: Item | undefined;
 	backFn?: () => void | undefined;
+	setCloseModalWarning: (closeWarningModal: boolean) => void;
 }
 
 const ItemCreator = ({
 	storeId = undefined,
 	item = undefined,
 	backFn = undefined,
+	setCloseModalWarning,
 }: ItemCreatorProps) => {
 	const [isUnique, setIsUnique] = useState(item ? item.is_unique : false);
 	const [name, setName] = useState(item ? item.item_name : "");
 	const [amount, setAmount] = useState(item ? item.amount : 1);
 	const [uniqueItems, setUniqueItems] = useState<UniqueItemCreatorType[]>([]);
+	const [maxInput, setMaxInput] = useState(item ? 50 : 999);
+	const [minInput, setMinInput] = useState(item ? item.amount : 0);
 	const [acceptActive, setAcceptActive] = useState(false);
 	const getUUIds = useGetUUIds();
 
 	// functions responsible for the unique item flatlist values
-	const shiftArray = (index: number) => {
+	const deleteUniqeItem = (index: number) => {
 		setAmount((prev) => (prev === 1 ? 1 : prev - 1));
+		if (uniqueItems[index].id !== -1) {
+			setMinInput((prev) => prev - 1);
+		}
 		setUniqueItems((prev) => {
 			const newarr = [
 				...prev.slice(0, index),
@@ -112,13 +119,68 @@ const ItemCreator = ({
 		});
 	};
 
+	// Save button active state & closemodal warning setting
+	useEffect(() => {
+		// accept state setting
+		if (
+			name.length < 2 ||
+			(isUnique &&
+				uniqueItems.some((item) => item.alt_name === "" || item.uuid === ""))
+		) {
+			setAcceptActive(false);
+		} else {
+			setAcceptActive(true);
+		}
+		// Newly created item
+		// close modal enabled setting
+		if (!item) {
+			if (
+				name.length >= 2 ||
+				(isUnique &&
+					uniqueItems.some((item) => item.alt_name !== "" || item.uuid !== ""))
+			) {
+				setCloseModalWarning(true);
+			} else {
+				setCloseModalWarning(false);
+			}
+		}
+		// Already existing item
+		else {
+			if (
+				name.length >= 2 ||
+				name !== item.item_name ||
+				(isUnique &&
+					uniqueItems.some(
+						(uItem) =>
+							uItem.alt_name !== "" ||
+							uItem.uuid !== "" ||
+							!item.unique_items.some(
+								(originalUItem) => originalUItem.uuid === uItem.uuid
+							) ||
+							!item.unique_items.some(
+								(originalUItem) => originalUItem.alt_name === uItem.alt_name
+							)
+					)) ||
+				item.unique_items.some((originalUItem) => {
+					!uniqueItems.some((uItem) => originalUItem.uuid === uItem.uuid) ||
+						!uniqueItems.some(
+							(uItem) => originalUItem.alt_name === uItem.alt_name
+						);
+				})
+			) {
+				setCloseModalWarning(true);
+			} else {
+				setCloseModalWarning(false);
+			}
+		}
+	}, [name, uniqueItems, isUnique]);
+
 	const scannedUuids = uniqueItems
 		.map((item) => item.uuid)
 		.filter((uuid) => uuid !== "");
 
 	const renderRow = useCallback(
 		({ item, index }: ListRenderItemInfo<sendUniqueItemData>) => {
-			console.log(scannedUuids);
 			return (
 				<>
 					{getUUIds.isSuccess && (
@@ -128,7 +190,7 @@ const ItemCreator = ({
 							index={index}
 							uuids={getUUIds.data}
 							updateUniqueItem={updateUniqueItem}
-							shiftArray={shiftArray}
+							deleteUniqeItem={deleteUniqeItem}
 						/>
 					)}
 				</>
@@ -160,17 +222,11 @@ const ItemCreator = ({
 								maxLength={3}
 								textAlign="center"
 								value={amount.toString()}
-								onChangeText={(input) => {
-									let inputNumber: number = parseInt(input);
-									if (isNaN(inputNumber) || inputNumber < 0) {
-										setAmount(0);
-									} else {
-										if (isUnique) {
-											inputNumber > 50 ? setAmount(50) : setAmount(inputNumber);
-										} else {
-											setAmount(inputNumber);
-										}
-									}
+								onChangeText={(inputString) => {
+									const input = parseInt(inputString);
+									(isNaN(input) || input < minInput) && setAmount(minInput);
+									input > maxInput && setAmount(maxInput);
+									minInput <= input && input <= maxInput && setAmount(input);
 								}}
 								keyboardType="numeric"
 							/>
@@ -184,6 +240,7 @@ const ItemCreator = ({
 								<TouchableWithoutFeedback
 									onPress={() => {
 										amount > 50 && setAmount(50);
+										isUnique ? setMaxInput(999) : setMaxInput(50);
 										setIsUnique((prev) => !prev);
 									}}>
 									{isUnique ? (
@@ -234,9 +291,14 @@ const ItemCreator = ({
 							</TouchableOpacity>
 						)}
 						<TouchableOpacity
-							style={modalStyles.buttonAccept}
+							style={
+								acceptActive
+									? modalStyles.buttonAccept
+									: modalStyles.buttonDisabled
+							}
 							onPress={() => {
 								console.log("save pressed");
+								console.log(acceptActive);
 							}}>
 							<Text style={modalStyles.buttonAcceptText}>Mentés</Text>
 						</TouchableOpacity>

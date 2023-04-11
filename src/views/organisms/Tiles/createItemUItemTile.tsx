@@ -24,7 +24,7 @@ interface CreateItemUItemTileProps {
 		uuid?: string,
 		id?: -1
 	) => void;
-	shiftArray: (index: number) => void;
+	deleteUniqeItem: (index: number) => void;
 }
 
 const CreateItemUItemTile = ({
@@ -33,14 +33,14 @@ const CreateItemUItemTile = ({
 	index,
 	uuids,
 	updateUniqueItem,
-	shiftArray,
+	deleteUniqeItem,
 }: CreateItemUItemTileProps) => {
 	const [cameraIsActive, setCameraIsActive] = useState(false);
 	const [deleteWarning, setDeleteWarning] = useState(false);
 
 	const deleteUniqueItem = () => {
 		updateUniqueItem(index, "", "", -1);
-		shiftArray(index);
+		deleteUniqeItem(index);
 	};
 	return (
 		<>

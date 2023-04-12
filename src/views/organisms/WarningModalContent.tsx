@@ -1,5 +1,6 @@
 import { Text, TouchableOpacity, View } from "react-native";
 import { modalStyles } from "../../styles";
+import { useState } from "react";
 
 interface WarningModalContentProps {
 	closeModal: () => void;
@@ -13,6 +14,7 @@ const WarningModalContent = ({
 	mainText = "Biztosan kilépsz?",
 	explainText = "A most végrehajtott módosítások nem lesznek elmentve!",
 }: WarningModalContentProps) => {
+	const [acceptPressed, setAcceptPressed] = useState(false);
 	return (
 		<View>
 			<Text style={modalStyles.infoText}>
@@ -27,7 +29,10 @@ const WarningModalContent = ({
 				</TouchableOpacity>
 				<TouchableOpacity
 					style={modalStyles.buttonDelete}
-					onPress={acceptModal}>
+					onPress={() => {
+						if (!acceptPressed) acceptModal();
+						setAcceptPressed(true);
+					}}>
 					<Text style={modalStyles.buttonAcceptText}>Igen</Text>
 				</TouchableOpacity>
 			</View>

@@ -50,7 +50,10 @@ const CreateItemUItemTile = ({
 				closeFn={() => setDeleteWarning(false)}>
 				<WarningModalContent
 					closeModal={() => setDeleteWarning(false)}
-					acceptModal={() => deleteUniqueItem()}
+					acceptModal={() => {
+						setDeleteWarning(false);
+						deleteUniqueItem();
+					}}
 					mainText="Biztosan törlöd?"
 					explainText="Historikus adatok veszhetnek el!"
 				/>

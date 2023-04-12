@@ -9,7 +9,7 @@ import {
 	View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import {
 	Item,
@@ -20,6 +20,8 @@ import CreateItemUItemTile from "../organisms/Tiles/createItemUItemTile";
 import { useGetUUIds } from "../../query-hooks/UseItems";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 import { modalStyles } from "../../styles";
+import { MAX_UNIQUE_ITEMS } from "../../constants";
+import NumberPicker from "../atoms/NumberPicker";
 interface ItemCreatorProps {
 	storeId?: number | undefined;
 	item?: Item | undefined;
@@ -37,8 +39,11 @@ const ItemCreator = ({
 	const [name, setName] = useState(item ? item.item_name : "");
 	const [amount, setAmount] = useState(item ? item.amount : 1);
 	const [uniqueItems, setUniqueItems] = useState<UniqueItemCreatorType[]>([]);
-	const [maxInput, setMaxInput] = useState(item ? 50 : 999);
-	const [minInput, setMinInput] = useState(item ? item.amount : 0);
+	const [maxInput, setMaxInput] = useState(item ? MAX_UNIQUE_ITEMS : 999);
+	const [minInput, setMinInput] = useState(
+		item && item.is_unique ? item.amount : 0
+	);
+	const [reloadUniqueItemList, setReloadUniqueItemList] = useState(true);
 	const [acceptActive, setAcceptActive] = useState(false);
 	const getUUIds = useGetUUIds();
 
@@ -83,6 +88,16 @@ const ItemCreator = ({
 	}, []);
 
 	useEffect(() => {
+		const timerId = setTimeout(() => {
+			setReloadUniqueItemList((prev) => !prev);
+		}, 300);
+
+		return () => {
+			clearTimeout(timerId);
+		};
+	}, [amount]);
+
+	useEffect(() => {
 		if (isUnique) {
 			setUniqueItems((prev) => {
 				while (prev.length < amount) {
@@ -100,7 +115,7 @@ const ItemCreator = ({
 				return prev;
 			});
 		}
-	}, [isUnique, amount]);
+	}, [isUnique, reloadUniqueItemList]);
 
 	const updateUniqueItem = (
 		key: number,
@@ -121,18 +136,19 @@ const ItemCreator = ({
 
 	// Save button active state & closemodal warning setting
 	useEffect(() => {
-		// accept state setting
+		// Accept save state setting
 		if (
 			name.length < 2 ||
 			(isUnique &&
-				uniqueItems.some((item) => item.alt_name === "" || item.uuid === ""))
+				uniqueItems.some((item) => item.alt_name === "" || item.uuid === "")) ||
+			amount == 0
 		) {
 			setAcceptActive(false);
 		} else {
 			setAcceptActive(true);
 		}
+		// OnClose warning modal enabled setting
 		// Newly created item
-		// close modal enabled setting
 		if (!item) {
 			if (
 				name.length >= 2 ||
@@ -147,13 +163,11 @@ const ItemCreator = ({
 		// Already existing item
 		else {
 			if (
-				name.length >= 2 ||
-				name !== item.item_name ||
+				(name.length >= 2 && name !== item.item_name) ||
+				amount !== item.amount ||
 				(isUnique &&
 					uniqueItems.some(
 						(uItem) =>
-							uItem.alt_name !== "" ||
-							uItem.uuid !== "" ||
 							!item.unique_items.some(
 								(originalUItem) => originalUItem.uuid === uItem.uuid
 							) ||
@@ -161,19 +175,21 @@ const ItemCreator = ({
 								(originalUItem) => originalUItem.alt_name === uItem.alt_name
 							)
 					)) ||
-				item.unique_items.some((originalUItem) => {
-					!uniqueItems.some((uItem) => originalUItem.uuid === uItem.uuid) ||
-						!uniqueItems.some(
-							(uItem) => originalUItem.alt_name === uItem.alt_name
-						);
-				})
+				(isUnique &&
+					item.unique_items.some(
+						(originalUItem) =>
+							!uniqueItems.some((uItem) => originalUItem.uuid === uItem.uuid) ||
+							!uniqueItems.some(
+								(uItem) => originalUItem.alt_name === uItem.alt_name
+							)
+					))
 			) {
 				setCloseModalWarning(true);
 			} else {
 				setCloseModalWarning(false);
 			}
 		}
-	}, [name, uniqueItems, isUnique]);
+	}, [name, uniqueItems, isUnique, amount]);
 
 	const scannedUuids = uniqueItems
 		.map((item) => item.uuid)
@@ -217,21 +233,14 @@ const ItemCreator = ({
 							onChangeText={(name) => setName(name)}
 						/>
 						<View style={styles.rowContainer}>
-							<TextInput
-								style={styles.amountInput}
-								maxLength={3}
-								textAlign="center"
-								value={amount.toString()}
-								onChangeText={(inputString) => {
-									const input = parseInt(inputString);
-									(isNaN(input) || input < minInput) && setAmount(minInput);
-									input > maxInput && setAmount(maxInput);
-									minInput <= input && input <= maxInput && setAmount(input);
-								}}
-								keyboardType="numeric"
+							<NumberPicker
+								setAmount={setAmount}
+								minInput={minInput}
+								maxInput={maxInput}
+								value={amount}
 							/>
 							<Text style={styles.amountText}>
-								Darabszám{isUnique && " (max. 50)"}
+								Darabszám{isUnique && ` (max. ${MAX_UNIQUE_ITEMS})`}
 							</Text>
 						</View>
 
@@ -239,8 +248,8 @@ const ItemCreator = ({
 							<View style={styles.checboxAligner}>
 								<TouchableWithoutFeedback
 									onPress={() => {
-										amount > 50 && setAmount(50);
-										isUnique ? setMaxInput(999) : setMaxInput(50);
+										amount > MAX_UNIQUE_ITEMS && setAmount(MAX_UNIQUE_ITEMS);
+										isUnique ? setMaxInput(999) : setMaxInput(MAX_UNIQUE_ITEMS);
 										setIsUnique((prev) => !prev);
 									}}>
 									{isUnique ? (
@@ -340,15 +349,8 @@ const styles = StyleSheet.create({
 	amountText: {
 		fontSize: 16,
 	},
-	amountInput: {
-		fontSize: 20,
-		height: 40,
-		borderBottomColor: "gray",
-		borderBottomWidth: 1,
-		width: 40,
-	},
 	checboxAligner: {
-		width: 42,
+		width: 100,
 		alignItems: "center",
 	},
 	flatListStyle: {

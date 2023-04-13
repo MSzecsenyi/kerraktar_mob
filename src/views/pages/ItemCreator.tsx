@@ -9,45 +9,74 @@ import {
 	View,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { FlatList } from "react-native-gesture-handler";
 import {
 	Item,
+	SaveItemData,
 	UniqueItemCreatorType,
-	sendUniqueItemData,
+	SaveUniqueItemData,
+	ModifyItemData,
 } from "../../interfaces";
 import CreateItemUItemTile from "../organisms/Tiles/createItemUItemTile";
-import { useGetUUIds } from "../../query-hooks/UseItems";
+import {
+	useGetUUIds,
+	usePostItem,
+	useUpdateItem,
+} from "../../query-hooks/UseItems";
 import LoadingSpinner from "../atoms/LoadingSpinner";
 import { modalStyles } from "../../styles";
 import { MAX_UNIQUE_ITEMS } from "../../constants";
 import NumberPicker from "../atoms/NumberPicker";
+import DefaultModal from "../molecules/DefaultModal";
+import AcceptModalContent from "../organisms/ModalContents/AcceptModalContent";
 interface ItemCreatorProps {
-	storeId?: number | undefined;
+	storeId: number;
 	item?: Item | undefined;
 	backFn?: () => void | undefined;
 	setCloseModalWarning: (closeWarningModal: boolean) => void;
+	closeFn: () => void;
 }
 
 const ItemCreator = ({
-	storeId = undefined,
+	storeId,
 	item = undefined,
 	backFn = undefined,
 	setCloseModalWarning,
+	closeFn,
 }: ItemCreatorProps) => {
 	const [isUnique, setIsUnique] = useState(item ? item.is_unique : false);
 	const [name, setName] = useState(item ? item.item_name : "");
 	const [amount, setAmount] = useState(item ? item.amount : 1);
 	const [uniqueItems, setUniqueItems] = useState<UniqueItemCreatorType[]>([]);
 	const [maxInput, setMaxInput] = useState(item ? MAX_UNIQUE_ITEMS : 999);
+	const [reloadUniqueItemList, setReloadUniqueItemList] = useState(true);
+	const [acceptActive, setAcceptActive] = useState(false);
+	const [saveModalVisible, setSaveModalVisible] = useState(false);
 	const [minInput, setMinInput] = useState(
 		item && item.is_unique ? item.amount : 0
 	);
-	const [reloadUniqueItemList, setReloadUniqueItemList] = useState(true);
-	const [acceptActive, setAcceptActive] = useState(false);
-	const getUUIds = useGetUUIds();
+	const [itemToSave, setItemToSave] = useState<SaveItemData>({
+		store_id: storeId,
+		amount: amount,
+		item_name: name,
+		is_unique: isUnique,
+		unique_items: uniqueItems,
+	});
+	const [itemToModify, setItemToModify] = useState<ModifyItemData>({
+		id: storeId,
+		amount: amount,
+		item_name: name,
+		is_unique: isUnique,
+		unique_items: uniqueItems,
+	});
 
-	// functions responsible for the unique item flatlist values
+	//SERVER COMMUNICATION FUNCTIONS
+	const getUUIds = useGetUUIds();
+	const postItem = usePostItem(itemToSave, closeFn, storeId);
+	const updateItem = useUpdateItem(itemToModify, closeFn, storeId);
+
+	//FUNCTIONS RESPONSIBLE FOR THE UNIQUE ITEM FLATLIST VALUES
 	const deleteUniqeItem = (index: number) => {
 		setAmount((prev) => (prev === 1 ? 1 : prev - 1));
 		if (uniqueItems[index].id !== -1) {
@@ -196,7 +225,7 @@ const ItemCreator = ({
 		.filter((uuid) => uuid !== "");
 
 	const renderRow = useCallback(
-		({ item, index }: ListRenderItemInfo<sendUniqueItemData>) => {
+		({ item, index }: ListRenderItemInfo<SaveUniqueItemData>) => {
 			return (
 				<>
 					{getUUIds.isSuccess && (
@@ -220,6 +249,23 @@ const ItemCreator = ({
 			style={{ minHeight: isUnique ? "100%" : "40%", maxHeight: "100%" }}
 			// behavior="padding"
 		>
+			<DefaultModal
+				visible={saveModalVisible}
+				closeFn={() => setSaveModalVisible(false)}>
+				<AcceptModalContent
+					closeModal={() => setSaveModalVisible(false)}
+					acceptModal={() => {
+						item ? updateItem.mutate() : postItem.mutate();
+					}}
+					mainText={
+						item
+							? "Módosítod az eszköz adatait?"
+							: "Hozzáadod az eszközt a raktárhoz?"
+					}
+					loading={postItem.isLoading || updateItem.isLoading}
+				/>
+			</DefaultModal>
+
 			{/* PAGE CONTENT */}
 			{getUUIds.isSuccess ? (
 				<>
@@ -306,8 +352,23 @@ const ItemCreator = ({
 									: modalStyles.buttonDisabled
 							}
 							onPress={() => {
-								console.log("save pressed");
-								console.log(acceptActive);
+								item
+									? setItemToModify({
+											id: item.id,
+											amount: amount,
+											item_name: name,
+											is_unique: isUnique,
+											unique_items: uniqueItems,
+									  })
+									: setItemToSave({
+											store_id: storeId,
+											amount: amount,
+											item_name: name,
+											is_unique: isUnique,
+											unique_items: uniqueItems,
+									  });
+
+								setSaveModalVisible(true);
 							}}>
 							<Text style={modalStyles.buttonAcceptText}>Mentés</Text>
 						</TouchableOpacity>

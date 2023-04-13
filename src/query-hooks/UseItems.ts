@@ -1,10 +1,17 @@
-import { useQuery } from "react-query";
+import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useContext } from "react";
 import { API_URL } from "./../constants";
 import axios from "axios";
 import { UserDataContext } from "../contexts/UserDataContext";
-import { Item, RequestItem, StringDateRange } from "../interfaces";
+import {
+	Item,
+	ModifyItemData,
+	RequestItem,
+	SaveItemData,
+	StringDateRange,
+} from "../interfaces";
 
+// Items for TakeOuts and item management
 function getItems(store_id: number, token: string): Promise<Item[]> {
 	return axios
 		.get(API_URL + `items?store_id=[${store_id}]`, {
@@ -25,6 +32,7 @@ export function useGetItems(store_id: number) {
 		() => getItems(store_id, loggedInUser.token),
 		{
 			enabled: store_id != -1,
+			staleTime: Infinity,
 		}
 	);
 }
@@ -82,4 +90,91 @@ function getUUIds(token: string): Promise<string[]> {
 export function useGetUUIds() {
 	const { loggedInUser } = useContext(UserDataContext);
 	return useQuery("uuids", () => getUUIds(loggedInUser.token));
+}
+
+// Create new item
+const postItem = (token: string, takeOutList: SaveItemData) =>
+	axios.post(API_URL + "items", takeOutList, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+
+export function usePostItem(
+	item: SaveItemData,
+	onSuccessFn: () => void,
+	storeId: number
+) {
+	const { loggedInUser } = useContext(UserDataContext);
+	const queryClient = useQueryClient();
+	return useMutation(() => postItem(loggedInUser.token, item), {
+		onSuccess: (response: { data: Item }) => {
+			const oldData = queryClient.getQueryData(["items", storeId]) as Item[];
+			queryClient.setQueryData(["items", storeId], [...oldData, response.data]);
+
+			onSuccessFn();
+		},
+		onError: (error) => console.error(error),
+	});
+}
+
+//Update an item
+const updateItem = (item: ModifyItemData, token: string) =>
+	axios.put(API_URL + `items`, item, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+
+export function useUpdateItem(
+	item: ModifyItemData,
+	onSuccessFn: () => void,
+	storeId: number
+) {
+	const { loggedInUser } = useContext(UserDataContext);
+	const queryClient = useQueryClient();
+	return useMutation(() => updateItem(item, loggedInUser.token), {
+		onSuccess: (response) => {
+			console.log(storeId);
+			const oldData = queryClient.getQueryData(["items", storeId]) as Item[];
+			if (oldData) {
+				const newData = oldData.map((existingItem) => {
+					if (existingItem.id === response.data.id) {
+						return response.data;
+					}
+					return existingItem;
+				});
+				queryClient.setQueryData(["items", storeId], newData);
+			}
+			onSuccessFn();
+		},
+	});
+}
+
+//Delete an item
+const deleteItem = (itemId: number, token: string) =>
+	axios.delete(API_URL + `items/${itemId}`, {
+		headers: {
+			Authorization: `Bearer ${token}`,
+		},
+	});
+
+export function useDeleteItem(
+	itemId: number,
+	onSuccessFn: () => void,
+	storeId: number
+) {
+	const { loggedInUser } = useContext(UserDataContext);
+	const queryClient = useQueryClient();
+
+	return useMutation(() => deleteItem(itemId, loggedInUser.token), {
+		onSuccess: () => {
+			const oldData = queryClient.getQueryData(["items", storeId]) as Item[];
+			if (oldData) {
+				const newData = oldData.filter((item) => item.id !== itemId);
+				queryClient.setQueryData(["items", storeId], newData);
+			}
+			onSuccessFn();
+		},
+	});
 }

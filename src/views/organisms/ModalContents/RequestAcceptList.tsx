@@ -5,11 +5,11 @@ import {
 	TouchableOpacity,
 	View,
 } from "react-native";
-import { modalStyles } from "../../styles";
-import LoadingSpinner from "../atoms/LoadingSpinner";
-import { RequestItem } from "../../interfaces";
+import { modalStyles } from "../../../styles";
+import LoadingSpinner from "../../atoms/LoadingSpinner";
+import { RequestItem } from "../../../interfaces";
 import { useState } from "react";
-import RequestAcceptListItem from "../atoms/RequestAcceptListItem";
+import RequestAcceptListItem from "../../atoms/RequestAcceptListItem";
 interface RequestAcceptListProps {
 	setModalIsVisible: (value: React.SetStateAction<boolean>) => void;
 	items: RequestItem[];

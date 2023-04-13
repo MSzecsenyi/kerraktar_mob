@@ -32,7 +32,7 @@ import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer"
 import BottomCreateNewButton from "../atoms/bottomButtons/BottomCreateNewButton";
 import DefaultModal from "../molecules/DefaultModal";
 import ItemCreator from "./ItemCreator";
-import WarningModalContent from "../organisms/WarningModalContent";
+import WarningModalContent from "../organisms/ModalContents/WarningModalContent";
 
 export type ItemSelectorProps = CompositeScreenProps<
 	NativeStackScreenProps<ItemStackParamList, "ItemListScreen">,
@@ -67,6 +67,7 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 		}
 	};
 
+	//SERVER COMMUNICATION
 	const getItems = useGetItems(storeId);
 
 	//EFFECTS
@@ -108,7 +109,7 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 		return (
 			<ItemTile
 				item={item}
-				dispatchItems={dispatchItems}
+				storeId={storeId}
 			/>
 		);
 	}, []);
@@ -131,7 +132,6 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 					<DefaultModal
 						visible={addModal}
 						closeFn={() => {
-							console.log(closeModalWarning);
 							closeModalWarning
 								? setCloseModalWarningVisible(true)
 								: setAddModal(false);
@@ -139,6 +139,7 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 						<ItemCreator
 							storeId={storeId}
 							setCloseModalWarning={(value) => setCloseModalWarning(value)}
+							closeFn={() => setAddModal(false)}
 						/>
 					</DefaultModal>
 

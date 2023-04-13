@@ -23,7 +23,7 @@ import { UseQueryResult } from "react-query";
 import QRScanner from "../organisms/QRScanner";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
-import WarningModalContent from "../organisms/WarningModalContent";
+import WarningModalContent from "../organisms/ModalContents/WarningModalContent";
 import { TakeOutListCreatorManagerProps } from "./TakeOutListCreatorManager";
 import BottomButton from "../atoms/bottomButtons/BottomButton";
 

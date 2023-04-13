@@ -134,15 +134,28 @@ export interface UniqueItemCreatorType {
 	uuid: string;
 }
 
-export interface SendItemData {
+export interface SaveItemData {
 	store_id: number;
 	amount: number;
 	item_name: string;
 	is_unique: boolean;
-	unique_items: sendUniqueItemData[];
+	unique_items: SaveUniqueItemData[];
 }
-
-export interface sendUniqueItemData {
+export interface SaveItemData {
+	store_id: number;
+	amount: number;
+	item_name: string;
+	is_unique: boolean;
+	unique_items: SaveUniqueItemData[];
+}
+export interface ModifyItemData {
+	id: number;
+	amount: number;
+	item_name: string;
+	is_unique: boolean;
+	unique_items: SaveUniqueItemData[];
+}
+export interface SaveUniqueItemData {
 	id: number;
 	uuid: string;
 	alt_name: string;

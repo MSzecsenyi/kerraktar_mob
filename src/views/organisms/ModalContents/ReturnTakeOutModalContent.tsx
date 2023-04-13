@@ -1,7 +1,7 @@
 import { View, Text, TouchableOpacity } from "react-native";
-import { modalStyles } from "../../styles";
-import { usePutTakeOut } from "../../query-hooks/UseTakeOuts";
-import LoadingSpinner from "../atoms/LoadingSpinner";
+import { modalStyles } from "../../../styles";
+import { usePutTakeOut } from "../../../query-hooks/UseTakeOuts";
+import LoadingSpinner from "../../atoms/LoadingSpinner";
 
 interface ReturnTakeOutModalContentProps {
 	closeFn: () => void;

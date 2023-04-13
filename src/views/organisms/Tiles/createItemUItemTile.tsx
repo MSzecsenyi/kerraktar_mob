@@ -11,7 +11,7 @@ import { useState } from "react";
 import FullScreenModal from "../../molecules/FullScreenModal";
 import { sendUniqueItemData } from "../../../interfaces";
 import DefaultModal from "../../molecules/DefaultModal";
-import WarningModalContent from "../WarningModalContent";
+import WarningModalContent from "../ModalContents/WarningModalContent";
 
 interface CreateItemUItemTileProps {
 	scannedUuids: string[];

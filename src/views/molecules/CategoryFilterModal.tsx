@@ -23,8 +23,7 @@ const CategoryFilterModal = ({
 	const renderItem = ({ item }: { item: string }) => (
 		<TouchableOpacity
 			style={styles.categoryItem}
-			onPress={() => onSelect(item)}
-			underlayColor="#008000AA">
+			onPress={() => onSelect(item)}>
 			<Text style={styles.categoryText}>{`${item}`}</Text>
 		</TouchableOpacity>
 	);

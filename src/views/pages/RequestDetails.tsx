@@ -11,13 +11,13 @@ import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import Feather from "react-native-vector-icons/Feather";
 import { requestItemReducer } from "../../contexts/RequestItemReducer";
 import RequestItemTile from "../organisms/Tiles/RequestItemTile";
-import RequestAcceptList from "../organisms/RequestAcceptList";
+import RequestAcceptList from "../organisms/ModalContents/RequestAcceptList";
 import {
 	useDeleteRequest,
 	useGetDetailedRequest,
 	useUpdateRequest,
 } from "../../query-hooks/UseRequests";
-import WarningModalContent from "../organisms/WarningModalContent";
+import WarningModalContent from "../organisms/ModalContents/WarningModalContent";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";

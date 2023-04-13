@@ -13,7 +13,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import TakeOutDeatilsItemTile from "../organisms/Tiles/TakeOutDeatilsItemTile";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
 import DefaultModal from "../molecules/DefaultModal";
-import ReturnTakeOutModalContent from "../molecules/ReturnTakeOutModalContent";
+import ReturnTakeOutModalContent from "../organisms/ModalContents/ReturnTakeOutModalContent";
 import { DrawerScreenProps } from "@react-navigation/drawer";
 import { CompositeScreenProps } from "@react-navigation/native";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
@@ -21,7 +21,7 @@ import {
 	TakeOutStackParams,
 	LoginDrawerParamList,
 } from "../../navigation/ParamStacks";
-import WarningModalContent from "../organisms/WarningModalContent";
+import WarningModalContent from "../organisms/ModalContents/WarningModalContent";
 import BottomButton from "../atoms/bottomButtons/BottomButton";
 import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
 import EmptyList from "../atoms/EmptyList";

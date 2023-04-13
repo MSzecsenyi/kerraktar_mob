@@ -8,24 +8,33 @@ import {
 } from "react-native";
 import { memo, useCallback, useState } from "react";
 import { Item, UniqueItem } from "../../../interfaces";
-import { TakeOutItemAction } from "../../../contexts/ItemReducer";
 import DefaultModal from "../../molecules/DefaultModal";
 import { modalStyles } from "../../../styles";
 import ItemCreator from "../../pages/ItemCreator";
-import WarningModalContent from "../WarningModalContent";
+import WarningModalContent from "../ModalContents/WarningModalContent";
+import { useDeleteItem } from "../../../query-hooks/UseItems";
 
 export interface ItemTileProps {
 	item: Item;
-	dispatchItems: React.Dispatch<TakeOutItemAction>;
+	storeId: number;
 }
 
-const ItemTile = ({ item }: ItemTileProps) => {
+const ItemTile = ({ item, storeId }: ItemTileProps) => {
 	const [infoModalVisible, setInfoModalVisible] = useState(false);
 	const [editMode, setEditMode] = useState(false);
 	const [deleteWarning, setDeleteWarning] = useState(false);
 	const [closeModalWarning, setCloseModalWarning] = useState(false);
 	const [closeModalWarningVisible, setCloseModalWarningVisible] =
 		useState(false);
+
+	const deleteItem = useDeleteItem(
+		item.id,
+		() => {
+			setInfoModalVisible(false);
+			setDeleteWarning(false);
+		},
+		storeId
+	);
 
 	const renderRow = useCallback(({ item }: ListRenderItemInfo<UniqueItem>) => {
 		return (
@@ -57,6 +66,8 @@ const ItemTile = ({ item }: ItemTileProps) => {
 							item={item}
 							backFn={() => setEditMode(false)}
 							setCloseModalWarning={(value) => setCloseModalWarning(value)}
+							closeFn={() => setInfoModalVisible(false)}
+							storeId={storeId}
 						/>
 					) : (
 						<>
@@ -112,11 +123,11 @@ const ItemTile = ({ item }: ItemTileProps) => {
 				<WarningModalContent
 					closeModal={() => setDeleteWarning(false)}
 					acceptModal={() => {
-						setInfoModalVisible(false);
-						setDeleteWarning(false);
+						deleteItem.mutate();
 					}}
 					mainText="Biztosan törlöd?"
 					explainText="Historikus adatok veszhetnek el!"
+					loading={deleteItem.isLoading}
 				/>
 			</DefaultModal>
 

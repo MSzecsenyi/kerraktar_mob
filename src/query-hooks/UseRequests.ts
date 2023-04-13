@@ -112,7 +112,7 @@ export function useUpdateRequest(
 	);
 }
 
-//Update items in a specific request
+//Delete a specific request
 const deleteRequest = (requestId: number, token: string) =>
 	axios.delete(API_URL + `requests/${requestId}`, {
 		headers: {

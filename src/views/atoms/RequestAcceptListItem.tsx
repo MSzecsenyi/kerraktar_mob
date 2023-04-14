@@ -1,5 +1,6 @@
 import { ListRenderItemInfo, StyleSheet, Text, View } from "react-native";
 import { RequestItem } from "../../interfaces";
+import { COLORS } from "../../colors";
 
 interface RequestAcceptListItemProps {
     ListItemData: ListRenderItemInfo<RequestItem>;
@@ -29,7 +30,7 @@ export default RequestAcceptListItem;
 const styles = StyleSheet.create({
     itemContainerEven: {},
     itemContainerOdd: {
-        backgroundColor: "#e6ffe6",
+        backgroundColor: COLORS.secondaryColor,
     },
     mainNameContainter: {
         flexDirection: "row",

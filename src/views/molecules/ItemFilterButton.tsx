@@ -1,5 +1,6 @@
 import { StyleSheet, Text } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
+import { COLORS } from "../../colors";
 
 interface ItemFilterButtonProps {
     title: string;
@@ -21,13 +22,13 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
         height: 40,
         borderWidth: 2,
-        borderColor: "green",
+        borderColor: COLORS.mainColor,
         borderRadius: 50,
         marginVertical: 5,
         justifyContent: "center",
         marginHorizontal: 5,
     },
     filterButtonText: {
-        color: "green",
+        color: COLORS.mainColor,
     },
 });

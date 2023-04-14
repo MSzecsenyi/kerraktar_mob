@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { Dimensions, StyleSheet, Modal, View } from "react-native";
+import { COLORS } from "../../colors";
 
 interface FullScreenModalProps {
     visible: boolean;
@@ -46,16 +47,6 @@ const styles = StyleSheet.create({
         flex: 1,
         width: Dimensions.get("screen").width,
         height: Dimensions.get("screen").height,
-        backgroundColor: "white",
+        backgroundColor: COLORS.white,
     },
-    // modalContainter: {
-    // 	width: "80%",
-    // 	maxHeight: "80%",
-    // 	backgroundColor: "white",
-    // 	paddingHorizontal: 20,
-    // 	paddingTop: 30,
-    // 	paddingBottom: 20,
-    // 	borderRadius: 20,
-    // 	elevation: 20,
-    // },
 });

@@ -29,6 +29,8 @@ const TakeOutListCreatorManager = (
 
 	const getItems = useGetItems(storeId);
 
+	useEffect(() => {}, []);
+
 	useEffect(() => {
 		if (getItems.isSuccess)
 			dispatchItems({

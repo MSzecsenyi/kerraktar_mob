@@ -1,3 +1,4 @@
+import { UniqueItem } from "./../interfaces";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import { useContext } from "react";
 import { API_URL } from "./../constants";
@@ -5,10 +6,12 @@ import axios from "axios";
 import { UserDataContext } from "../contexts/UserDataContext";
 import {
 	Item,
+	ItemHistoryData,
 	ModifyItemData,
 	RequestItem,
 	SaveItemData,
 	StringDateRange,
+	TakeOut,
 } from "../interfaces";
 
 // Items for TakeOuts and item management
@@ -177,4 +180,68 @@ export function useDeleteItem(
 			onSuccessFn();
 		},
 	});
+}
+
+//Get history of an item
+async function getItemHistory(
+	itemId: number,
+	token: string
+): Promise<ItemHistoryData[]> {
+	try {
+		const response = await axios.get(API_URL + `items/history/` + itemId, {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		});
+		return response.data.data;
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+}
+
+export function useGetItemHistory(itemId: number, infoModalVisible: boolean) {
+	const { loggedInUser } = useContext(UserDataContext);
+	return useQuery(
+		["itemHistory", itemId],
+		() => getItemHistory(itemId, loggedInUser.token),
+		{
+			enabled: infoModalVisible,
+		}
+	);
+}
+
+//Get history of an item
+async function getUniqueItemHistory(
+	UniqueItemId: number,
+	token: string
+): Promise<TakeOut[]> {
+	try {
+		const response = await axios.get(
+			API_URL + `items/uitem_history/` + UniqueItemId,
+			{
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		);
+		return response.data.data;
+	} catch (error) {
+		console.error(error);
+		throw error;
+	}
+}
+
+export function useGetUniqueItemHistory(
+	UniqueItemId: number,
+	infoModalVisible: boolean
+) {
+	const { loggedInUser } = useContext(UserDataContext);
+	return useQuery(
+		["uitemHistory", UniqueItemId],
+		() => getUniqueItemHistory(UniqueItemId, loggedInUser.token),
+		{
+			enabled: infoModalVisible,
+		}
+	);
 }

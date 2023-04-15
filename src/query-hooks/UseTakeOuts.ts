@@ -1,4 +1,4 @@
-import { TakenOutItem } from "./../interfaces";
+import { Item, TakenOutItem } from "./../interfaces";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import axios from "axios";
 import { API_URL } from "../constants";
@@ -24,8 +24,11 @@ export function usePostTakeOut({
 	navigationProps,
 }: usePostTakeOutProps) {
 	const { loggedInUser } = useContext(UserDataContext);
+	const queryClient = useQueryClient();
 	return useMutation(() => postTakeOut(loggedInUser.token, takeOutList), {
 		onSuccess: () => {
+			queryClient.removeQueries(["items", takeOutList.store_id]);
+
 			navigationProps.navigation.navigate("TakeOutSelectorScreen");
 		},
 		onError: (error) => console.error(error),
@@ -109,6 +112,7 @@ export function usePutTakeOut({
 				});
 				queryClient.setQueryData("takeOuts", newData);
 			}
+			queryClient.removeQueries(["items", response.data.store_id]);
 			acceptOnPress();
 		},
 	});

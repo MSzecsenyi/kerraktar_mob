@@ -16,7 +16,7 @@ export type RequestStackParamList = {
 export type TakeOutStackParams = {
 	TakeOutSelectorScreen: undefined;
 	TakeOutCreatorScreen: undefined;
-	TakeOutDetailsScreen: { takeOut: TakeOut };
+	TakeOutDetailsScreen: { takeOut: TakeOut; storeId: number };
 };
 
 export type ItemStackParamList = {

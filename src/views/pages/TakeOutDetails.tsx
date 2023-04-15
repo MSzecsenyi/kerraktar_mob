@@ -3,8 +3,7 @@ import {
 	FlatList,
 	Keyboard,
 	ListRenderItemInfo,
-	StyleSheet,
-	Text,
+	RefreshControl,
 	View,
 } from "react-native";
 import { useGetDetailedTakeOut } from "../../query-hooks/UseTakeOuts";
@@ -25,6 +24,7 @@ import WarningModalContent from "../organisms/ModalContents/WarningModalContent"
 import BottomButton from "../atoms/bottomButtons/BottomButton";
 import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
 import EmptyList from "../atoms/EmptyList";
+import { COLORS } from "../../colors";
 
 export type TakeOutDetailsProps = CompositeScreenProps<
 	NativeStackScreenProps<TakeOutStackParams, "TakeOutDetailsScreen">,
@@ -36,9 +36,11 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 	const [allItemsChecked, _setAllItemsChecked] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filteredItems, setFilteredItems] = useState<TakenOutItem[]>([]);
+	const [listIsRefreshing, setListIsRefreshing] = useState(false);
 	const [acceptModalIsVisible, setAcceptModalIsVisible] = useState(false);
 	const [warningModalIsVisible, setWarningModalIsVisible] = useState(false);
 	const takeOut = route.params.takeOut;
+	const storeId = route.params.storeId;
 
 	const getTakeOutItems = useGetDetailedTakeOut(takeOut.id);
 
@@ -104,7 +106,7 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 		},
 		[]
 	);
-
+	console.log(storeId);
 	const keyExtractor = (item: TakenOutItem) => item.id.toString();
 
 	return (
@@ -143,13 +145,28 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 				renderItem={renderRow}
 				extraData={setItemList}
 				ListEmptyComponent={() => <EmptyList />}
+				refreshControl={
+					<RefreshControl
+						refreshing={listIsRefreshing}
+						onRefresh={() => {
+							setListIsRefreshing(true);
+							getTakeOutItems.refetch().then(() => {
+								setListIsRefreshing(false);
+							});
+						}}
+						colors={[COLORS.mainColor]}
+						tintColor={COLORS.mainColor}
+					/>
+				}
 			/>
-			<BottomButtonContainer>
-				<BottomButton //Accept changes
-					buttonIsActive={allItemsChecked}
-					buttonOnPress={() => setAcceptModalIsVisible(true)}
-				/>
-			</BottomButtonContainer>
+			{!takeOut.end_date && (
+				<BottomButtonContainer>
+					<BottomButton //Accept changes
+						buttonIsActive={allItemsChecked}
+						buttonOnPress={() => setAcceptModalIsVisible(true)}
+					/>
+				</BottomButtonContainer>
+			)}
 		</View>
 	);
 };

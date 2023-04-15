@@ -75,6 +75,7 @@ export interface TakeOut {
 	user: string;
 	store: number;
 	take_out_name: string;
+	amount?: number;
 }
 
 export interface TakenOutItem {
@@ -159,4 +160,12 @@ export interface SaveUniqueItemData {
 	id: number;
 	uuid: string;
 	alt_name: string;
+}
+export interface ItemHistoryData {
+	id: number;
+	start_date: Date;
+	end_date: Date;
+	take_out_name: string;
+	user: string;
+	amount: number;
 }

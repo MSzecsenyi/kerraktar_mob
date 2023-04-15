@@ -10,7 +10,9 @@ const EmptyList = ({
 }: EmptyListProps) => {
 	return (
 		<View style={styles.container}>
-			<Text style={styles.text}>{text}</Text>
+			<View style={styles.center}>
+				<Text style={styles.text}>{text}</Text>
+			</View>
 		</View>
 	);
 };
@@ -22,9 +24,13 @@ const styles = StyleSheet.create({
 		flex: 1,
 		justifyContent: "center",
 		alignItems: "center",
+		flexDirection: "column",
+	},
+	center: {
+		justifyContent: "center",
+		alignItems: "center",
 	},
 	text: {
-		paddingTop: "70%",
 		fontSize: 16,
 		textAlign: "center",
 		color: COLORS.inactive,

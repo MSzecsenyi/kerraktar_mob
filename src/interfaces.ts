@@ -18,7 +18,7 @@ export interface User {
 	name: string;
 	email: string;
 	email_verified_at: Date;
-	group_number: number;
+	group_number: string;
 	district: number;
 	phone: number;
 	is_group: boolean;
@@ -93,7 +93,7 @@ export interface ItemRequest {
 	request_name: string;
 	is_conflicted: boolean;
 	store: string;
-	user: number;
+	user: string;
 }
 export interface DateRange {
 	startDate: Date;

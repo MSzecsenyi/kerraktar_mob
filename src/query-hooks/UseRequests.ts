@@ -6,7 +6,6 @@ import { ItemRequest, RequestList } from "../interfaces";
 import { useContext } from "react";
 import { UserDataContext } from "../contexts/UserDataContext";
 import { RequestListCreatorManagerNavigationProps } from "../views/pages/RequestCreatorManager";
-import { isQueryKey } from "react-query/types/core/utils";
 
 interface usePostRequestProps {
 	requestList: RequestList;

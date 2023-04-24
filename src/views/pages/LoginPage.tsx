@@ -36,6 +36,7 @@ export default function LoginPage() {
 
 			<Text>Jelszó</Text>
 			<TextInput
+				secureTextEntry
 				onChangeText={(text) => handleOnChange(text, "password")}
 				style={styles.textInput}>
 				{loginInfo.password}

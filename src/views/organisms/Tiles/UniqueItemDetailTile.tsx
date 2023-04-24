@@ -38,7 +38,6 @@ const UniqueItemDetailTile = ({ uniqueItem }: UniqueItemDetailTileProps) => {
 			<TouchableOpacity onPress={() => setHistoryVisible((prev) => !prev)}>
 				<View style={styles.uitem_container}>
 					<Text>{uniqueItem.alt_name}</Text>
-					<Text>{uniqueItem.id}</Text>
 					<View style={styles.buttonSide}>
 						<Text>
 							{uniqueItem.taken_out_by == "-1"

@@ -70,6 +70,7 @@ const RequestListCreatorMain = ({
 		const filtered = requestItems.filter((item) => {
 			return item.item_name.toLowerCase().includes(searchTerm.toLowerCase());
 		});
+		filtered.sort((a, b) => a.item_name.localeCompare(b.item_name));
 		if (filtered) setFilteredItems(filtered);
 	}, [searchTerm, requestItems]);
 

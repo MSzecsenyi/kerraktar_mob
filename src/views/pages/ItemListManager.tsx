@@ -103,6 +103,8 @@ const ItemSelector = (navigationProps: ItemSelectorProps) => {
 			"hardwareBackPress",
 			backAction
 		);
+
+		return () => backHandler.remove();
 	}, [storeIdRef.current]);
 
 	//OTHER FUNCTIONS

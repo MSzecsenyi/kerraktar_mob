@@ -1,8 +1,8 @@
 import {
-    FlatList,
-    ListRenderItemInfo,
-    RefreshControl,
-    View,
+	FlatList,
+	ListRenderItemInfo,
+	RefreshControl,
+	View,
 } from "react-native";
 import { useGetRequests } from "../../query-hooks/UseRequests";
 import HeaderWithSearchBar from "../molecules/HeaderWithSearchBar";
@@ -14,8 +14,8 @@ import BottomCreateNewButton from "../atoms/bottomButtons/BottomCreateNewButton"
 import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
 import { CompositeScreenProps, useFocusEffect } from "@react-navigation/native";
 import {
-    LoginDrawerParamList,
-    RequestStackParamList,
+	LoginDrawerParamList,
+	RequestStackParamList,
 } from "../../navigation/ParamStacks";
 import { NativeStackScreenProps } from "@react-navigation/native-stack";
 import { DrawerScreenProps } from "@react-navigation/drawer";
@@ -24,115 +24,108 @@ import EmptyList from "../atoms/EmptyList";
 import { COLORS } from "../../colors";
 
 type RequestSelectorNavigationProp = CompositeScreenProps<
-    NativeStackScreenProps<RequestStackParamList, "RequestSelectorScreen">,
-    DrawerScreenProps<LoginDrawerParamList>
+	NativeStackScreenProps<RequestStackParamList, "RequestSelectorScreen">,
+	DrawerScreenProps<LoginDrawerParamList>
 >;
 
 const RequestSelector = ({ navigation }: RequestSelectorNavigationProp) => {
-    const [searchTerm, setSearchTerm] = useState("");
-    const [filteredRequests, setFilteredRequests] = useState<ItemRequest[]>([]);
-    const [listIsRefreshing, setListIsRefreshing] = useState(false);
-    const getRequests = useGetRequests();
-    const user = useContext(UserDataContext).loggedInUser.user;
+	const [searchTerm, setSearchTerm] = useState("");
+	const [filteredRequests, setFilteredRequests] = useState<ItemRequest[]>([]);
+	const [listIsRefreshing, setListIsRefreshing] = useState(false);
+	const getRequests = useGetRequests();
+	const user = useContext(UserDataContext).loggedInUser.user;
 
-    useFocusEffect(
-        useCallback(() => {
-            getRequests.refetch();
-        }, [])
-    );
+	useFocusEffect(
+		useCallback(() => {
+			getRequests.refetch();
+		}, [])
+	);
 
-    useEffect(() => {
-        if (getRequests.isSuccess) {
-            const filtered = getRequests.data
-                .filter((request) => {
-                    return request.request_name
-                        .toLowerCase()
-                        .includes(searchTerm.toLowerCase());
-                })
-                .sort((a, b) => {
-                    const dateA = new Date(a.start_date);
-                    const dateB = new Date(b.start_date);
-                    return dateB.getTime() - dateA.getTime();
-                });
-            setFilteredRequests(filtered);
-        }
-    }, [searchTerm, getRequests.data]);
+	useEffect(() => {
+		if (getRequests.isSuccess) {
+			const filtered = getRequests.data
+				.filter((request) => {
+					return request.request_name
+						.toLowerCase()
+						.includes(searchTerm.toLowerCase());
+				})
+				.sort((a, b) => {
+					const dateA = new Date(a.start_date);
+					const dateB = new Date(b.start_date);
+					return dateB.getTime() - dateA.getTime();
+				});
+			setFilteredRequests(filtered);
+		}
+	}, [searchTerm, getRequests.data]);
 
-    const renderRow = useCallback(
-        ({ item }: ListRenderItemInfo<ItemRequest>) => {
-            return (
-                <RequestTile
-                    request={item}
-                    onTilePress={() => {
-                        navigation.navigate("RequestDetailsScreen", {
-                            request: item,
-                        });
-                    }}
-                />
-            );
-        },
-        []
-    );
+	const renderRow = useCallback(({ item }: ListRenderItemInfo<ItemRequest>) => {
+		return (
+			<RequestTile
+				request={item}
+				onTilePress={() => {
+					navigation.navigate("RequestDetailsScreen", {
+						request: item,
+					});
+				}}
+			/>
+		);
+	}, []);
 
-    const keyExtractor = (request: ItemRequest) => request.id.toString();
+	const keyExtractor = (request: ItemRequest) => request.id.toString();
 
-    return (
-        <View style={{ flex: 1 }}>
-            {getRequests.isSuccess ? (
-                <>
-                    <HeaderWithSearchBar
-                        openDrawer={() => navigation.openDrawer()}
-                        searchTerm={searchTerm}
-                        setSearchTerm={setSearchTerm}
-                        title="Eddigi foglalások"
-                    />
-                    <View style={{ flex: 1 }}>
-                        <FlatList
-                            data={filteredRequests}
-                            style={{ flex: 1 }}
-                            keyExtractor={keyExtractor}
-                            getItemLayout={(data, index) => ({
-                                length: 80,
-                                offset: 80 * (index + 1),
-                                index,
-                            })}
-                            renderItem={renderRow}
-                            ListEmptyComponent={() => (
-                                <EmptyList text="Még nem történt egy eszközfoglalás sem" />
-                            )}
-                            refreshControl={
-                                <RefreshControl
-                                    refreshing={listIsRefreshing}
-                                    onRefresh={() => {
-                                        setListIsRefreshing(true);
-                                        getRequests.refetch().then(() => {
-                                            setListIsRefreshing(false);
-                                        });
-                                    }}
-                                    colors={[COLORS.mainColor]}
-                                    tintColor={COLORS.mainColor}
-                                />
-                            }
-                        />
-                        {user.is_group && (
-                            <BottomButtonContainer>
-                                <BottomCreateNewButton
-                                    text="Új foglalás"
-                                    onPress={() =>
-                                        navigation.navigate(
-                                            "RequestCreatorScreen"
-                                        )
-                                    }
-                                />
-                            </BottomButtonContainer>
-                        )}
-                    </View>
-                </>
-            ) : (
-                <LoadingSpinner />
-            )}
-        </View>
-    );
+	return (
+		<View style={{ flex: 1 }}>
+			{getRequests.isSuccess ? (
+				<>
+					<HeaderWithSearchBar
+						openDrawer={() => navigation.openDrawer()}
+						searchTerm={searchTerm}
+						setSearchTerm={setSearchTerm}
+						title="Eddigi foglalások"
+					/>
+					<View style={{ flex: 1 }}>
+						<FlatList
+							data={filteredRequests}
+							style={{ flex: 1 }}
+							keyExtractor={keyExtractor}
+							getItemLayout={(data, index) => ({
+								length: 80,
+								offset: 80 * (index + 1),
+								index,
+							})}
+							renderItem={renderRow}
+							ListEmptyComponent={() => (
+								<EmptyList text="Még nem történt egy eszközfoglalás sem" />
+							)}
+							refreshControl={
+								<RefreshControl
+									refreshing={listIsRefreshing}
+									onRefresh={() => {
+										setListIsRefreshing(true);
+										getRequests.refetch().then(() => {
+											setListIsRefreshing(false);
+										});
+									}}
+									colors={[COLORS.mainColor]}
+									tintColor={COLORS.mainColor}
+								/>
+							}
+						/>
+						{user.is_group && (
+							<BottomButtonContainer>
+								<BottomCreateNewButton
+									text="Új foglalás"
+									onPress={() => navigation.navigate("RequestCreatorScreen")}
+								/>
+							</BottomButtonContainer>
+						)}
+					</View>
+				</>
+			) : (
+				<LoadingSpinner />
+			)}
+		</View>
+	);
 };
 
 export default RequestSelector;

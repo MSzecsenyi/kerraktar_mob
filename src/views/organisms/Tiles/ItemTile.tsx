@@ -222,6 +222,7 @@ const styles = StyleSheet.create({
 	},
 	modal_item_info: {
 		alignItems: "center",
+		marginBottom: 10,
 	},
 });
 

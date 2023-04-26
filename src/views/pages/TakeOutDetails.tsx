@@ -33,21 +33,19 @@ export type TakeOutDetailsProps = CompositeScreenProps<
 
 const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 	const [itemList, setItemList] = useState<TakenOutItem[]>([]);
-	const [allItemsChecked, _setAllItemsChecked] = useState(false);
+	const [allItemsChecked, setAllItemsChecked] = useState(false);
 	const [searchTerm, setSearchTerm] = useState("");
 	const [filteredItems, setFilteredItems] = useState<TakenOutItem[]>([]);
 	const [listIsRefreshing, setListIsRefreshing] = useState(false);
 	const [acceptModalIsVisible, setAcceptModalIsVisible] = useState(false);
 	const [warningModalIsVisible, setWarningModalIsVisible] = useState(false);
 	const takeOut = route.params.takeOut;
-	const storeId = route.params.storeId;
 
 	const getTakeOutItems = useGetDetailedTakeOut(takeOut.id);
 
-	const allItemsCheckedRef = useRef(allItemsChecked);
-	const setAllItemsChecked = (data: boolean) => {
-		allItemsCheckedRef.current = data;
-		_setAllItemsChecked(data);
+	const haveItemsCheckedRef = useRef(false);
+	const setHaveItemsChecked = (data: boolean) => {
+		haveItemsCheckedRef.current = data;
 	};
 
 	useEffect(() => {
@@ -57,6 +55,9 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 	useEffect(() => {
 		setAllItemsChecked(
 			!itemList.some((listItem) => listItem.is_checked === false)
+		);
+		setHaveItemsChecked(
+			itemList.some((listItem) => listItem.is_checked === true)
 		);
 		const filtered = itemList.filter((item) => {
 			return item.name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -69,7 +70,7 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 			Keyboard.dismiss();
 		});
 		const backAction = () => {
-			if (allItemsCheckedRef.current) {
+			if (haveItemsCheckedRef.current) {
 				setWarningModalIsVisible(true);
 			} else {
 				navigation.navigate("TakeOutSelectorScreen");
@@ -106,7 +107,6 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 		},
 		[]
 	);
-	console.log(storeId);
 	const keyExtractor = (item: TakenOutItem) => item.id.toString();
 
 	return (
@@ -118,6 +118,7 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 				<WarningModalContent
 					acceptModal={() => navigation.navigate("TakeOutSelectorScreen")}
 					closeModal={() => setWarningModalIsVisible(false)}
+					explainText="A lista módosításai nem lesznek elmentve!"
 				/>
 			</DefaultModal>
 

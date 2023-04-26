@@ -53,10 +53,9 @@ const ItemHistoryList = ({
 							<Text>
 								{item.end_date ? displayDate(item.end_date) : `Még kint van`}
 							</Text>
-
 							{item.amount && (
 								<>
-									í<Text>{item.amount} db</Text>
+									<Text>{item.amount} db</Text>
 								</>
 							)}
 						</View>
@@ -89,7 +88,7 @@ const ItemHistoryList = ({
 								)}
 								renderItem={renderRow}
 								ListEmptyComponent={
-									<EmptyList text={"Még nem vette ki senki ezt az eszközt."} />
+									<EmptyList text={"Még senki nem vette ki ezt az eszközt."} />
 								}
 							/>
 						</View>
@@ -127,6 +126,5 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		justifyContent: "space-between",
 		alignItems: "center",
-		paddingRight: 20,
 	},
 });

@@ -154,6 +154,7 @@ const TakeOutListCreatorMain = ({
 								navigationProps.navigation.navigate("TakeOutSelectorScreen")
 							}
 							closeModal={() => setWarningModalIsVisible(false)}
+							explainText="A megkezdett eszközlista nem lesz elmentve!"
 						/>
 					</DefaultModal>
 

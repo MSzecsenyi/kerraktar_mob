@@ -138,7 +138,6 @@ export function useUpdateItem(
 	const queryClient = useQueryClient();
 	return useMutation(() => updateItem(item, loggedInUser.token), {
 		onSuccess: (response) => {
-			console.log(storeId);
 			const oldData = queryClient.getQueryData(["items", storeId]) as Item[];
 			if (oldData) {
 				const newData = oldData.map((existingItem) => {

@@ -4,6 +4,7 @@ import {
 	TextInput,
 	TouchableOpacity,
 	View,
+	TouchableWithoutFeedback,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import QRModifier from "../QRModifier";
@@ -13,7 +14,6 @@ import { SaveUniqueItemData } from "../../../interfaces";
 import DefaultModal from "../../molecules/DefaultModal";
 import WarningModalContent from "../ModalContents/WarningModalContent";
 import { COLORS } from "../../../colors";
-import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 interface CreateItemUItemTileProps {
 	scannedUuids: string[];

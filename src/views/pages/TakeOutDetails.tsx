@@ -25,6 +25,7 @@ import BottomButton from "../atoms/bottomButtons/BottomButton";
 import BottomButtonContainer from "../atoms/bottomButtons/BottomButtonContainer";
 import EmptyList from "../atoms/EmptyList";
 import { COLORS } from "../../colors";
+import LoadingSpinner from "../atoms/LoadingSpinner";
 
 export type TakeOutDetailsProps = CompositeScreenProps<
 	NativeStackScreenProps<TakeOutStackParams, "TakeOutDetailsScreen">,
@@ -139,34 +140,40 @@ const TakeOutDetails = ({ navigation, route }: TakeOutDetailsProps) => {
 				searchTerm={searchTerm}
 				title={`Eszközök visszaadása: ${takeOut.take_out_name}`}
 			/>
-			<FlatList
-				data={filteredItems}
-				style={{ flex: 1 }}
-				keyExtractor={keyExtractor}
-				renderItem={renderRow}
-				extraData={setItemList}
-				ListEmptyComponent={() => <EmptyList />}
-				refreshControl={
-					<RefreshControl
-						refreshing={listIsRefreshing}
-						onRefresh={() => {
-							setListIsRefreshing(true);
-							getTakeOutItems.refetch().then(() => {
-								setListIsRefreshing(false);
-							});
-						}}
-						colors={[COLORS.mainColor]}
-						tintColor={COLORS.mainColor}
+			{getTakeOutItems.isLoading ? (
+				<LoadingSpinner />
+			) : (
+				<>
+					<FlatList
+						data={filteredItems}
+						style={{ flex: 1 }}
+						keyExtractor={keyExtractor}
+						renderItem={renderRow}
+						extraData={setItemList}
+						ListEmptyComponent={() => <EmptyList />}
+						refreshControl={
+							<RefreshControl
+								refreshing={listIsRefreshing}
+								onRefresh={() => {
+									setListIsRefreshing(true);
+									getTakeOutItems.refetch().then(() => {
+										setListIsRefreshing(false);
+									});
+								}}
+								colors={[COLORS.mainColor]}
+								tintColor={COLORS.mainColor}
+							/>
+						}
 					/>
-				}
-			/>
-			{!takeOut.end_date && (
-				<BottomButtonContainer>
-					<BottomButton //Accept changes
-						buttonIsActive={allItemsChecked}
-						buttonOnPress={() => setAcceptModalIsVisible(true)}
-					/>
-				</BottomButtonContainer>
+					{!takeOut.end_date && (
+						<BottomButtonContainer>
+							<BottomButton //Accept changes
+								buttonIsActive={allItemsChecked}
+								buttonOnPress={() => setAcceptModalIsVisible(true)}
+							/>
+						</BottomButtonContainer>
+					)}
+				</>
 			)}
 		</View>
 	);

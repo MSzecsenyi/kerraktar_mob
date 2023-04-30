@@ -1,10 +1,4 @@
-import {
-	StyleSheet,
-	Text,
-	TouchableOpacity,
-	TouchableWithoutFeedback,
-	View,
-} from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { UniqueItem } from "../../../interfaces";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 import { COLORS } from "../../../colors";

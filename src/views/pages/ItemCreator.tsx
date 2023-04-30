@@ -31,6 +31,7 @@ import NumberPicker from "../atoms/NumberPicker";
 import DefaultModal from "../molecules/DefaultModal";
 import AcceptModalContent from "../organisms/ModalContents/AcceptModalContent";
 import { COLORS } from "../../colors";
+import { KeyboardAwareFlatList } from "react-native-keyboard-aware-scroll-view";
 interface ItemCreatorProps {
 	storeId: number;
 	item?: Item | undefined;
@@ -320,7 +321,7 @@ const ItemCreator = ({
 					</View>
 
 					{isUnique && (
-						<FlatList
+						<KeyboardAwareFlatList
 							style={styles.flatListStyle}
 							data={uniqueItems}
 							getItemLayout={(data, index) => ({
@@ -328,9 +329,10 @@ const ItemCreator = ({
 								offset: 50 * (index + 1),
 								index,
 							})}
-							keyboardShouldPersistTaps="always"
+							// keyboardShouldPersistTaps="always"
 							renderItem={renderRow}
 							keyExtractor={(_, index) => index.toString()}
+							removeClippedSubviews={false}
 						/>
 					)}
 					<View style={[modalStyles.buttonContainer]}>

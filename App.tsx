@@ -13,7 +13,7 @@ export default function App() {
 		<>
 			<SafeAreaView style={styles.safeAreaView}>
 				<KeyboardAvoidingView
-					behavior="hight"
+					// behavior="height"
 					style={{ flex: 1 }}>
 					<QueryClientProvider client={queryClient}>
 						<NavigationContainer>

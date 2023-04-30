@@ -162,9 +162,9 @@ const TakeOutListCreatorMain = ({
 						visible={modalIsVisible}
 						closeFn={() => setModalIsVisible(false)}>
 						<>
-							<TouchableOpacity onPress={() => setModalIsVisible(false)}>
+							<View>
 								<Text style={modalStyles.mainText}>Kiválasztott eszközök:</Text>
-							</TouchableOpacity>
+							</View>
 							<FlatList
 								data={items
 									.filter((item) => item.is_selected)

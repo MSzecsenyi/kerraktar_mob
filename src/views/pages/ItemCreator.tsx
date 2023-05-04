@@ -56,7 +56,9 @@ const ItemCreator = ({
 	const [acceptActive, setAcceptActive] = useState(false);
 	const [saveModalVisible, setSaveModalVisible] = useState(false);
 	const [minInput, setMinInput] = useState(
-		item && item.is_unique ? item.amount : 0
+		item && item.is_unique
+			? item.amount
+			: (item?.amount || 0) - (item?.in_store_amount || 0)
 	);
 	const [itemToSave, setItemToSave] = useState<SaveItemData>({
 		store_id: storeId,

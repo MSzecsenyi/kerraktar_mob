@@ -292,7 +292,7 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 									/>
 								</BottomButton>
 
-								{changed && (
+								{changed && itemsSelected && (
 									<BottomButton //Accept changes
 										buttonIsActive={changed}
 										buttonOnPress={() => acceptButtonOnPress()}

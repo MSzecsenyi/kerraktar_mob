@@ -1,9 +1,4 @@
-import {
-	BackHandler,
-	Keyboard,
-	ListRenderItemInfo,
-	StyleSheet,
-} from "react-native";
+import { BackHandler, Keyboard, ListRenderItemInfo } from "react-native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import DefaultModal from "../molecules/DefaultModal";
 import { RequestItem, RequestList, StringDateRange } from "../../interfaces";

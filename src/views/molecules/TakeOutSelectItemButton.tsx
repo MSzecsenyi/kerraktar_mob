@@ -103,6 +103,7 @@ const styles = StyleSheet.create({
 	},
 	light_text: {
 		color: COLORS.white,
+		fontSize: 12,
 	},
 	button_flex_row: {
 		flexDirection: "row",

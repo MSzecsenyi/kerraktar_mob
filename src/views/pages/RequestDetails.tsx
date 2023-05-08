@@ -87,7 +87,9 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 		setChanged(!isEqual(requestItems, defaultItems));
 		if (getRequestItems.isSuccess)
 			setItemsSelected(
-				requestItems.filter((item) => item.is_selected).length > 0
+				requestItems.filter(
+					(item) => item.is_selected && item.selected_amount !== 0
+				).length > 0
 			);
 		//filtering based on searchbar
 		let filtered = requestItems.filter((item) => {
@@ -174,7 +176,7 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 
 	const acceptButtonOnPress = () => {
 		const selectedItems = requestItems
-			.filter((item) => item.is_selected)
+			.filter((item) => item.is_selected && item.selected_amount !== 0)
 			.map((item) => ({
 				id: item.id,
 				amount: item.selected_amount,
@@ -202,10 +204,17 @@ const RequestDetails = ({ navigation, route }: RequestDetailsProps) => {
 				closeFn={() => setAcceptModalIsVisible(false)}>
 				<RequestAcceptList
 					items={requestItems
-						.filter((item) => item.is_selected)
+						.filter((item) => item.is_selected && item.selected_amount !== 0)
 						.sort((a, b) => a.item_name.localeCompare(b.item_name))}
 					setModalIsVisible={setAcceptModalIsVisible}
-					onPressAccept={() => updateRequest.mutate()}
+					onPressAccept={() => {
+						requestItems.forEach((element) => {
+							if (element.is_selected && element.selected_amount <= 0) {
+								element.is_selected = false;
+							}
+						});
+						updateRequest.mutate();
+					}}
 				/>
 			</DefaultModal>
 

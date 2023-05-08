@@ -74,6 +74,7 @@ const styles = StyleSheet.create({
 	},
 	loginContainer: {
 		height: 50,
+		marginTop: "3%",
 	},
 	loginButton: {
 		width: 120,
@@ -88,7 +89,8 @@ const styles = StyleSheet.create({
 		textAlign: "center",
 	},
 	image: {
-		resizeMode: "center",
-		height: 50,
+		resizeMode: "contain",
+		height: "10%",
+		marginBottom: "5%",
 	},
 });

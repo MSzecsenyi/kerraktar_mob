@@ -60,7 +60,9 @@ const RequestListCreatorMain = ({
 
 	useEffect(() => {
 		setSelectedItemAmount(
-			requestItems.filter((item) => item.is_selected).length
+			requestItems.filter(
+				(item) => item.is_selected && item.selected_amount !== 0
+			).length
 		);
 		const filtered = requestItems.filter((item) => {
 			return item.item_name.toLowerCase().includes(searchTerm.toLowerCase());
@@ -104,7 +106,7 @@ const RequestListCreatorMain = ({
 
 	const acceptButtonOnPress = () => {
 		const selectedItems = requestItems
-			.filter((item) => item.is_selected)
+			.filter((item) => item.is_selected && item.selected_amount !== 0)
 			.map((item) => ({
 				id: item.id,
 				amount: item.selected_amount,
@@ -139,7 +141,7 @@ const RequestListCreatorMain = ({
 				closeFn={() => setAcceptModalIsVisible(false)}>
 				<RequestAcceptList
 					items={requestItems
-						.filter((item) => item.is_selected)
+						.filter((item) => item.is_selected && item.selected_amount !== 0)
 						.sort((a, b) => a.item_name.localeCompare(b.item_name))}
 					listName={requestList.request_name}
 					setModalIsVisible={setAcceptModalIsVisible}
@@ -148,7 +150,14 @@ const RequestListCreatorMain = ({
 							return { ...prev, request_name: text };
 						})
 					}
-					onPressAccept={() => postRequest.mutate()}
+					onPressAccept={() => {
+						requestItems.forEach((element) => {
+							if (element.is_selected && element.selected_amount <= 0) {
+								element.is_selected = false;
+							}
+						});
+						postRequest.mutate();
+					}}
 				/>
 			</DefaultModal>
 

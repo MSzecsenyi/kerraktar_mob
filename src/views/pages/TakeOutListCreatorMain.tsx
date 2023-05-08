@@ -70,7 +70,10 @@ const TakeOutListCreatorMain = ({
 	};
 
 	useEffect(() => {
-		setSelectedItemAmount(items.filter((item) => item.is_selected).length);
+		setSelectedItemAmount(
+			items.filter((item) => item.is_selected && item.selected_amount !== 0)
+				.length
+		);
 		const filtered = items.filter((item) => {
 			return item.item_name.toLowerCase().includes(searchTerm.toLowerCase());
 		});
@@ -114,7 +117,10 @@ const TakeOutListCreatorMain = ({
 
 	const acceptButtonOnPress = () => {
 		const selectedItems = items
-			.filter((item) => item.is_selected && !item.is_unique)
+			.filter(
+				(item) =>
+					item.is_selected && !item.is_unique && item.selected_amount !== 0
+			)
 			.map((item) => ({
 				id: item.id,
 				amount: item.selected_amount,
@@ -167,7 +173,9 @@ const TakeOutListCreatorMain = ({
 							</View>
 							<FlatList
 								data={items
-									.filter((item) => item.is_selected)
+									.filter(
+										(item) => item.is_selected && item.selected_amount !== 0
+									)
 									.sort((a, b) => a.item_name.localeCompare(b.item_name))}
 								keyExtractor={(item) => item.id.toString()}
 								renderItem={(item) => (
@@ -202,6 +210,14 @@ const TakeOutListCreatorMain = ({
 														: modalStyles.buttonDisabled
 												}
 												onPress={() => {
+													items.forEach((element) => {
+														if (
+															element.is_selected &&
+															element.selected_amount <= 0
+														) {
+															element.is_selected = false;
+														}
+													});
 													postTakeOut.mutate();
 												}}>
 												<Text style={modalStyles.buttonAcceptText}>

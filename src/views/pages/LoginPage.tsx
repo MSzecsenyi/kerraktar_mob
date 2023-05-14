@@ -27,20 +27,18 @@ export default function LoginPage() {
 				source={require("../../../assets/icon.png")}
 				style={styles.image}
 			/>
-			<Text>Felhasználónév</Text>
+			<Text>Emailcím</Text>
 			<TextInput
 				onChangeText={(text) => handleOnChange(text, "email")}
-				style={styles.textInput}>
-				{loginInfo.email}
-			</TextInput>
+				style={styles.textInput}
+				placeholder="kerraktar@cserkesz.hu"></TextInput>
 
 			<Text>Jelszó</Text>
 			<TextInput
 				secureTextEntry
 				onChangeText={(text) => handleOnChange(text, "password")}
-				style={styles.textInput}>
-				{loginInfo.password}
-			</TextInput>
+				style={styles.textInput}
+				placeholder="**********"></TextInput>
 			<View style={styles.loginContainer}>
 				{loginUser.isLoading || loginUser.isSuccess ? (
 					<LoadingSpinner />

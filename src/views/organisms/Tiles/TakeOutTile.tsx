@@ -39,9 +39,10 @@ const TakeOutTile = ({ takeOut, navigationProps }: TakeOutTileProps) => {
 							{displayDate(takeOut.start_date) + "  |"}
 						</Text>
 						<Text style={[getTextColor(COLORS.white), { maxWidth: "40%" }]}>
-							{loggedInUser.loggedInUser.user.is_group
-								? takeOut.store
-								: takeOut.user}
+							{loggedInUser.loggedInUser.user.is_group && takeOut.store}
+						</Text>
+						<Text style={[getTextColor(COLORS.white), { maxWidth: "40%" }]}>
+							{loggedInUser.loggedInUser.user.is_storekeeper && takeOut.user}
 						</Text>
 						<Text style={getTextColor(COLORS.white)}>{"|  "}</Text>
 						<Text style={getTextColor("#00000000")}>

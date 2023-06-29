@@ -1,3 +1,3 @@
-# kerraktar_mob_2
+# kerraktar_mob
 
 Frontend of the Kerraktár app
